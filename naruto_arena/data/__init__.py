@@ -1,0 +1,2 @@
+"""Character definition data."""
+
