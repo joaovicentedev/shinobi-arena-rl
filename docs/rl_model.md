@@ -436,6 +436,46 @@ farming damage or healing instead of winning.
 - Checkpoints must be retrained when engine rules change the observation shape
   or legal action behavior.
 
+## Recent Experiment Notes
+
+Recent changes made to the RL stack:
+
+- Random chakra payment became an explicit policy decision.
+- Skill reordering was added to the RL policy.
+- Reorder was limited to 3 actions per player turn after early models looped on
+  reorder actions.
+- The flat 781-action policy was replaced by a factored policy:
+
+```text
+kind + actor + skill + target + random_chakra + reorder_destination
+```
+
+- The model now uses a shared character encoder for the 6 character feature
+  blocks before the shared actor-critic trunk.
+- Training can load an initial checkpoint with `--init-model-path`.
+- Training can use a deterministic RL checkpoint as the opponent with
+  `--opponent rl --opponent-model-path ...`.
+- `compare-rl` was added to compare two checkpoints across all 20 current teams,
+  alternating player side for fairness.
+
+Observed v2 fine-tuning result:
+
+```text
+model | resolved_wr | overall_wr | wins | losses | unfinished | p0_wr | p1_wr
+v1    | 0.541       | 0.527      | 1266 | 1076   | 58         | 0.527 | 0.527
+v2    | 0.459       | 0.448      | 1076 | 1266   | 58         | 0.449 | 0.448
+```
+
+Interpretation: initializing v2 from v1 and training against deterministic v1
+did not improve the checkpoint. The likely failure mode is policy degradation
+from on-policy sampling and noisy actor-critic updates against a stronger fixed
+opponent. Lower learning rate and lower entropy helped avoid large exploration
+shifts, but the tested v2 still underperformed v1 in direct comparison.
+
+This suggests the next major model/training direction should probably be a more
+stable update method or league setup, not more fine-tuning against one fixed
+checkpoint with the current actor-critic loop.
+
 ## Recommended Next Steps
 
 1. Add evaluation script for trained checkpoints.
