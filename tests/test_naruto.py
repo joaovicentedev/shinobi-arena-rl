@@ -62,7 +62,8 @@ def test_shadow_clones_improves_naruto_combo() -> None:
 def test_kyuubi_awakening_activates_once_when_naruto_reaches_50_or_lower() -> None:
     state, naruto, enemy = naruto_state_parts()
     enemy_sasuke = state.players[1].characters[2]
-    set_chakra(state, 1, taijutsu=2, ninjutsu=2)
+    naruto.hp = 70
+    set_chakra(state, 1, taijutsu=1, ninjutsu=1)
     state.active_player = 1
 
     apply_action(
@@ -75,17 +76,6 @@ def test_kyuubi_awakening_activates_once_when_naruto_reaches_50_or_lower() -> No
             {ChakraType.NINJUTSU: 1},
         ),
     )
-    apply_action(
-        state,
-        UseSkillAction(
-            1,
-            enemy_sasuke.instance_id,
-            "lion_combo",
-            (naruto.instance_id,),
-            {ChakraType.NINJUTSU: 1},
-        ),
-    )
-
     assert naruto.hp == 40
     assert naruto.passives["kyuubi_chakra_awakening"] is True
     naruto.hp = 40

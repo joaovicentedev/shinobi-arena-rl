@@ -147,6 +147,7 @@ def character_to_json(character: CharacterState) -> dict[str, Any]:
         "hp": character.hp,
         "max_hp": character.max_hp,
         "is_alive": character.is_alive,
+        "used_skill_this_turn": character.used_skill_this_turn,
         "skill_order": list(character.skill_order),
         "cooldowns": dict(sorted(character.cooldowns.items())),
         "status": {

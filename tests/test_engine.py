@@ -5,9 +5,9 @@ from naruto_arena.data.characters import (
     SASUKE_UCHIHA,
     UZUMAKI_NARUTO,
 )
-from naruto_arena.engine.actions import EndTurnAction, ReorderSkillsAction
+from naruto_arena.engine.actions import EndTurnAction, ReorderSkillsAction, UseSkillAction
 from naruto_arena.engine.rules import RulesError, create_initial_state
-from naruto_arena.engine.simulator import apply_action
+from naruto_arena.engine.simulator import apply_action, can_use_skill, legal_actions
 
 
 def test_team_cannot_have_duplicate_characters() -> None:
@@ -85,3 +85,58 @@ def test_reorder_skills_action_can_move_passive_skills() -> None:
     )
 
     assert naruto.skill_order[0] == "kyuubi_chakra_awakening"
+
+
+def test_reorder_skills_action_is_limited_to_three_per_turn() -> None:
+    state = create_initial_state(
+        [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+        [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+    )
+    naruto = state.players[0].characters[0]
+
+    apply_action(state, ReorderSkillsAction(0, naruto.instance_id, "sexy_technique", 0))
+    apply_action(state, ReorderSkillsAction(0, naruto.instance_id, "shadow_clones", 0))
+    apply_action(state, ReorderSkillsAction(0, naruto.instance_id, "rasengan", 0))
+
+    assert state.reorders_this_turn == 3
+    assert not any(isinstance(action, ReorderSkillsAction) for action in legal_actions(state, 0))
+    with pytest.raises(RulesError):
+        apply_action(
+            state,
+            ReorderSkillsAction(0, naruto.instance_id, "kyuubi_chakra_awakening", 0),
+        )
+
+
+def test_reorder_skills_limit_resets_next_turn() -> None:
+    state = create_initial_state(
+        [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+        [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+    )
+    naruto = state.players[0].characters[0]
+
+    apply_action(state, ReorderSkillsAction(0, naruto.instance_id, "sexy_technique", 0))
+    apply_action(state, ReorderSkillsAction(0, naruto.instance_id, "shadow_clones", 0))
+    apply_action(state, ReorderSkillsAction(0, naruto.instance_id, "rasengan", 0))
+    apply_action(state, EndTurnAction(0))
+
+    assert state.reorders_this_turn == 0
+
+
+def test_character_can_use_only_one_new_skill_per_turn() -> None:
+    state = create_initial_state(
+        [SASUKE_UCHIHA, UZUMAKI_NARUTO, SAKURA_HARUNO],
+        [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+    )
+    sasuke = state.players[0].characters[0]
+    target = state.players[1].characters[0]
+
+    apply_action(state, UseSkillAction(0, sasuke.instance_id, "sharingan", (target.instance_id,)))
+
+    assert not can_use_skill(state, sasuke.instance_id, "lion_combo")
+    assert all(
+        not (
+            isinstance(action, UseSkillAction)
+            and action.actor_id == sasuke.instance_id
+        )
+        for action in legal_actions(state, 0)
+    )

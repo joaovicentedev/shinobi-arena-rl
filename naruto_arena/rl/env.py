@@ -1,15 +1,23 @@
 from __future__ import annotations
 
 import random
+from pathlib import Path
 
 from naruto_arena.agents.heuristic_agent import SimpleHeuristicAgent
 from naruto_arena.agents.random_agent import RandomAgent
+from naruto_arena.agents.rl_agent import RlAgent
 from naruto_arena.data.characters import SAKURA_HARUNO, SASUKE_UCHIHA, UZUMAKI_NARUTO
 from naruto_arena.engine.actions import EndTurnAction
 from naruto_arena.engine.rules import RulesError, create_initial_state
 from naruto_arena.engine.simulator import apply_action
 from naruto_arena.engine.state import GameState
-from naruto_arena.rl.action_space import action_id_to_engine_action, legal_action_mask
+from naruto_arena.rl.action_space import (
+    FactoredAction,
+    action_id_to_engine_action,
+    factored_action_to_engine_action,
+    legal_action_mask,
+    legal_factored_action_masks,
+)
 from naruto_arena.rl.observation import encode_observation
 
 
@@ -28,6 +36,7 @@ class NarutoArenaLearningEnv:
         seed: int = 0,
         max_actions: int = 300,
         perfect_info: bool = False,
+        opponent_model_path: Path | None = None,
     ) -> None:
         self.seed = seed
         self.max_actions = max_actions
@@ -35,6 +44,7 @@ class NarutoArenaLearningEnv:
         self.learning_player = 0
         self.rng = random.Random(seed)
         self.opponent_name = opponent
+        self.opponent_model_path = opponent_model_path
         self.opponent = self._make_opponent(opponent, seed + 10_000)
         self.state: GameState | None = None
         self.actions_taken = 0
@@ -61,11 +71,35 @@ class NarutoArenaLearningEnv:
         assert self.state is not None
         return legal_action_mask(self.state, self.learning_player)
 
-    def step(self, action_id: int) -> tuple[list[float], float, bool, dict[str, object]]:
+    def factored_action_masks(
+        self,
+        partial: FactoredAction | None = None,
+    ) -> dict[str, list[bool]]:
+        assert self.state is not None
+        return legal_factored_action_masks(self.state, self.learning_player, partial)
+
+    def step(
+        self,
+        action_id: int | None = None,
+        *,
+        factored_action: FactoredAction | None = None,
+    ) -> tuple[list[float], float, bool, dict[str, object]]:
         assert self.state is not None
         before = _score_state(self.state, self.learning_player)
-        action = action_id_to_engine_action(self.state, self.learning_player, action_id)
-        if action is None or not self.action_mask()[action_id]:
+        if factored_action is not None:
+            action = factored_action_to_engine_action(
+                self.state,
+                self.learning_player,
+                factored_action,
+            )
+            is_valid = action is not None
+        elif action_id is not None:
+            action = action_id_to_engine_action(self.state, self.learning_player, action_id)
+            is_valid = action is not None and self.action_mask()[action_id]
+        else:
+            action = None
+            is_valid = False
+        if action is None or not is_valid:
             return self.observation(), -0.05, False, {"invalid_action": True}
         try:
             apply_action(self.state, action)
@@ -96,12 +130,15 @@ class NarutoArenaLearningEnv:
             apply_action(self.state, action)
             self.actions_taken += 1
 
-    @staticmethod
-    def _make_opponent(name: str, seed: int):
+    def _make_opponent(self, name: str, seed: int):
         if name == "random":
             return RandomAgent(seed=seed, allow_reorder=False)
         if name == "heuristic":
             return SimpleHeuristicAgent(seed=seed, allow_reorder=False)
+        if name == "rl":
+            if self.opponent_model_path is None:
+                raise ValueError("--opponent-model-path is required when --opponent rl.")
+            return RlAgent(self.opponent_model_path, deterministic=True, seed=seed)
         raise ValueError(f"Unknown opponent: {name}")
 
 
@@ -132,8 +169,8 @@ def _shaped_reward(
     enemy_hp_delta = before["enemy_hp"] - after["enemy_hp"]
     own_hp_delta = before["own_hp"] - after["own_hp"]
     reward += 0.20 * ((enemy_hp_delta - own_hp_delta) / 300)
-    reward += 0.05 * (after["enemy_dead"] - before["enemy_dead"])
-    reward -= 0.05 * (after["own_dead"] - before["own_dead"])
+    reward += 0.15 * (after["enemy_dead"] - before["enemy_dead"])
+    reward -= 0.15 * (after["own_dead"] - before["own_dead"])
     if terminated:
         if winner == player_id:
             reward += 1.0
@@ -145,4 +182,3 @@ def _shaped_reward(
 def _unused_chakra_penalty(state: GameState, player_id: int) -> float:
     total = state.players[player_id].chakra.total()
     return min(total, 12) * 0.001
-

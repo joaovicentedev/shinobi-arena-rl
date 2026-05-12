@@ -28,6 +28,29 @@ Useful debug run:
 make train-rl ARGS="--episodes 10 --batch-episodes 1 --opponent random --log-interval 1"
 ```
 
+Train against an existing RL checkpoint:
+
+```bash
+make train-rl ARGS="\
+  --episodes 10000 \
+  --opponent rl \
+  --opponent-model-path models/naruto_actor_critic.pt \
+  --save-path models/naruto_actor_critic_v2.pt"
+```
+
+Fine-tune an existing checkpoint while using it as the rival:
+
+```bash
+make train-rl ARGS="\
+  --init-model-path models/naruto_actor_critic.pt \
+  --opponent rl \
+  --opponent-model-path models/naruto_actor_critic.pt \
+  --save-path models/naruto_actor_critic_v2.pt \
+  --episodes 25000 \
+  --learning-rate 1e-4 \
+  --log-interval 100"
+```
+
 The trainer prints progress as a percentage:
 
 ```text
@@ -77,6 +100,32 @@ and Sasuke mirrors. The tournament can evaluate all teams because the action
 and observation encoders support all current characters, but the policy may be
 weak on characters it did not see during training.
 
+## Model Comparison
+
+To compare two RL checkpoints directly across the same 20 teams, run:
+
+```bash
+make compare-rl ARGS="\
+  --model-a models/naruto_actor_critic.pt \
+  --model-b models/naruto_actor_critic_v2.pt \
+  --label-a v1 \
+  --label-b v2 \
+  --matches-per-pair 3"
+```
+
+For every ordered team pair, the script runs both model side assignments:
+
+```text
+v1 as player 0 vs v2 as player 1
+v2 as player 0 vs v1 as player 1
+```
+
+The default report path is:
+
+```text
+reports/rl_compare.json
+```
+
 ## Single Match Replay
 
 To inspect whether the model is building a real strategy, run one model-vs-itself
@@ -118,27 +167,42 @@ Each timeline entry includes:
 
 ## Model Type
 
-The model is an actor-critic MLP implemented in `naruto_arena/rl/model.py`.
+The model is an actor-critic network implemented in `naruto_arena/rl/model.py`.
 
 ```text
-observation -> shared MLP -> policy logits
-                         -> state value
+observation -> shared character encoder per character -> shared MLP -> policy heads
+                                                                  -> state value
 ```
 
 Architecture:
 
 ```text
-Linear(obs_dim, 256)
+Each 36-feature character block:
+Linear(36, 64)
+ReLU
+Linear(64, 64)
+ReLU
+
+Encoded characters + global/chakra features:
+Linear(398, 256)
 ReLU
 Linear(256, 256)
 ReLU
 
-Policy head: Linear(256, num_actions)
-Value head:  Linear(256, 1)
+Policy heads:
+kind:                Linear(256, 3)
+actor:               Linear(256, 3)
+skill:               Linear(256, 5)
+target:              Linear(256, 10)
+random chakra:       Linear(256, 5)
+reorder destination: Linear(256, 2)
+
+Value head: Linear(256, 1)
 ```
 
-The policy head chooses the next action. The value head estimates the expected
-future return from the current state.
+The policy chooses a factored action by sampling only the heads relevant to the
+selected action kind. The value head estimates the expected future return from
+the current state.
 
 ## Observation
 
@@ -175,6 +239,7 @@ Per-character features include:
 - Damage-over-time amount.
 - Status marker duration and stacks.
 - Passive active and passive-triggered counts.
+- Whether the character already used a new skill this turn.
 - Character identity one-hot.
 - Current skill cooldowns.
 
@@ -182,14 +247,15 @@ Per-character features include:
 
 Actions are defined in `naruto_arena/rl/action_space.py`.
 
-The policy uses a fixed discrete action catalog because the neural network needs
-a stable output size.
+The policy uses multiple small action heads instead of one large flat action
+catalog.
 
 Current action types:
 
 ```text
 END_TURN
 USE_SKILL
+REORDER_SKILL
 ```
 
 `USE_SKILL` is encoded as:
@@ -198,6 +264,7 @@ USE_SKILL
 actor_slot
 skill_slot
 target_code
+random_chakra_code
 ```
 
 Target codes support:
@@ -210,9 +277,39 @@ all allies
 one concrete character slot
 ```
 
-Skill reordering is intentionally excluded from the first training version.
-The engine supports reordering, but it expands exploration significantly. It
-should be added after the base combat agent is learning reliably.
+Random chakra codes support:
+
+```text
+none
+one concrete chakra type
+```
+
+Skills without random chakra cost only accept `none`. Skills with random chakra
+cost require the policy to choose a concrete chakra type that is available after
+fixed costs are reserved.
+
+`REORDER_SKILL` is encoded as:
+
+```text
+actor_slot
+skill_slot
+destination
+```
+
+Destination is limited to start or end of the skill stack. This keeps the
+reorder surface small while still letting the policy alter timing-sensitive
+damage, buff, passive, and modifier ordering.
+
+The engine limits each player to 3 reorder actions per turn. After that, reorder
+actions are masked until the next turn starts.
+
+The flat catalog is still available as a compatibility/debug adapter, but the
+trainer and RL agent use the factored policy heads. The policy emits 28 action
+logits per state:
+
+```text
+3 + 3 + 5 + 10 + 5 + 2 = 28
+```
 
 ## Action Masking
 
@@ -235,18 +332,22 @@ the source of truth.
 
 ## Random Chakra Payment
 
-The current policy does not choose random chakra payment directly.
+The policy chooses the first random chakra type directly.
 
-The RL adapter chooses payment deterministically:
+For current characters, random chakra costs are one chakra, so this fully
+specifies payment. If a future skill costs more than one random chakra, the
+adapter pays the selected type first and fills the remaining random cost
+deterministically from the most abundant remaining chakra type.
+
+The engine still validates the final payment:
 
 ```text
 pay fixed chakra first
-then pay random chakra from the most abundant remaining chakra type
+pay selected random chakra type
+then validate the chosen payment
 ```
 
-This is a deliberate first-version simplification. It keeps the action space
-small while preserving engine validation. Later, random chakra payment can become
-part of the action so the model can learn deeper resource management.
+Invalid random chakra selections are masked before sampling.
 
 ## Training Loop
 
@@ -254,7 +355,7 @@ Training is implemented in `scripts/train_rl_pytorch.py`.
 
 For each episode:
 
-1. Reset the game with a deterministic seed.
+1. Reset the game with a fresh episode seed sampled from the trainer seed.
 2. Encode the observation.
 3. Run the model to get policy logits and value.
 4. Apply the legal action mask.
@@ -290,9 +391,13 @@ opponent:
 ```bash
 --opponent random
 --opponent heuristic
+--opponent rl --opponent-model-path models/naruto_actor_critic.pt
 ```
 
 The default is `heuristic`.
+
+`--opponent rl` loads the checkpoint as a deterministic rival. Use a different
+`--save-path` for the new model if you want to keep both checkpoints.
 
 The environment automatically plays the opponent's turn until control returns to
 the learning player or the match ends.
@@ -312,8 +417,8 @@ Small shaping rewards are added for:
 
 - Reducing enemy team HP.
 - Preserving own team HP.
-- Killing an enemy.
-- Avoiding ally deaths.
+- Killing an enemy: `+0.15`.
+- Losing an ally: `-0.15`.
 
 There is also a very small penalty for ending a turn with unused chakra.
 
@@ -325,16 +430,17 @@ farming damage or healing instead of winning.
 - No self-play league yet.
 - No PPO clipping yet.
 - No recurrent memory for hidden-information inference.
-- No learned random chakra payment.
-- No skill reordering actions.
+- Random chakra payment only models the first chosen random chakra type.
 - Fixed team composition: Naruto, Sakura, Sasuke versus the same team.
 - Observation uses hand-built features instead of learned skill embeddings.
+- Checkpoints must be retrained when engine rules change the observation shape
+  or legal action behavior.
 
 ## Recommended Next Steps
 
 1. Add evaluation script for trained checkpoints.
 2. Add PPO clipping while keeping the code pure PyTorch.
-3. Add explicit random chakra payment actions.
+3. Support multi-chakra random payment vectors if future skills need them.
 4. Add self-play against previous checkpoints.
 5. Add recurrent state or belief features for enemy chakra estimation.
-6. Add skill reordering after combat behavior is stable.
+6. Tune the reorder action frequency or add penalties if training overuses no-op setup.

@@ -1,5 +1,5 @@
 .PHONY: setup setup-rl test simulate simulate-minimax tournament-minimax
-.PHONY: train-rl simulate-rl tournament-rl clean
+.PHONY: train-rl simulate-rl tournament-rl compare-rl clean
 
 setup:
 	uv sync --extra dev
@@ -27,6 +27,9 @@ simulate-rl:
 
 tournament-rl:
 	uv run --extra rl python scripts/tournament_rl.py $(ARGS)
+
+compare-rl:
+	uv run --extra rl python scripts/compare_rl_models.py $(ARGS)
 
 clean:
 	find . -type d -name "__pycache__" -prune -exec rm -rf {} +

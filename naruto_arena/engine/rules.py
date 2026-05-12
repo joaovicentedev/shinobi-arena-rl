@@ -31,8 +31,10 @@ def create_initial_state(
 
 
 def start_turn(state: GameState) -> None:
+    state.reorders_this_turn = 0
     player = state.players[state.active_player]
     for character in player.living_characters():
+        character.used_skill_this_turn = False
         character.chakra_gain_marker = True  # type: ignore[attr-defined]
     gain_chakra_for_living_characters(state, state.active_player)
     tick_start_of_turn_effects(state, state.active_player)

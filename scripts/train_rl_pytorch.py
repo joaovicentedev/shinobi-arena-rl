@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import random
 import sys
 import time
 from pathlib import Path
@@ -11,9 +12,13 @@ import torch
 import torch.nn.functional as F
 from torch.distributions import Categorical
 
-from naruto_arena.rl.action_space import NUM_ACTIONS
+from naruto_arena.rl.action_space import (
+    ACTION_KIND_ORDER,
+    FactoredAction,
+    ActionKind,
+)
 from naruto_arena.rl.env import NarutoArenaLearningEnv
-from naruto_arena.rl.model import ActorCritic
+from naruto_arena.rl.model import ActorCritic, PolicyOutput
 from naruto_arena.rl.observation import observation_size
 
 
@@ -23,13 +28,25 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--batch-episodes", type=int, default=10)
     parser.add_argument("--max-actions", type=int, default=300)
     parser.add_argument("--seed", type=int, default=7)
-    parser.add_argument("--opponent", choices=("random", "heuristic"), default="heuristic")
+    parser.add_argument("--opponent", choices=("random", "heuristic", "rl"), default="heuristic")
+    parser.add_argument(
+        "--opponent-model-path",
+        type=Path,
+        default=None,
+        help="Checkpoint path for --opponent rl.",
+    )
     parser.add_argument("--learning-rate", type=float, default=3e-4)
     parser.add_argument("--gamma", type=float, default=0.99)
     parser.add_argument("--entropy-coef", type=float, default=0.01)
     parser.add_argument("--value-coef", type=float, default=0.5)
     parser.add_argument("--log-interval", type=int, default=25)
     parser.add_argument("--save-path", default="models/naruto_actor_critic.pt")
+    parser.add_argument(
+        "--init-model-path",
+        type=Path,
+        default=None,
+        help="Optional checkpoint to initialize model weights before training.",
+    )
     parser.add_argument(
         "--perfect-info",
         action="store_true",
@@ -46,16 +63,25 @@ def main() -> None:
         seed=args.seed,
         max_actions=args.max_actions,
         perfect_info=args.perfect_info,
+        opponent_model_path=args.opponent_model_path,
     )
-    model = ActorCritic(observation_size(perfect_info=args.perfect_info), NUM_ACTIONS)
+    model = ActorCritic(observation_size(perfect_info=args.perfect_info))
+    if args.init_model_path is not None:
+        load_initial_model(model, args.init_model_path, perfect_info=args.perfect_info)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
     pending: list[dict[str, list[torch.Tensor] | list[float] | int | None]] = []
     recent_returns: list[float] = []
     recent_wins: list[float] = []
+    episode_seed_rng = random.Random(args.seed)
     start = time.monotonic()
 
     for episode in range(1, args.episodes + 1):
-        trajectory = collect_episode(env, model, args.gamma, seed=args.seed + episode)
+        trajectory = collect_episode(
+            env,
+            model,
+            args.gamma,
+            seed=episode_seed_rng.randrange(2**32),
+        )
         pending.append(trajectory)
         recent_returns.append(float(sum(trajectory["rewards"])))  # type: ignore[arg-type]
         recent_wins.append(1.0 if trajectory["winner"] == env.learning_player else 0.0)
@@ -77,13 +103,41 @@ def main() -> None:
         {
             "model_state_dict": model.state_dict(),
             "obs_dim": observation_size(perfect_info=args.perfect_info),
-            "num_actions": NUM_ACTIONS,
+            "policy_type": "factored",
             "perfect_info": args.perfect_info,
             "opponent": args.opponent,
+            "opponent_model_path": (
+                None if args.opponent_model_path is None else str(args.opponent_model_path)
+            ),
+            "init_model_path": None if args.init_model_path is None else str(args.init_model_path),
         },
         save_path,
     )
     print(f"saved_model={save_path}")
+
+
+def load_initial_model(
+    model: ActorCritic,
+    model_path: Path,
+    *,
+    perfect_info: bool,
+) -> None:
+    checkpoint = torch.load(model_path, map_location="cpu")
+    if checkpoint.get("policy_type") != "factored":
+        raise ValueError("Initial checkpoint uses the old flat policy. Retrain from scratch.")
+    expected_obs_dim = observation_size(perfect_info=perfect_info)
+    checkpoint_obs_dim = int(checkpoint["obs_dim"])
+    if checkpoint_obs_dim != expected_obs_dim:
+        raise ValueError(
+            f"Initial checkpoint expects observation size {checkpoint_obs_dim}, "
+            f"but current training uses {expected_obs_dim}."
+        )
+    checkpoint_perfect_info = bool(checkpoint.get("perfect_info", False))
+    if checkpoint_perfect_info != perfect_info:
+        raise ValueError(
+            "Initial checkpoint perfect_info setting does not match current training."
+        )
+    model.load_state_dict(checkpoint["model_state_dict"])
 
 
 def collect_episode(
@@ -102,15 +156,12 @@ def collect_episode(
     winner = None
     while not done:
         obs = torch.tensor(observations, dtype=torch.float32).unsqueeze(0)
-        logits, value = model(obs)
-        mask = torch.tensor(env.action_mask(), dtype=torch.bool).unsqueeze(0)
-        masked_logits = logits.masked_fill(~mask, torch.finfo(logits.dtype).min)
-        distribution = Categorical(logits=masked_logits)
-        action = distribution.sample()
-        observations, reward, done, info = env.step(int(action.item()))
-        log_probs.append(distribution.log_prob(action).squeeze(0))
+        policy, value = model(obs)
+        action, log_prob, entropy = sample_factored_action(env, policy)
+        observations, reward, done, info = env.step(factored_action=action)
+        log_probs.append(log_prob)
         values.append(value.squeeze(0))
-        entropies.append(distribution.entropy().squeeze(0))
+        entropies.append(entropy)
         rewards.append(reward)
         winner = info["winner"]
     returns = discounted_returns(rewards, gamma)
@@ -122,6 +173,99 @@ def collect_episode(
         "rewards": rewards,
         "winner": winner,
     }
+
+
+def sample_factored_action(
+    env: NarutoArenaLearningEnv,
+    policy: PolicyOutput,
+) -> tuple[FactoredAction, torch.Tensor, torch.Tensor]:
+    kind, kind_log_prob, kind_entropy = _sample_masked(
+        policy.kind,
+        env.factored_action_masks()["kind"],
+    )
+    action_kind = ACTION_KIND_ORDER[int(kind.item())]
+    log_prob = kind_log_prob
+    entropy = kind_entropy
+    if action_kind == ActionKind.END_TURN:
+        return FactoredAction(action_kind), log_prob, entropy
+
+    partial = FactoredAction(action_kind)
+    actor, actor_log_prob, actor_entropy = _sample_masked(
+        policy.actor,
+        env.factored_action_masks(partial)["actor"],
+    )
+    partial = FactoredAction(action_kind, actor_slot=int(actor.item()))
+    log_prob = log_prob + actor_log_prob
+    entropy = entropy + actor_entropy
+
+    skill, skill_log_prob, skill_entropy = _sample_masked(
+        policy.skill,
+        env.factored_action_masks(partial)["skill"],
+    )
+    partial = FactoredAction(
+        action_kind,
+        actor_slot=partial.actor_slot,
+        skill_slot=int(skill.item()),
+    )
+    log_prob = log_prob + skill_log_prob
+    entropy = entropy + skill_entropy
+
+    if action_kind == ActionKind.REORDER_SKILL:
+        destination, destination_log_prob, destination_entropy = _sample_masked(
+            policy.reorder_destination,
+            env.factored_action_masks(partial)["reorder_destination"],
+        )
+        return (
+            FactoredAction(
+                action_kind,
+                actor_slot=partial.actor_slot,
+                skill_slot=partial.skill_slot,
+                reorder_to_end=bool(destination.item()),
+            ),
+            log_prob + destination_log_prob,
+            entropy + destination_entropy,
+        )
+
+    target, target_log_prob, target_entropy = _sample_masked(
+        policy.target,
+        env.factored_action_masks(partial)["target"],
+    )
+    partial = FactoredAction(
+        action_kind,
+        actor_slot=partial.actor_slot,
+        skill_slot=partial.skill_slot,
+        target_code=int(target.item()),
+    )
+    chakra, chakra_log_prob, chakra_entropy = _sample_masked(
+        policy.random_chakra,
+        env.factored_action_masks(partial)["random_chakra"],
+    )
+    return (
+        FactoredAction(
+            action_kind,
+            actor_slot=partial.actor_slot,
+            skill_slot=partial.skill_slot,
+            target_code=partial.target_code,
+            random_chakra_code=int(chakra.item()),
+        ),
+        log_prob + target_log_prob + chakra_log_prob,
+        entropy + target_entropy + chakra_entropy,
+    )
+
+
+def _sample_masked(
+    logits: torch.Tensor,
+    mask_values: list[bool],
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    mask = torch.tensor(mask_values, dtype=torch.bool).unsqueeze(0)
+    masked_logits = logits.masked_fill(~mask, torch.finfo(logits.dtype).min)
+    distribution = Categorical(logits=masked_logits)
+    action = distribution.sample()
+    return (
+        action.squeeze(0),
+        distribution.log_prob(action).squeeze(0),
+        distribution.entropy().squeeze(0),
+    )
 
 
 def update_model(

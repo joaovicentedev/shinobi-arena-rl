@@ -69,9 +69,9 @@ def test_female_bug_stacks_chakra_leach_bonus_damage() -> None:
     target = state.players[1].characters[0]
     set_chakra(state, 0, ninjutsu=1)
 
-    apply_action(state, UseSkillAction(0, shino.instance_id, "female_bug", (target.instance_id,)))
-    shino.cooldowns["female_bug"] = 0
-    apply_action(state, UseSkillAction(0, shino.instance_id, "female_bug", (target.instance_id,)))
+    marker_id = f"female_bug:{shino.instance_id}"
+    target.status.active_markers[marker_id] = 4
+    target.status.active_marker_stacks[marker_id] = 2
     apply_action(state, UseSkillAction(0, shino.instance_id, "chakra_leach", (target.instance_id,)))
 
     assert target.hp == 70

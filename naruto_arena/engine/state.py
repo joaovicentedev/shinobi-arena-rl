@@ -20,6 +20,7 @@ class CharacterState:
     status: CharacterStatus = field(default_factory=CharacterStatus)
     passives: dict[str, bool] = field(default_factory=dict)
     passive_triggered: dict[str, bool] = field(default_factory=dict)
+    used_skill_this_turn: bool = False
 
     def __post_init__(self) -> None:
         if not self.skill_order:
@@ -57,6 +58,7 @@ class GameState:
     active_player: int = 0
     turn_number: int = 1
     winner: int | None = None
+    reorders_this_turn: int = 0
     rng_seed: int = 0
     rng: random.Random = field(default_factory=random.Random, repr=False, compare=False)
 

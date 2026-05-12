@@ -7,6 +7,8 @@ from naruto_arena.engine.rules import RulesError, end_turn
 from naruto_arena.engine.skills import SkillClass, TargetRule
 from naruto_arena.engine.state import GameState
 
+MAX_REORDERS_PER_TURN = 3
+
 
 def legal_actions(state: GameState, player_id: int) -> list[Action]:
     if state.winner is not None or player_id != state.active_player:
@@ -63,13 +65,14 @@ def legal_actions(state: GameState, player_id: int) -> list[Action]:
             if not targets_meet_requirements(state, character.instance_id, skill.id, targets):
                 continue
             actions.append(UseSkillAction(player_id, character.instance_id, skill.id, targets))
-    for character in player.living_characters():
-        for skill_id in character.skill_order:
-            for index in range(len(character.skill_order)):
-                if character.skill_order[index] != skill_id:
-                    actions.append(
-                        ReorderSkillsAction(player_id, character.instance_id, skill_id, index)
-                    )
+    if state.reorders_this_turn < MAX_REORDERS_PER_TURN:
+        for character in player.living_characters():
+            for skill_id in character.skill_order:
+                for index in range(len(character.skill_order)):
+                    if character.skill_order[index] != skill_id:
+                        actions.append(
+                            ReorderSkillsAction(player_id, character.instance_id, skill_id, index)
+                        )
     return actions
 
 
@@ -93,6 +96,8 @@ def apply_action(state: GameState, action: Action) -> GameState:
 def can_use_skill(state: GameState, actor_id: str, skill_id: str) -> bool:
     actor = state.get_character(actor_id)
     if not actor.is_alive or actor.status.stunned_turns > 0:
+        return False
+    if actor.used_skill_this_turn:
         return False
     try:
         skill = resolved_skill(state, actor_id, skill_id)
@@ -140,10 +145,13 @@ def apply_skill(state: GameState, action: UseSkillAction) -> None:
         else:
             state._current_damage_penalty = previous_penalty  # type: ignore[attr-defined]
     if skill.cooldown > 0:
-        actor.cooldowns[skill.id] = skill.cooldown
+        actor.cooldowns[skill.id] = skill.cooldown + 1
+    actor.used_skill_this_turn = True
 
 
 def apply_reorder(state: GameState, action: ReorderSkillsAction) -> None:
+    if state.reorders_this_turn >= MAX_REORDERS_PER_TURN:
+        raise RulesError("Reorder limit reached for this turn.")
     character = state.get_character(action.character_id)
     if character.owner != action.player_id:
         raise RulesError("Character does not belong to player.")
@@ -153,6 +161,7 @@ def apply_reorder(state: GameState, action: ReorderSkillsAction) -> None:
         raise RulesError("Invalid skill index.")
     character.skill_order.remove(action.skill_id)
     character.skill_order.insert(action.new_index, action.skill_id)
+    state.reorders_this_turn += 1
 
 
 def resolved_skill(state: GameState, actor_id: str, skill_id: str):

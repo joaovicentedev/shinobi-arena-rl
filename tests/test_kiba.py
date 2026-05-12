@@ -77,10 +77,8 @@ def test_dynamic_air_marking_improves_kiba_damage_and_ignores_defenses() -> None
     target = state.players[1].characters[0]
     set_chakra(state, 0, taijutsu=1, ninjutsu=1)
 
-    apply_action(
-        state,
-        UseSkillAction(0, kiba.instance_id, "dynamic_air_marking", (target.instance_id,)),
-    )
+    target.status.active_markers[f"dynamic_air_marking:{kiba.instance_id}"] = 3
+    target.status.active_markers["cannot_reduce_or_invulnerable"] = 3
     target.status.invulnerable_turns = 1
     target.status.damage_reductions.append(ActiveDamageReduction(99, remaining_turns=1))
 
@@ -130,6 +128,7 @@ def test_dynamic_air_marking_cannot_target_enemy_already_marked_by_it() -> None:
         state,
         UseSkillAction(0, kiba.instance_id, "dynamic_air_marking", (target.instance_id,)),
     )
+    kiba.used_skill_this_turn = False
 
     with pytest.raises(RulesError):
         apply_action(

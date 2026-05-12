@@ -21,10 +21,13 @@ Este documento descreve apenas as regras gerais do motor. Ele não documenta per
 - No primeiro turno do jogador 1, ele já ganha chakra normalmente pelo número de personagens vivos.
 - Cada chakra ganho é sorteado independentemente entre os 4 tipos fixos, com mesma probabilidade.
 - O jogador pode usar skills, reorganizar skills ou encerrar o turno.
+- Cada personagem pode usar no máximo 1 skill nova por turno.
+- Efeitos passivos e efeitos de skills usadas em turnos anteriores continuam funcionando normalmente.
 - Ao encerrar o turno:
   - efeitos temporários do jogador ativo avançam;
   - cooldowns do jogador ativo diminuem;
   - o turno passa para o outro jogador.
+- Uma skill com cooldown 1 não pode ser usada no próximo turno do mesmo personagem.
 
 ## Chakra
 
@@ -188,6 +191,7 @@ O motor suporta uma ação genérica de reorganização:
 
 Essa regra existe para permitir ajustes de timing e combos durante a partida.
 Passivas também podem ser reorganizadas porque podem alterar timing de dano, buffs ou modificadores condicionais. Isso não torna passivas manualmente utilizáveis como ações.
+- Cada jogador pode reorganizar skills no máximo 3 vezes por turno.
 
 ## Determinismo
 

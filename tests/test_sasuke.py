@@ -3,7 +3,7 @@ from naruto_arena.data.characters import (
     SASUKE_UCHIHA,
     UZUMAKI_NARUTO,
 )
-from naruto_arena.engine.actions import UseSkillAction
+from naruto_arena.engine.actions import EndTurnAction, UseSkillAction
 from naruto_arena.engine.chakra import ChakraPool, ChakraType
 from naruto_arena.engine.effects import ActiveDamageReduction
 from naruto_arena.engine.rules import create_initial_state
@@ -37,12 +37,11 @@ def test_sasuke_definition_uses_requested_skills() -> None:
 def test_chidori_requires_sharingan_active_on_sasuke() -> None:
     state = make_state()
     sasuke = state.players[0].characters[0]
-    target = state.players[1].characters[0]
     set_chakra(state, 0, ninjutsu=1, taijutsu=1)
 
     assert not can_use_skill(state, sasuke.instance_id, "chidori")
 
-    apply_action(state, UseSkillAction(0, sasuke.instance_id, "sharingan", (target.instance_id,)))
+    sasuke.status.active_markers["sharingan"] = 4
 
     assert can_use_skill(state, sasuke.instance_id, "chidori")
 
@@ -53,7 +52,7 @@ def test_lion_combo_deals_bonus_damage_to_sharingan_target() -> None:
     target = state.players[1].characters[0]
     set_chakra(state, 0, taijutsu=1, ninjutsu=1)
 
-    apply_action(state, UseSkillAction(0, sasuke.instance_id, "sharingan", (target.instance_id,)))
+    target.status.active_markers[f"sharingan:{sasuke.instance_id}"] = 4
     apply_action(
         state,
         UseSkillAction(
@@ -75,7 +74,8 @@ def test_chidori_pierces_normal_damage_reduction() -> None:
     set_chakra(state, 0, ninjutsu=1, taijutsu=1)
     target.status.damage_reductions.append(ActiveDamageReduction(20, remaining_turns=1))
 
-    apply_action(state, UseSkillAction(0, sasuke.instance_id, "sharingan", (target.instance_id,)))
+    sasuke.status.active_markers["sharingan"] = 4
+    target.status.active_markers[f"sharingan:{sasuke.instance_id}"] = 4
     apply_action(
         state,
         UseSkillAction(
@@ -90,6 +90,30 @@ def test_chidori_pierces_normal_damage_reduction() -> None:
     assert target.hp == 45
 
 
+def test_chidori_cannot_be_used_on_sasukes_next_turn() -> None:
+    state = make_state()
+    sasuke = state.players[0].characters[0]
+    target = state.players[1].characters[0]
+    sasuke.status.active_markers["sharingan"] = 4
+    set_chakra(state, 0, ninjutsu=1, taijutsu=1)
+
+    apply_action(
+        state,
+        UseSkillAction(
+            0,
+            sasuke.instance_id,
+            "chidori",
+            (target.instance_id,),
+            {ChakraType.TAIJUTSU: 1},
+        ),
+    )
+    apply_action(state, EndTurnAction(0))
+    apply_action(state, EndTurnAction(1))
+    set_chakra(state, 0, ninjutsu=1, taijutsu=1)
+
+    assert not can_use_skill(state, sasuke.instance_id, "chidori")
+
+
 def test_chidori_does_not_pierce_unpierceable_damage_reduction() -> None:
     state = make_state()
     sasuke = state.players[0].characters[0]
@@ -99,7 +123,8 @@ def test_chidori_does_not_pierce_unpierceable_damage_reduction() -> None:
         ActiveDamageReduction(20, remaining_turns=1, unpierceable=True)
     )
 
-    apply_action(state, UseSkillAction(0, sasuke.instance_id, "sharingan", (target.instance_id,)))
+    sasuke.status.active_markers["sharingan"] = 4
+    target.status.active_markers[f"sharingan:{sasuke.instance_id}"] = 4
     apply_action(
         state,
         UseSkillAction(
@@ -137,19 +162,10 @@ def test_cursed_seal_awakens_once_and_grants_permanent_unpierceable_reduction() 
     state = make_state()
     sasuke = state.players[0].characters[0]
     enemy_sasuke = state.players[1].characters[2]
-    set_chakra(state, 1, taijutsu=2, ninjutsu=2)
+    sasuke.hp = 70
+    set_chakra(state, 1, taijutsu=1, ninjutsu=1)
     state.active_player = 1
 
-    apply_action(
-        state,
-        UseSkillAction(
-            1,
-            enemy_sasuke.instance_id,
-            "lion_combo",
-            (sasuke.instance_id,),
-            {ChakraType.NINJUTSU: 1},
-        ),
-    )
     apply_action(
         state,
         UseSkillAction(
@@ -178,7 +194,7 @@ def test_cursed_seal_sharingan_target_cannot_reduce_damage_or_use_invulnerabilit
     target.status.damage_reductions.append(ActiveDamageReduction(99, remaining_turns=1))
     set_chakra(state, 0, taijutsu=1, ninjutsu=1)
 
-    apply_action(state, UseSkillAction(0, sasuke.instance_id, "sharingan", (target.instance_id,)))
+    target.status.active_markers[f"sharingan:{sasuke.instance_id}"] = 4
     apply_action(
         state,
         UseSkillAction(

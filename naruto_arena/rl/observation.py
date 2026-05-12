@@ -25,6 +25,8 @@ MAX_TURN = 100
 MAX_COOLDOWN = 5
 MAX_DURATION = 5
 MAX_CHAKRA = 12
+CHARACTER_SLOTS = 6
+CHARACTER_FEATURE_SIZE = 36
 
 
 def observation_size(perfect_info: bool = False) -> int:
@@ -97,11 +99,12 @@ def _character_features(character: CharacterState) -> list[float]:
         min(marker_stacks, 5) / 5,
         min(sum(character.passives.values()), 5) / 5,
         min(sum(character.passive_triggered.values()), 5) / 5,
+        float(character.used_skill_this_turn),
     ]
     features.extend(_one_hot(ROSTER_INDEX.get(character.definition.id, -1), len(ROSTER)))
     for skill_id in character.skill_order[:5]:
         features.append(min(character.cooldowns.get(skill_id, 0), MAX_COOLDOWN) / MAX_COOLDOWN)
-    while len(features) < 12 + len(ROSTER) + 5:
+    while len(features) < 13 + len(ROSTER) + 5:
         features.append(0.0)
     for skill_class in SkillClass:
         features.append(

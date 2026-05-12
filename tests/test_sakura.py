@@ -76,11 +76,15 @@ def test_inner_sakura_boosts_ko_punch_and_adds_damage_reduction() -> None:
             {ChakraType.GENJUTSU: 1},
         ),
     )
+    assert sakura.status.has_marker("inner_sakura")
+    assert sakura.status.damage_reductions[0].amount == 10
+
+    apply_action(state, EndTurnAction(0))
+    apply_action(state, EndTurnAction(1))
+    set_chakra(state, 0, taijutsu=1)
     apply_action(state, UseSkillAction(0, sakura.instance_id, "ko_punch", (target.instance_id,)))
 
     assert target.hp == 70
-    assert sakura.status.has_marker("inner_sakura")
-    assert sakura.status.damage_reductions[0].amount == 10
 
 
 def test_inner_sakura_ignores_non_damage_effects_but_not_damage() -> None:
@@ -91,7 +95,10 @@ def test_inner_sakura_ignores_non_damage_effects_but_not_damage() -> None:
     set_chakra(state, 1, taijutsu=1)
     state.active_player = 1
 
-    apply_action(state, UseSkillAction(1, enemy_sakura.instance_id, "ko_punch", (sakura.instance_id,)))
+    apply_action(
+        state,
+        UseSkillAction(1, enemy_sakura.instance_id, "ko_punch", (sakura.instance_id,)),
+    )
 
     assert sakura.hp == 80
     assert sakura.status.class_stuns == {}
