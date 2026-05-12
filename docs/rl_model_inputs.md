@@ -25,6 +25,25 @@ objects directly. Everything is encoded into numeric features.
 Internally, the model no longer treats the whole observation as one undifferentiated
 MLP input. It slices the 6 character blocks, runs the same character encoder over
 each block, then concatenates those embeddings with global and chakra features.
+The experimental Transformer model uses the same flat input vector, but projects
+the 6 character blocks into character tokens and combines them with one
+global/chakra context token.
+
+Current observation version:
+
+```text
+skill_features_v1
+```
+
+Legacy checkpoints without skill maps use:
+
+```text
+base_v1
+```
+
+The RL agent selects the encoder from checkpoint metadata. Older checkpoints
+without `observation_version` are treated as `base_v1` when their `obs_dim` is
+230.
 
 ## Perspective
 
@@ -71,7 +90,14 @@ There are 6 character blocks:
 3 enemy characters
 ```
 
-Each character block is currently 36 floats:
+Each character block is currently 286 floats:
+
+```text
+36 character-state features
++ 5 skill slots * 50 skill features
+```
+
+The first 36 character-state features are:
 
 ```text
 hp / max_hp
@@ -106,6 +132,58 @@ class_stun_Passive / MAX_DURATION
 class_stun_Unremovable / MAX_DURATION
 class_stun_Unique / MAX_DURATION
 ```
+
+Each skill slot then adds 50 floats. Slots follow the character's current
+`skill_order`, so skill reordering changes which skill appears in each slot.
+Replacement skills are resolved from the current state before encoding.
+
+```text
+is_present
+is_replacement_active
+is_usable_now
+is_passive
+is_free
+fixed_cost_ninjutsu / MAX_SKILL_COST
+fixed_cost_taijutsu / MAX_SKILL_COST
+fixed_cost_genjutsu / MAX_SKILL_COST
+fixed_cost_bloodline / MAX_SKILL_COST
+random_cost / MAX_SKILL_COST
+base_cooldown / MAX_COOLDOWN
+current_cooldown / MAX_COOLDOWN
+duration / MAX_DURATION
+target_rule_one_hot[6]
+class_one_hot[12]
+direct_damage / 100
+piercing_direct_damage / 100
+conditional_damage_bonus / 100
+healing / 100
+stun_duration / MAX_DURATION
+class_stun_effect_count / 12
+flat_damage_reduction / 100
+percent_damage_reduction / 100
+has_unpierceable_damage_reduction
+invulnerability_duration / MAX_DURATION
+damage_over_time_amount / 100
+damage_over_time_duration / MAX_DURATION
+has_piercing_damage_over_time
+chakra_removal_amount / MAX_CHAKRA
+chakra_steal_amount / MAX_CHAKRA
+status_marker_count / 3
+has_passive_effect
+has_actor_requirement
+has_target_requirement
+```
+
+Constants:
+
+```text
+MAX_SKILL_COST = 4
+```
+
+These skill features are a compact map of what the engine definition says the
+skill can do. They are not a full symbolic simulator. Conditional factory effects
+are encoded using the current state, so active setups such as replacements and
+state-dependent damage are visible to the model.
 
 Constants:
 
@@ -184,10 +262,10 @@ The current default observation size is:
 
 ```text
 4 global features
-+ 6 character blocks * 36 features
++ 6 character blocks * 286 features
 + 5 my chakra features
 + 5 enemy chakra features
-= 230 floats
+= 1730 floats
 ```
 
 You can verify this from Python:
@@ -294,6 +372,14 @@ reached, `REORDER_SKILL` is masked until the next turn starts.
 ## Important Retraining Rule
 
 If this input layout changes, old checkpoints should be considered invalid.
+Changing only `--model-arch` between `mlp` and `transformer` does not change the
+observation layout, but checkpoints are still architecture-specific because the
+stored weights have different shapes.
+
+The `skill_features_v1` layout is incompatible with old 230-float training
+checkpoints as an initialization source. Those older checkpoints can still be
+loaded for evaluation or as fixed RL opponents because the loader keeps a
+`base_v1` encoder path.
 
 Examples that require retraining:
 

@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 import torch
 
+from naruto_arena.agents.rl_agent import RlAgent
 from naruto_arena.data.characters import SAKURA_HARUNO, SASUKE_UCHIHA, UZUMAKI_NARUTO
 from naruto_arena.engine.actions import ReorderSkillsAction, UseSkillAction
 from naruto_arena.engine.chakra import ChakraPool, ChakraType
@@ -23,8 +24,16 @@ from naruto_arena.rl.action_space import (
     legal_factored_action_masks,
 )
 from naruto_arena.rl.env import NarutoArenaLearningEnv
-from naruto_arena.rl.model import ActorCritic
-from naruto_arena.rl.observation import encode_observation, observation_size
+from naruto_arena.rl.model import ActorCritic, TransformerActorCritic
+from naruto_arena.rl.observation import (
+    BASE_CHARACTER_FEATURE_SIZE,
+    BASE_OBSERVATION_VERSION,
+    CHARACTER_FEATURE_SIZE,
+    CHARACTER_SLOTS,
+    SKILL_FEATURE_SIZE,
+    encode_observation,
+    observation_size,
+)
 
 
 def test_rl_action_mask_always_exposes_end_turn() -> None:
@@ -52,6 +61,24 @@ def test_partial_rl_observation_hides_enemy_chakra() -> None:
 
     assert partial[-5:] == [0.0] * 5
     assert perfect[-5:] != [0.0] * 5
+
+
+def test_rl_observation_includes_skill_feature_map() -> None:
+    state = create_initial_state(
+        [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+        [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+    )
+
+    observation = encode_observation(state, 0)
+    sasuke_block = 4 + (2 * CHARACTER_FEATURE_SIZE)
+    lion_combo_features = sasuke_block + BASE_CHARACTER_FEATURE_SIZE
+
+    assert observation_size() == 4 + CHARACTER_SLOTS * CHARACTER_FEATURE_SIZE + 10
+    assert observation[lion_combo_features] == 1.0
+    assert observation[lion_combo_features + 6] == 0.25
+    assert observation[lion_combo_features + 9] == 0.25
+    assert observation[lion_combo_features + 31] == 0.30
+    assert observation[lion_combo_features + SKILL_FEATURE_SIZE] == 1.0
 
 
 def test_rl_use_skill_action_selects_random_chakra_payment() -> None:
@@ -153,6 +180,30 @@ def test_rl_factored_masks_expose_small_policy_heads() -> None:
     assert masks["kind"][0]
 
 
+def test_transformer_actor_critic_outputs_factored_policy_shapes() -> None:
+    model = TransformerActorCritic(observation_size())
+    observation = torch.tensor(
+        encode_observation(
+            create_initial_state(
+                [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+                [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+            ),
+            0,
+        ),
+        dtype=torch.float32,
+    ).unsqueeze(0)
+
+    policy, value = model(observation)
+
+    assert policy.kind.shape == (1, ACTION_KIND_COUNT)
+    assert policy.actor.shape == (1, MAX_TEAM_SIZE)
+    assert policy.skill.shape == (1, 5)
+    assert policy.target.shape == (1, 10)
+    assert policy.random_chakra.shape == (1, 5)
+    assert policy.reorder_destination.shape == (1, REORDER_DESTINATION_COUNT)
+    assert value.shape == (1,)
+
+
 def test_rl_factored_action_selects_random_chakra_payment() -> None:
     state = create_initial_state(
         [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
@@ -198,6 +249,45 @@ def test_rl_opponent_can_load_checkpoint(tmp_path: Path) -> None:
     env = NarutoArenaLearningEnv(opponent="rl", opponent_model_path=model_path)
 
     assert env.opponent_name == "rl"
+
+
+def test_rl_agent_can_load_transformer_checkpoint(tmp_path: Path) -> None:
+    model_path = tmp_path / "opponent_transformer.pt"
+    model = TransformerActorCritic(observation_size())
+    torch.save(
+        {
+            "model_state_dict": model.state_dict(),
+            "obs_dim": observation_size(),
+            "policy_type": "factored_transformer",
+            "model_arch": "transformer",
+            "perfect_info": False,
+        },
+        model_path,
+    )
+
+    agent = RlAgent(model_path)
+
+    assert agent.model_arch == "transformer"
+
+
+def test_rl_agent_can_load_legacy_base_observation_checkpoint(tmp_path: Path) -> None:
+    model_path = tmp_path / "legacy_opponent.pt"
+    legacy_obs_dim = observation_size(observation_version=BASE_OBSERVATION_VERSION)
+    model = ActorCritic(legacy_obs_dim, character_feature_size=BASE_CHARACTER_FEATURE_SIZE)
+    torch.save(
+        {
+            "model_state_dict": model.state_dict(),
+            "obs_dim": legacy_obs_dim,
+            "policy_type": "factored",
+            "perfect_info": False,
+        },
+        model_path,
+    )
+
+    agent = RlAgent(model_path)
+
+    assert agent.model_arch == "mlp"
+    assert agent.observation_version == BASE_OBSERVATION_VERSION
 
 
 def _random_chakra_code(chakra_type: ChakraType) -> int:

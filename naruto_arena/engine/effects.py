@@ -181,6 +181,22 @@ class ChakraSteal:
 
 
 @dataclass(frozen=True)
+class ChakraGainSteal:
+    amount: int
+    duration: int = 1
+
+    def apply(self, state: "GameState", source_id: str, target_ids: tuple[str, ...]) -> None:
+        for target_id in target_ids:
+            target = state.get_character(target_id)
+            marker_id = f"chakra_gain_steal:{source_id}"
+            target.status.active_markers[marker_id] = self.duration
+            target.status.active_marker_stacks[marker_id] = max(
+                target.status.active_marker_stacks.get(marker_id, 0),
+                self.amount,
+            )
+
+
+@dataclass(frozen=True)
 class CooldownEffect:
     skill_id: str
     amount: int

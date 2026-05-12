@@ -5,7 +5,7 @@ from naruto_arena.engine.characters import CharacterDefinition
 from naruto_arena.engine.effects import (
     ConditionalDamageIncrease,
     ChakraRemoval,
-    ChakraSteal,
+    ChakraGainSteal,
     DamageReduction,
     DamageOverTime,
     DirectDamage,
@@ -114,12 +114,7 @@ def shino_chakra_leach_effects(state, actor_id: str, skill: SkillDefinition):
             conditional_bonus=5,
             conditional_bonus_per_stack=True,
         ),
-        ChakraSteal(
-            1,
-            (ChakraType.TAIJUTSU, ChakraType.GENJUTSU),
-            success_marker="chakra_leach_stolen_chakra",
-            success_duration=1,
-        ),
+        ChakraGainSteal(1),
     ]
 
 
@@ -514,9 +509,9 @@ ABURAME_SHINO = CharacterDefinition(
             name="Chakra Leach",
             description=(
                 "Shino directs his chakra draining bugs to one enemy, dealing 20 "
-                "affliction damage and stealing 1 taijutsu or genjutsu chakra from their "
-                "chakra pool. If this skill successfully steals a chakra from the "
-                "opponent, this skill will cost an extra random chakra for 1 turn."
+                "affliction damage and stealing 1 chakra from their next chakra gain. "
+                "If this skill successfully steals a chakra from the opponent, this "
+                "skill will cost an extra random chakra for 1 turn."
             ),
             cooldown=0,
             chakra_cost=ChakraCost({ChakraType.NINJUTSU: 1}),
@@ -583,9 +578,9 @@ ABURAME_SHINO = CharacterDefinition(
             name="Chakra Leach",
             description=(
                 "Shino directs his chakra draining bugs to one enemy, dealing 20 "
-                "affliction damage and stealing 1 taijutsu or genjutsu chakra from their "
-                "chakra pool. If this skill successfully steals a chakra from the "
-                "opponent, this skill will cost an extra random chakra for 1 turn."
+                "affliction damage and stealing 1 chakra from their next chakra gain. "
+                "If this skill successfully steals a chakra from the opponent, this "
+                "skill will cost an extra random chakra for 1 turn."
             ),
             cooldown=0,
             chakra_cost=ChakraCost({ChakraType.NINJUTSU: 1}, random=1),

@@ -16,8 +16,13 @@ from naruto_arena.rl.action_space import (
     factored_action_to_engine_action,
     legal_factored_action_masks,
 )
-from naruto_arena.rl.model import ActorCritic, PolicyOutput
-from naruto_arena.rl.observation import encode_observation, observation_size
+from naruto_arena.rl.model import PolicyOutput, create_actor_critic, model_arch_from_checkpoint
+from naruto_arena.rl.observation import (
+    BASE_OBSERVATION_VERSION,
+    OBSERVATION_VERSION,
+    encode_observation,
+    observation_size,
+)
 
 
 class RlAgent:
@@ -30,13 +35,20 @@ class RlAgent:
     ) -> None:
         checkpoint = torch.load(model_path, map_location="cpu")
         obs_dim = int(checkpoint["obs_dim"])
-        if checkpoint.get("policy_type") != "factored":
-            raise ValueError("Checkpoint uses the old flat policy. Retrain the RL model.")
-        self.model = ActorCritic(obs_dim)
+        self.model_arch = model_arch_from_checkpoint(checkpoint)
+        self.observation_version = _observation_version_from_checkpoint(checkpoint, obs_dim)
+        self.model = create_actor_critic(
+            obs_dim,
+            self.model_arch,
+            self.observation_version,
+        )
         self.model.load_state_dict(checkpoint["model_state_dict"])
         self.model.eval()
         self.perfect_info = bool(checkpoint.get("perfect_info", False))
-        current_obs_dim = observation_size(perfect_info=self.perfect_info)
+        current_obs_dim = observation_size(
+            perfect_info=self.perfect_info,
+            observation_version=self.observation_version,
+        )
         if obs_dim != current_obs_dim:
             raise ValueError(
                 f"Checkpoint expects observation size {obs_dim}, but current rules "
@@ -54,6 +66,7 @@ class RlAgent:
             state,
             player_id,
             perfect_info=self.perfect_info,
+            observation_version=self.observation_version,
         )
         with torch.no_grad():
             obs = torch.tensor(observation, dtype=torch.float32).unsqueeze(0)
@@ -126,3 +139,15 @@ class RlAgent:
             return int(torch.argmax(masked_logits, dim=-1).item())
         probabilities = torch.softmax(masked_logits.squeeze(0), dim=-1)
         return int(torch.multinomial(probabilities, 1, generator=self.generator).item())
+
+
+def _observation_version_from_checkpoint(
+    checkpoint: dict[str, object],
+    obs_dim: int,
+) -> str:
+    observation_version = checkpoint.get("observation_version")
+    if observation_version is not None:
+        return str(observation_version)
+    if obs_dim == observation_size(observation_version=BASE_OBSERVATION_VERSION):
+        return BASE_OBSERVATION_VERSION
+    return OBSERVATION_VERSION

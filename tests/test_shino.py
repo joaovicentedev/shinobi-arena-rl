@@ -34,33 +34,35 @@ def test_shino_definition_uses_requested_skills() -> None:
     ]
 
 
-def test_chakra_leach_damages_and_steals_taijutsu_or_genjutsu() -> None:
+def test_chakra_leach_marks_target_to_steal_next_chakra_gain() -> None:
     state = make_state()
     shino = state.players[0].characters[0]
     target = state.players[1].characters[0]
     set_chakra(state, 0, ninjutsu=1)
-    set_chakra(state, 1, taijutsu=1, ninjutsu=1)
+    set_chakra(state, 1)
 
     apply_action(state, UseSkillAction(0, shino.instance_id, "chakra_leach", (target.instance_id,)))
 
     assert target.hp == 80
-    assert state.players[0].chakra.amounts[ChakraType.TAIJUTSU] == 1
-    assert state.players[1].chakra.amounts[ChakraType.TAIJUTSU] == 0
-    assert state.players[1].chakra.amounts[ChakraType.NINJUTSU] == 1
+    assert target.status.has_marker(f"chakra_gain_steal:{shino.instance_id}")
+    assert state.players[0].chakra.total() == 0
+    assert state.players[1].chakra.total() == 0
+
+
+def test_chakra_leach_steals_one_chakra_during_opponent_gain() -> None:
+    state = make_state()
+    shino = state.players[0].characters[0]
+    target = state.players[1].characters[0]
+    set_chakra(state, 0, ninjutsu=1)
+    set_chakra(state, 1)
+
+    apply_action(state, UseSkillAction(0, shino.instance_id, "chakra_leach", (target.instance_id,)))
+    apply_action(state, EndTurnAction(0))
+
+    assert state.players[0].chakra.total() == 1
+    assert state.players[1].chakra.total() == 2
+    assert not target.status.has_marker(f"chakra_gain_steal:{shino.instance_id}")
     assert resolved_skill(state, shino.instance_id, "chakra_leach").chakra_cost.random == 1
-
-
-def test_chakra_leach_does_not_cost_extra_when_no_valid_chakra_is_stolen() -> None:
-    state = make_state()
-    shino = state.players[0].characters[0]
-    target = state.players[1].characters[0]
-    set_chakra(state, 0, ninjutsu=1)
-    set_chakra(state, 1, ninjutsu=1, bloodline=1)
-
-    apply_action(state, UseSkillAction(0, shino.instance_id, "chakra_leach", (target.instance_id,)))
-
-    assert target.hp == 80
-    assert resolved_skill(state, shino.instance_id, "chakra_leach").chakra_cost.random == 0
 
 
 def test_female_bug_stacks_chakra_leach_bonus_damage() -> None:

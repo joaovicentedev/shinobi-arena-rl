@@ -18,8 +18,15 @@ from naruto_arena.rl.action_space import (
     ActionKind,
 )
 from naruto_arena.rl.env import NarutoArenaLearningEnv
-from naruto_arena.rl.model import ActorCritic, PolicyOutput
-from naruto_arena.rl.observation import observation_size
+from naruto_arena.rl.model import (
+    MODEL_ARCHITECTURES,
+    MODEL_ARCH_MLP,
+    PolicyOutput,
+    create_actor_critic,
+    model_arch_from_checkpoint,
+    policy_type_for_model_arch,
+)
+from naruto_arena.rl.observation import OBSERVATION_VERSION, observation_size
 
 
 def parse_args() -> argparse.Namespace:
@@ -41,6 +48,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--value-coef", type=float, default=0.5)
     parser.add_argument("--log-interval", type=int, default=25)
     parser.add_argument("--save-path", default="models/naruto_actor_critic.pt")
+    parser.add_argument(
+        "--model-arch",
+        choices=MODEL_ARCHITECTURES,
+        default=MODEL_ARCH_MLP,
+        help="Policy/value network architecture.",
+    )
     parser.add_argument(
         "--init-model-path",
         type=Path,
@@ -65,9 +78,18 @@ def main() -> None:
         perfect_info=args.perfect_info,
         opponent_model_path=args.opponent_model_path,
     )
-    model = ActorCritic(observation_size(perfect_info=args.perfect_info))
+    model = create_actor_critic(
+        observation_size(perfect_info=args.perfect_info),
+        args.model_arch,
+        OBSERVATION_VERSION,
+    )
     if args.init_model_path is not None:
-        load_initial_model(model, args.init_model_path, perfect_info=args.perfect_info)
+        load_initial_model(
+            model,
+            args.init_model_path,
+            perfect_info=args.perfect_info,
+            model_arch=args.model_arch,
+        )
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
     pending: list[dict[str, list[torch.Tensor] | list[float] | int | None]] = []
     recent_returns: list[float] = []
@@ -103,7 +125,9 @@ def main() -> None:
         {
             "model_state_dict": model.state_dict(),
             "obs_dim": observation_size(perfect_info=args.perfect_info),
-            "policy_type": "factored",
+            "observation_version": OBSERVATION_VERSION,
+            "policy_type": policy_type_for_model_arch(args.model_arch),
+            "model_arch": args.model_arch,
             "perfect_info": args.perfect_info,
             "opponent": args.opponent,
             "opponent_model_path": (
@@ -117,14 +141,25 @@ def main() -> None:
 
 
 def load_initial_model(
-    model: ActorCritic,
+    model: torch.nn.Module,
     model_path: Path,
     *,
     perfect_info: bool,
+    model_arch: str,
 ) -> None:
     checkpoint = torch.load(model_path, map_location="cpu")
-    if checkpoint.get("policy_type") != "factored":
-        raise ValueError("Initial checkpoint uses the old flat policy. Retrain from scratch.")
+    checkpoint_model_arch = model_arch_from_checkpoint(checkpoint)
+    if checkpoint_model_arch != model_arch:
+        raise ValueError(
+            f"Initial checkpoint uses model architecture {checkpoint_model_arch}, "
+            f"but current training uses {model_arch}."
+        )
+    checkpoint_observation_version = checkpoint.get("observation_version", OBSERVATION_VERSION)
+    if checkpoint_observation_version != OBSERVATION_VERSION:
+        raise ValueError(
+            f"Initial checkpoint uses observation version {checkpoint_observation_version}, "
+            f"but current training uses {OBSERVATION_VERSION}."
+        )
     expected_obs_dim = observation_size(perfect_info=perfect_info)
     checkpoint_obs_dim = int(checkpoint["obs_dim"])
     if checkpoint_obs_dim != expected_obs_dim:
@@ -142,7 +177,7 @@ def load_initial_model(
 
 def collect_episode(
     env: NarutoArenaLearningEnv,
-    model: ActorCritic,
+    model: torch.nn.Module,
     gamma: float,
     *,
     seed: int,

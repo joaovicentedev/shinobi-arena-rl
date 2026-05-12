@@ -52,9 +52,23 @@ def end_turn(state: GameState) -> None:
 def gain_chakra_for_living_characters(state: GameState, player_id: int) -> None:
     player = state.players[player_id]
     gain_count = chakra_gain_count(state, player_id)
+    gain_steals = chakra_gain_steals(state, player_id)
     chakra_types = list(ChakraType)
     for _ in range(gain_count):
         chakra_type = state.rng.choice(chakra_types)
+        if gain_steals:
+            target, marker_id, source_id = gain_steals.pop(0)
+            target.status.active_marker_stacks[marker_id] -= 1
+            if target.status.active_marker_stacks[marker_id] <= 0:
+                target.status.active_marker_stacks.pop(marker_id, None)
+                target.status.active_markers.pop(marker_id, None)
+            source_owner = state.owner_of(source_id)
+            if source_owner != player_id and state.get_character(source_id).is_alive:
+                state.players[source_owner].chakra.add(chakra_type, 1)
+                state.get_character(source_id).status.active_markers[
+                    "chakra_leach_stolen_chakra"
+                ] = 1
+                continue
         player.chakra.add(chakra_type, 1)
 
 
@@ -62,6 +76,17 @@ def chakra_gain_count(state: GameState, player_id: int) -> int:
     if state.turn_number == 1 and player_id == 0:
         return 1
     return len(state.players[player_id].living_characters())
+
+
+def chakra_gain_steals(state: GameState, player_id: int) -> list[tuple[CharacterState, str, str]]:
+    steals: list[tuple[CharacterState, str, str]] = []
+    for character in state.players[player_id].living_characters():
+        for marker_id, stacks in character.status.active_marker_stacks.items():
+            if not marker_id.startswith("chakra_gain_steal:"):
+                continue
+            source_id = marker_id.removeprefix("chakra_gain_steal:")
+            steals.extend((character, marker_id, source_id) for _ in range(stacks))
+    return steals
 
 
 def deal_damage(

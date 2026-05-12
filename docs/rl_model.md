@@ -51,6 +51,26 @@ make train-rl ARGS="\
   --log-interval 100"
 ```
 
+Train the experimental Transformer policy without replacing the current MLP
+checkpoint:
+
+```bash
+make train-rl ARGS="\
+  --model-arch transformer \
+  --episodes 10000 \
+  --opponent heuristic \
+  --save-path models/naruto_actor_critic_transformer.pt"
+```
+
+Transformer checkpoints use `policy_type: factored_transformer`. Existing
+`policy_type: factored` checkpoints continue to load as the current MLP model.
+
+The `skill_features_v1` observation changes `obs_dim` from the legacy 230-float
+layout to 1730 floats. New Transformer skill-feature models must be trained from
+scratch or initialized from another `skill_features_v1` checkpoint. Legacy
+checkpoints can still be used as opponents and comparisons; they are loaded with
+the older `base_v1` observation encoder.
+
 The trainer prints progress as a percentage:
 
 ```text
@@ -167,7 +187,10 @@ Each timeline entry includes:
 
 ## Model Type
 
-The model is an actor-critic network implemented in `naruto_arena/rl/model.py`.
+The RL package has two actor-critic networks implemented in
+`naruto_arena/rl/model.py`.
+
+The default model is the original MLP-compatible architecture:
 
 ```text
 observation -> shared character encoder per character -> shared MLP -> policy heads
@@ -177,8 +200,8 @@ observation -> shared character encoder per character -> shared MLP -> policy he
 Architecture:
 
 ```text
-Each 36-feature character block:
-Linear(36, 64)
+Each 286-feature character block:
+Linear(286, 64)
 ReLU
 Linear(64, 64)
 ReLU
@@ -199,6 +222,32 @@ reorder destination: Linear(256, 2)
 
 Value head: Linear(256, 1)
 ```
+
+The experimental Transformer architecture keeps the same observation vector and
+the same factored policy heads, but treats each character as a token:
+
+```text
+observation -> 6 character tokens + 1 global/chakra context token
+            -> side/slot/type embeddings
+            -> TransformerEncoder
+            -> pooled battle embedding
+            -> policy heads
+            -> state value
+```
+
+Default Transformer settings:
+
+```text
+d_model: 128
+heads: 4
+layers: 2
+feedforward: 256
+dropout: 0.1
+```
+
+This is meant to help the policy model relationships between allied and enemy
+characters: threats, focus targets, pairs, and synergies. It does not change the
+engine rules, observation size, action masks, or factored action format.
 
 The policy chooses a factored action by sampling only the heads relevant to the
 selected action kind. The value head estimates the expected future return from
@@ -242,6 +291,9 @@ Per-character features include:
 - Whether the character already used a new skill this turn.
 - Character identity one-hot.
 - Current skill cooldowns.
+- Per-skill feature maps for each current skill slot: cost, base cooldown, target
+  rule, classes, direct damage, stun, healing, damage reduction, invulnerability,
+  damage over time, chakra removal/steal, markers, requirements, and passives.
 
 ## Action Space
 
