@@ -8,6 +8,7 @@ except ImportError as exc:  # pragma: no cover - only hit without the rl extra.
     raise RuntimeError("Install RL dependencies with `uv sync --extra rl`.") from exc
 
 from naruto_arena.engine.actions import Action, EndTurnAction
+from naruto_arena.engine.simulator import legal_actions
 from naruto_arena.engine.state import GameState
 from naruto_arena.rl.action_space import (
     ACTION_KIND_ORDER,
@@ -58,7 +59,8 @@ class RlAgent:
         self.generator = torch.Generator().manual_seed(seed)
 
     def choose_action(self, state: GameState, player_id: int) -> Action:
-        kind_mask = legal_factored_action_masks(state, player_id)["kind"]
+        legal = legal_actions(state, player_id)
+        kind_mask = legal_factored_action_masks(state, player_id, legal=legal)["kind"]
         if not any(kind_mask):
             return EndTurnAction(player_id)
 
@@ -71,7 +73,7 @@ class RlAgent:
         with torch.no_grad():
             obs = torch.tensor(observation, dtype=torch.float32).unsqueeze(0)
             policy, _ = self.model(obs)
-            factored_action = self._choose_factored_action(state, player_id, policy)
+            factored_action = self._choose_factored_action(state, player_id, policy, legal)
 
         action = factored_action_to_engine_action(state, player_id, factored_action)
         return action if action is not None else EndTurnAction(player_id)
@@ -81,8 +83,12 @@ class RlAgent:
         state: GameState,
         player_id: int,
         policy: PolicyOutput,
+        legal: list[Action],
     ) -> FactoredAction:
-        kind = self._select(policy.kind, legal_factored_action_masks(state, player_id)["kind"])
+        kind = self._select(
+            policy.kind,
+            legal_factored_action_masks(state, player_id, legal=legal)["kind"],
+        )
         action_kind = ACTION_KIND_ORDER[kind]
         if action_kind == ActionKind.END_TURN:
             return FactoredAction(action_kind)
@@ -90,18 +96,23 @@ class RlAgent:
         partial = FactoredAction(action_kind)
         actor = self._select(
             policy.actor,
-            legal_factored_action_masks(state, player_id, partial)["actor"],
+            legal_factored_action_masks(state, player_id, partial, legal=legal)["actor"],
         )
         partial = FactoredAction(action_kind, actor_slot=actor)
         skill = self._select(
             policy.skill,
-            legal_factored_action_masks(state, player_id, partial)["skill"],
+            legal_factored_action_masks(state, player_id, partial, legal=legal)["skill"],
         )
         partial = FactoredAction(action_kind, actor_slot=actor, skill_slot=skill)
         if action_kind == ActionKind.REORDER_SKILL:
             destination = self._select(
                 policy.reorder_destination,
-                legal_factored_action_masks(state, player_id, partial)["reorder_destination"],
+                legal_factored_action_masks(
+                    state,
+                    player_id,
+                    partial,
+                    legal=legal,
+                )["reorder_destination"],
             )
             return FactoredAction(
                 action_kind,
@@ -112,7 +123,7 @@ class RlAgent:
 
         target = self._select(
             policy.target,
-            legal_factored_action_masks(state, player_id, partial)["target"],
+            legal_factored_action_masks(state, player_id, partial, legal=legal)["target"],
         )
         partial = FactoredAction(
             action_kind,
@@ -122,7 +133,7 @@ class RlAgent:
         )
         random_chakra = self._select(
             policy.random_chakra,
-            legal_factored_action_masks(state, player_id, partial)["random_chakra"],
+            legal_factored_action_masks(state, player_id, partial, legal=legal)["random_chakra"],
         )
         return FactoredAction(
             action_kind,

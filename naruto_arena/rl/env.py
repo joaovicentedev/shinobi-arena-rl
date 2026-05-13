@@ -7,9 +7,9 @@ from naruto_arena.agents.heuristic_agent import SimpleHeuristicAgent
 from naruto_arena.agents.random_agent import RandomAgent
 from naruto_arena.agents.rl_agent import RlAgent
 from naruto_arena.data.characters import SAKURA_HARUNO, SASUKE_UCHIHA, UZUMAKI_NARUTO
-from naruto_arena.engine.actions import EndTurnAction
+from naruto_arena.engine.actions import Action, EndTurnAction
 from naruto_arena.engine.rules import RulesError, create_initial_state
-from naruto_arena.engine.simulator import apply_action
+from naruto_arena.engine.simulator import apply_action, legal_actions
 from naruto_arena.engine.state import GameState
 from naruto_arena.rl.action_space import (
     FactoredAction,
@@ -48,6 +48,8 @@ class NarutoArenaLearningEnv:
         self.opponent = self._make_opponent(opponent, seed + 10_000)
         self.state: GameState | None = None
         self.actions_taken = 0
+        self._legal_actions_cache_key: tuple[int, int, int, int, int | None] | None = None
+        self._legal_actions_cache: list[Action] | None = None
 
     def reset(self, *, seed: int | None = None) -> list[float]:
         if seed is not None:
@@ -57,6 +59,7 @@ class NarutoArenaLearningEnv:
         team = [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA]
         self.state = create_initial_state(team, team, rng_seed=self.seed)
         self.actions_taken = 0
+        self._clear_legal_actions_cache()
         return self.observation()
 
     def observation(self) -> list[float]:
@@ -76,7 +79,12 @@ class NarutoArenaLearningEnv:
         partial: FactoredAction | None = None,
     ) -> dict[str, list[bool]]:
         assert self.state is not None
-        return legal_factored_action_masks(self.state, self.learning_player, partial)
+        return legal_factored_action_masks(
+            self.state,
+            self.learning_player,
+            partial,
+            legal=self._legal_actions_for_current_state(),
+        )
 
     def step(
         self,
@@ -106,6 +114,7 @@ class NarutoArenaLearningEnv:
         except RulesError:
             return self.observation(), -0.05, False, {"invalid_action": True}
         self.actions_taken += 1
+        self._clear_legal_actions_cache()
         self._play_opponent_turn_if_needed()
         after = _score_state(self.state, self.learning_player)
         terminated = self.state.winner is not None
@@ -134,6 +143,7 @@ class NarutoArenaLearningEnv:
             action = self.opponent.choose_action(self.state, self.state.active_player)
             apply_action(self.state, action)
             self.actions_taken += 1
+            self._clear_legal_actions_cache()
 
     def _make_opponent(self, name: str, seed: int):
         if name == "random":
@@ -145,6 +155,25 @@ class NarutoArenaLearningEnv:
                 raise ValueError("--opponent-model-path is required when --opponent rl.")
             return RlAgent(self.opponent_model_path, deterministic=True, seed=seed)
         raise ValueError(f"Unknown opponent: {name}")
+
+    def _legal_actions_for_current_state(self) -> list[Action]:
+        assert self.state is not None
+        cache_key = (
+            id(self.state),
+            self.state.active_player,
+            self.state.turn_number,
+            self.actions_taken,
+            self.state.winner,
+        )
+        if cache_key != self._legal_actions_cache_key:
+            self._legal_actions_cache_key = cache_key
+            self._legal_actions_cache = legal_actions(self.state, self.learning_player)
+        assert self._legal_actions_cache is not None
+        return self._legal_actions_cache
+
+    def _clear_legal_actions_cache(self) -> None:
+        self._legal_actions_cache_key = None
+        self._legal_actions_cache = None
 
 
 def _score_state(state: GameState, player_id: int) -> dict[str, int]:

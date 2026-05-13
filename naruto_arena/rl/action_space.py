@@ -181,11 +181,12 @@ def legal_factored_action_masks(
     state: GameState,
     player_id: int,
     partial: FactoredAction | None = None,
+    legal: list[Action] | None = None,
 ) -> dict[str, list[bool]]:
     if state.winner is not None or state.active_player != player_id:
         return _empty_factored_masks()
     partial = partial or FactoredAction(ActionKind.END_TURN)
-    legal = legal_actions(state, player_id)
+    legal = legal if legal is not None else legal_actions(state, player_id)
     return {
         "kind": _legal_kind_mask(state, player_id, legal),
         "actor": _legal_actor_mask(state, player_id, legal, partial.kind),

@@ -69,6 +69,7 @@ OBSERVATION_VERSIONS = (
     SKILL_FEATURES_OBSERVATION_VERSION,
     COMPACT_OBSERVATION_VERSION,
 )
+_STATIC_SKILL_FEATURE_CACHE: dict[tuple[object, ...], list[float]] = {}
 
 
 def observation_size(
@@ -219,7 +220,63 @@ def _skill_features(
 
     base_skill = character.definition.skill(skill_id)
     skill = resolved_skill(state, character.instance_id, skill_id)
-    effects = skill.all_effects(state, character.instance_id)
+    features = [
+        1.0,
+        float(skill.id != base_skill.id or skill.replacement_for is not None),
+        float(can_use_skill(state, character.instance_id, skill_id)),
+    ]
+    static_prefix, static_suffix = _static_skill_features(state, character, skill)
+    features.extend(static_prefix)
+    features.append(min(character.cooldowns.get(skill.id, 0), MAX_COOLDOWN) / MAX_COOLDOWN)
+    features.extend(static_suffix)
+    if len(features) != SKILL_FEATURE_SIZE:
+        raise AssertionError(f"Skill feature size changed: {len(features)}")
+    return features
+
+
+def _static_skill_features(
+    state: GameState,
+    character: CharacterState,
+    skill,
+) -> tuple[list[float], list[float]]:
+    if skill.effect_factory is not None:
+        return _build_static_skill_features(skill, skill.all_effects(state, character.instance_id))
+    cache_key = _static_skill_cache_key(skill)
+    cached = _STATIC_SKILL_FEATURE_CACHE.get(cache_key)
+    if cached is None:
+        prefix, suffix = _build_static_skill_features(
+            skill,
+            list(skill.effects),
+        )
+        cached = prefix + suffix
+        _STATIC_SKILL_FEATURE_CACHE[cache_key] = cached
+    prefix_size = 2 + len(tuple(ChakraType)) + 2
+    return list(cached[:prefix_size]), list(cached[prefix_size:])
+
+
+def _static_skill_cache_key(skill) -> tuple[object, ...]:
+    return (
+        skill.id,
+        skill.cooldown,
+        tuple(
+            sorted(
+                (chakra_type.value, amount)
+                for chakra_type, amount in skill.chakra_cost.fixed.items()
+            )
+        ),
+        skill.chakra_cost.random,
+        tuple(sorted(skill_class.value for skill_class in skill.classes)),
+        skill.target_rule.value,
+        skill.effects,
+        bool(skill.requirements),
+        bool(skill.target_requirements),
+        skill.duration,
+        skill.status_marker,
+        skill.replacement_for,
+    )
+
+
+def _build_static_skill_features(skill, effects) -> tuple[list[float], list[float]]:
     direct_damage = sum(effect.amount for effect in effects if isinstance(effect, DirectDamage))
     piercing_direct_damage = sum(
         effect.amount for effect in effects if isinstance(effect, DirectDamage) and effect.piercing
@@ -249,29 +306,25 @@ def _skill_features(
     status_marker_count = sum(1 for effect in effects if isinstance(effect, StatusMarker))
     passive_effect = any(isinstance(effect, PassiveEffect) for effect in effects)
 
-    features = [
-        1.0,
-        float(skill.id != base_skill.id or skill.replacement_for is not None),
-        float(can_use_skill(state, character.instance_id, skill_id)),
+    prefix = [
         float(skill.is_passive()),
         float(skill.chakra_cost.is_free()),
     ]
     for chakra_type in ChakraType:
-        features.append(
+        prefix.append(
             min(skill.chakra_cost.fixed.get(chakra_type, 0), MAX_SKILL_COST) / MAX_SKILL_COST
         )
-    features.extend(
+    prefix.extend(
         [
             min(skill.chakra_cost.random, MAX_SKILL_COST) / MAX_SKILL_COST,
             min(skill.cooldown, MAX_COOLDOWN) / MAX_COOLDOWN,
-            min(character.cooldowns.get(skill.id, 0), MAX_COOLDOWN) / MAX_COOLDOWN,
-            min(skill.duration, MAX_DURATION) / MAX_DURATION,
         ]
     )
-    features.extend(_one_hot(tuple(TargetRule).index(skill.target_rule), len(tuple(TargetRule))))
+    suffix = [min(skill.duration, MAX_DURATION) / MAX_DURATION]
+    suffix.extend(_one_hot(tuple(TargetRule).index(skill.target_rule), len(tuple(TargetRule))))
     for skill_class in SkillClass:
-        features.append(float(skill_class in skill.classes))
-    features.extend(
+        suffix.append(float(skill_class in skill.classes))
+    suffix.extend(
         [
             min(direct_damage, 100) / 100,
             min(piercing_direct_damage, 100) / 100,
@@ -294,9 +347,7 @@ def _skill_features(
             float(bool(skill.target_requirements)),
         ]
     )
-    if len(features) != SKILL_FEATURE_SIZE:
-        raise AssertionError(f"Skill feature size changed: {len(features)}")
-    return features
+    return prefix, suffix
 
 
 def _chakra_features(state: GameState, player_id: int) -> list[float]:
