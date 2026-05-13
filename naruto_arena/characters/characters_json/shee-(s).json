@@ -1,0 +1,87 @@
+{
+  "name": "Shee (S)",
+  "slug": "shee-(s)",
+  "url": "https://www.naruto-arena.site/chars/shee-(s)",
+  "pageTitle": "Shee (S) - Naruto Arena Classic",
+  "description": "Shee (S) is a jounin of the Hidden Cloud Village and a sensor. Shee is one of the Raikage's most reliable shinobi.",
+  "requirement": "Mission: A Respected Cloud Ninja",
+  "image": "https://i.imgur.com/lBS7djv.png",
+  "skills": [
+    {
+      "name": "Sensor Awareness",
+      "description": "Shee uses his sensor to detect one enemy's move. For 1 turn, if that enemy uses a new harmful skill, it will be delayed for 1 turn and they will take 20 piercing damage. During this time, if a new skill is used on Shee, he will become invulnerable for 1 turn. This skill is invisible.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/4mYooCj.png"
+    },
+    {
+      "name": "Ally Heal",
+      "description": "Using Ally Heal Shee (S) heals an ally for 25 health.",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/oRKPqvn.png"
+    },
+    {
+      "name": "Lightning Illusion Flash",
+      "description": "Shee (S) uses Lighting Illusion Flash on 1 enemy dealing 35 damage. That enemy will be invulnerable to new friendly skills for 1 turn.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/U3MPxDG.png"
+    },
+    {
+      "name": "Defensive Reaction",
+      "description": "This skill makes Shee (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/4XC8A04.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:33:01.793Z"
+}

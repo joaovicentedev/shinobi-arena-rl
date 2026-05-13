@@ -1,0 +1,99 @@
+{
+  "name": "Edo Tensei Yagura (S)",
+  "slug": "edo-tensei-yagura-(s)",
+  "url": "https://www.naruto-arena.site/chars/edo-tensei-yagura-(s)",
+  "pageTitle": "Edo Tensei Yagura (S) - Naruto Arena Classic",
+  "description": "Resurrected through Edo Tensei, Yagura retains perfect control over the Three-Tails' power. His Water Mirror techniques allow him to capture, store, and return enemy techniques with deadly precision, turning an opponent’s own strength against them while remaining nearly untouchable.",
+  "requirement": "Mission: Yagura, the Path of Pain",
+  "image": "https://i.imgur.com/WE9tSWg.png",
+  "skills": [
+    {
+      "name": "Water Mirror",
+      "description": "Yagura targets an enemy for 3 turns. If that enemy uses a new harmful skill, that skill will be permanently stored by 'Water Mirror' and they will deal 5 non-affliction less damage for 1 turn. This skill is invisiblle, ignores invulnerability and cannot be used on the same target.",
+      "cooldown": null,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/fNU1grL.png"
+    },
+    {
+      "name": "Hook Staff Tilt",
+      "description": "Yagura casts a random skill stored by 'Water Mirror' on an enemy. The stored skill is removed. This skill may only be used if 'Water Mirror' has at least one skill stored.",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/Ng9YIrw.png"
+    },
+    {
+      "name": "Mirror Image",
+      "description": "Yagura uses Mirror Image on an enemy, dealing 30 damage to them. For 1 turn, they will deal 5 less non-affliction damage and a random harmful skill from that enemy will be stored by 'Water Mirror'. The following turn, 'Hook Staff Tilt' will cast 2 random skills stored by 'Water Mirror' at once.",
+      "cooldown": 1,
+      "chakra": [
+        "ninjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "blue",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/Iop97co.png"
+    },
+    {
+      "name": "Yagura Partial Tailed Beast Mode",
+      "description": "This skill makes Edo Tensei Yagura (S) invulnerable for 1 turn. The following turn, 'Hook Staff Tilt' will be improved and will cost 1 random chakra instead.",
+      "cooldown": 5,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/yuakIBi.png"
+    },
+    {
+      "name": "Reflective Mirror",
+      "description": "This skill will be activated every time Yagura uses 'Hook Staff Tilt' or 'Mirror Image'. For 1 turn, Yagura will ignore the first harmful physical or chakra skill used on him. If successfully triggered, the ignored skill will be stored by 'Water Mirror'. This skill will be disabled for 2 turns when it's activated.",
+      "cooldown": null,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/hJBCFwa.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:39:11.659Z"
+}

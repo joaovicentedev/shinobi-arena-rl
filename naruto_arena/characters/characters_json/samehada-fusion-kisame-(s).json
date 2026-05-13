@@ -1,0 +1,96 @@
+{
+  "name": "Samehada Fusion Kisame (S)",
+  "slug": "samehada-fusion-kisame-(s)",
+  "url": "https://www.naruto-arena.site/chars/samehada-fusion-kisame-(s)",
+  "pageTitle": "Samehada Fusion Kisame (S) - Naruto Arena Classic",
+  "description": "After merging with the sentient blade Samehada, Kisame transforms into a monstrous shark-like being. In this form, he reigns supreme underwater, draining chakra upon contact and relentlessly hunting his prey within a vast, moving prison of water.",
+  "requirement": "Mission: The No-Tailed Beast",
+  "image": "https://i.imgur.com/HP3pmdA.png",
+  "skills": [
+    {
+      "name": "Water Prison Shark Dance",
+      "description": "Kisame creates a battlefield completely submerged in water, targeting all enemies and his allies. All targets will have the cost of their harmful skills increased by 1 random chakra for 2 turnos. During this time, any target that uses a new harmful skill will ignore 'Water Prison Shark Dance' for 1 turn. This skill ends when Kisame dies.",
+      "cooldown": 3,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/TWeVlfV.png"
+    },
+    {
+      "name": "Non-Stop Hunting",
+      "description": "Kisame relentlessly hunts an enemy from underwater. For 2 turns, Kisame will deal 20 piercing damage to that enemy and remove 1 bloodline or ninjutsu chakra from them. During this time, Kisame will gain 5 points of destructible defense each turn.",
+      "cooldown": 2,
+      "chakra": [
+        "bloodline",
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Action",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/edOwJ9I.png"
+    },
+    {
+      "name": "Great Water Shark Missile",
+      "description": "This skill deals 20 piercing damage to all enemies and removes 1 taijutsu or genjutsu chakra from a random enemy. Afterwards, Kisame gains 15 points of destructible defense. This skill cannot be countered.",
+      "cooldown": 3,
+      "chakra": [
+        "bloodline",
+        "ninjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "blue",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/WLcRFZx.png"
+    },
+    {
+      "name": "Shark Skin",
+      "description": "This skill makes Samehada Fusion Kisame (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/1Qa5p92.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:35:21.590Z"
+}

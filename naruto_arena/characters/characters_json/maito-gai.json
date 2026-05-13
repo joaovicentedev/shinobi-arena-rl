@@ -1,0 +1,88 @@
+{
+  "name": "Maito Gai",
+  "slug": "maito-gai",
+  "url": "https://www.naruto-arena.site/chars/maito-gai",
+  "pageTitle": "Maito Gai - Naruto Arena Classic",
+  "description": "Gai is the sensei of Lee, Tenten and Neji. He and Lee both use the same fighting style, Strong Fist, which involves high-speed attacks and the opening of inner chakra gates.",
+  "requirement": "Mission: Team 9 the Best Taijustu Team",
+  "image": "https://i.imgur.com/mZzzuP2.png",
+  "skills": [
+    {
+      "name": "Strong Whirlwind",
+      "description": "Gai kicks with a strong whirlwind, dealing 30 piercing damage to one enemy. During 'Sixth Gate Opening', this skill will be improved and will deal 60 piercing damage ignoring invulnerability.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "green",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Melee"
+      ],
+      "image": "https://i.imgur.com/EEtspTO.png"
+    },
+    {
+      "name": "Sixth Gate Opening",
+      "description": "Gai opens six chakra gates, taking 40% affliction damage of his current health and becoming invulnerable for 2 turns. The following 2 turns, 'Strong Whirlwind' will be improved and will deal 60 piercing damage ignoring invulnerability.",
+      "cooldown": 4,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Mental",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/2tVPi5d.png"
+    },
+    {
+      "name": "Counter Punch",
+      "description": "Gai singles out one enemy to counter attack. If that enemy uses a new harmful skill, they will be countered and will receive 30 damage. This skill is invisible.",
+      "cooldown": 2,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/3rcsOKj.png"
+    },
+    {
+      "name": "Gai Dodge",
+      "description": "This skill makes Maito Gai invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/3X5TEhi.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:28:55.352Z"
+}

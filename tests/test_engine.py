@@ -1,11 +1,16 @@
 import pytest
 
 from naruto_arena.data.characters import (
+    AKIMICHI_CHOUJI,
+    ALL_CHARACTERS,
+    NARA_SHIKAMARU,
     SAKURA_HARUNO,
     SASUKE_UCHIHA,
     UZUMAKI_NARUTO,
+    YAMANAKA_INO,
 )
 from naruto_arena.engine.actions import EndTurnAction, ReorderSkillsAction, UseSkillAction
+from naruto_arena.engine.chakra import ChakraPool, ChakraType
 from naruto_arena.engine.rules import RulesError, create_initial_state
 from naruto_arena.engine.simulator import apply_action, can_use_skill, legal_actions
 
@@ -134,9 +139,59 @@ def test_character_can_use_only_one_new_skill_per_turn() -> None:
 
     assert not can_use_skill(state, sasuke.instance_id, "lion_combo")
     assert all(
-        not (
-            isinstance(action, UseSkillAction)
-            and action.actor_id == sasuke.instance_id
-        )
+        not (isinstance(action, UseSkillAction) and action.actor_id == sasuke.instance_id)
         for action in legal_actions(state, 0)
     )
+
+
+def test_team_10_characters_are_in_playable_pool() -> None:
+    assert ALL_CHARACTERS["nara_shikamaru"] is NARA_SHIKAMARU
+    assert ALL_CHARACTERS["akimichi_chouji"] is AKIMICHI_CHOUJI
+    assert ALL_CHARACTERS["yamanaka_ino"] is YAMANAKA_INO
+
+
+def test_chouji_pills_scale_cost_damage_and_trigger_butterfly_mode() -> None:
+    state = create_initial_state(
+        [AKIMICHI_CHOUJI, NARA_SHIKAMARU, YAMANAKA_INO],
+        [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+    )
+    chouji = state.players[0].characters[0]
+
+    apply_action(
+        state,
+        UseSkillAction(0, chouji.instance_id, "akimichi_pills", (chouji.instance_id,)),
+    )
+    assert chouji.hp == 85
+    assert chouji.status.marker_stacks("akimichi_pills") == 1
+
+    chouji.used_skill_this_turn = False
+    state.players[0].chakra = ChakraPool.from_counts({ChakraType.GENJUTSU: 2})
+    apply_action(
+        state,
+        UseSkillAction(
+            0,
+            chouji.instance_id,
+            "akimichi_pills",
+            (chouji.instance_id,),
+            {ChakraType.GENJUTSU: 2},
+        ),
+    )
+    assert chouji.hp == 65
+    assert chouji.status.marker_stacks("akimichi_pills") == 2
+
+    chouji.used_skill_this_turn = False
+    state.players[0].chakra = ChakraPool.from_counts({ChakraType.GENJUTSU: 4})
+    apply_action(
+        state,
+        UseSkillAction(
+            0,
+            chouji.instance_id,
+            "akimichi_pills",
+            (chouji.instance_id,),
+            {ChakraType.GENJUTSU: 4},
+        ),
+    )
+
+    assert chouji.hp == 40
+    assert chouji.status.marker_stacks("akimichi_pills") == 3
+    assert chouji.passives["butterfly_mode"]

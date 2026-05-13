@@ -1,0 +1,93 @@
+{
+  "name": "Yondaime Hokage",
+  "slug": "yondaime-hokage",
+  "url": "https://www.naruto-arena.site/chars/yondaime-hokage",
+  "pageTitle": "Yondaime Hokage - Naruto Arena Classic",
+  "description": "The fourth Hokage was known as the yellow flash, regarded by all as the fastest shinobi to ever live. He is also the father of Uzumaki Naruto and the one who sealed the Kyuubi in his son.",
+  "requirement": "Mission: The Fourth",
+  "image": "https://i.imgur.com/JD6Ftin.png",
+  "skills": [
+    {
+      "name": "Hiraishin Rasengan",
+      "description": "Yondaime Hokage deals 40 damage to one enemy ignoring invulnerability that cannot be countered or reflected. The following turn, this skill will cost 1 ninjutsu chakra and will deal 35 damage instead.",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu",
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "blue",
+        "white"
+      ],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/bcnhcBn.png"
+    },
+    {
+      "name": "Space Time Barrier",
+      "description": "Using his space-time abilities, Yondaime Hokage targets one ally or himself. For 1 turn, all new non-mental skills used on that ally will be reflected onto the enemy. This skill is invisible.",
+      "cooldown": 2,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Mental",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/NPtZUyI.png"
+    },
+    {
+      "name": "Dead Demon Consuming Seal",
+      "description": "Using a partial seal, Yondaime seals part of one enemy away. That enemy will lose 30% of their health and have their physical and ranged skills stunned for 1 turn. If that enemy's health falls to 10 or lower that enemy will be killed. Yondaime Hokage will take 10 affliction damage*.",
+      "cooldown": 1,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Ranged",
+        "Affliction",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/NbuLkmG.png"
+    },
+    {
+      "name": "Kunai Defense",
+      "description": "This skill makes Yondaime Hokage invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/SUru7Y9.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:29:42.054Z"
+}

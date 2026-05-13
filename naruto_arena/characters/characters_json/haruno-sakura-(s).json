@@ -1,0 +1,106 @@
+{
+  "name": "Haruno Sakura (S)",
+  "slug": "haruno-sakura-(s)",
+  "url": "https://www.naruto-arena.site/chars/haruno-sakura-(s)",
+  "pageTitle": "Haruno Sakura (S) - Naruto Arena Classic",
+  "description": "With her extensive training under Tsunade, the Godaime, for the last two and a half years, Sakura(s)'s healing and combat abilities have both greatly improved.",
+  "requirement": "Mission: A Girl Grown Up",
+  "image": "https://i.imgur.com/5iC4YJR.png",
+  "skills": [
+    {
+      "name": "Chakra Enhanced Punch",
+      "description": "Enhancing her attack with finely controlled chakra, Sakura destroys the destructible defense of one enemy and deals 25 piercing damage to them. This skill will be replaced by 'Blossom's Fury'.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/hlJj8Px.png"
+    },
+    {
+      "name": "Trained Healing",
+      "description": "Using her trained healing skills, Sakura heals an ally for 20 health for 2 turns. Each turn, that ally will have all affliction skills removed from them.",
+      "cooldown": 1,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Control"
+      ],
+      "image": "https://i.imgur.com/Oi5rkOB.png"
+    },
+    {
+      "name": "Self Heal",
+      "description": "Sakura targets herself permanently, healing 20 health instantly the first time she is damaged by a skill. This skill is invisible and ends when triggered.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/aJqXOqH.png"
+    },
+    {
+      "name": "Insightful Dodge",
+      "description": "This skill makes Haruno Sakura (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/tvBST5g.png"
+    },
+    {
+      "name": "Blossom's Fury",
+      "description": "Sakura releases a ground breaking punch, destroying the destructible defense of all enemies and dealing 35 piercing damage to one enemy and 20 piercing damage to all others. This skill cannot be reflected and returns to 'Chakra Enhanced Punch' once it's used.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "green",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/ALv0zL8.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:30:20.757Z"
+}

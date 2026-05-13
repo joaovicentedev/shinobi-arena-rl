@@ -1,0 +1,109 @@
+{
+  "name": "Shinobi Alliance Kiba (S)",
+  "slug": "shinobi-alliance-kiba-(s)",
+  "url": "https://www.naruto-arena.site/chars/shinobi-alliance-kiba-(s)",
+  "pageTitle": "Shinobi Alliance Kiba (S) - Naruto Arena Classic",
+  "description": "Now in the war, Kiba is one of the most powerful close-range combatants. Utilizing the vast arsenal of the Inuzuka clan, Kiba can combat even colossal enemies with Akamaru and their tornado fang.",
+  "requirement": "Mission: The Boy and His Dog At War",
+  "image": "https://i.imgur.com/qjdViGn.png",
+  "skills": [
+    {
+      "name": "Tornado Fang",
+      "description": "Kiba deals 30 piercing damage to one enemy and makes them deal 10 less non-affliction damage for 1 turn. During 'Three Headed Wolf' this skill deal 10 additional damage.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "green",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/MI5CB8Q.png"
+    },
+    {
+      "name": "Three Headed Wolf",
+      "description": "Kiba removes all physical and chakra harmful skills on his team, and for 3 turns, targets all enemies. During this time, the enemies that use a new harmful skill will take 5 piercing damage and will receive 5 additional damage from physical melee skills permanently. This skill is replaced by 'Tail Rotating Fang'.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu",
+        "bloodline"
+      ],
+      "chakraColors": [
+        "green",
+        "red"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/8gU92l0.png"
+    },
+    {
+      "name": "Man Animal Tatics",
+      "description": "Kiba and one ally will deal 5 additional damage from non-affliction skills for 2 turns. During this time, everytime a new enemy harmful skill is used on them, their skills will cost one random chakra less for 1 turn.",
+      "cooldown": 2,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/atgU87q.png"
+    },
+    {
+      "name": "Kiba Block",
+      "description": "This skill makes Shinobi War Kiba (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/HV9AzM6.png"
+    },
+    {
+      "name": "Tail Rotating Fang",
+      "description": "Kiba deals 45 piercing damage to one enemy and becomes invulnerable to physical skills. Permanently, both Kiba and that enemy will deal 5 less physical damage.",
+      "cooldown": null,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/STBBoKZ.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:37:01.256Z"
+}

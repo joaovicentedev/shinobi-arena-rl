@@ -1,0 +1,106 @@
+{
+  "name": "Tsuchikage (S)",
+  "slug": "tsuchikage-(s)",
+  "url": "https://www.naruto-arena.site/chars/tsuchikage-(s)",
+  "pageTitle": "Tsuchikage (S) - Naruto Arena Classic",
+  "description": "The Third Tsuchikage of the Hidden Rock Village, Oonoki is an intensely proud and headstrong man, despite his advanced age. An expert in a variety of jutsu, and notably able to fly, Oonoki is renowned for his unique nature transformation, the Dust Release kekkei tota, with which he can outright vaporize his enemies.",
+  "requirement": "Mission: The Third Tsuchikage",
+  "image": "https://i.imgur.com/2TGh48c.png",
+  "skills": [
+    {
+      "name": "Detachment of Primitive World",
+      "description": "Ohnoki isolates an enemy with his dust release, dealing 10 affliction damage to them. For 1 turn, that enemy will be invulnerable to helpful skills and their harmful skills will be stunned. The following turn, this skill will be replaced by 'Dust Implode'.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/IRQ1VBv.png"
+    },
+    {
+      "name": "Super-Weighted Boulder Technique",
+      "description": "Onhoki touches an enemy and makes them much heavier. For 2 turns, the cost of their harmful skills will be increased by 1 random. This skill ends if that enemy uses a new harmful skill.",
+      "cooldown": 2,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/sq51r2K.png"
+    },
+    {
+      "name": "Rock Fist",
+      "description": "Increasing his striking power with Rock Fist, Ohnoki deals 30 damage to one enemy. Afterwards, Ohnoki gains 15 permanent destructible defense.",
+      "cooldown": 1,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/IubtdOZ.png"
+    },
+    {
+      "name": "Effortless Flight",
+      "description": "This skill makes Tsuchikage (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/5ctULD8.png"
+    },
+    {
+      "name": "Dust Implode",
+      "description": "Ohnoki incinerates an enemey trapped by 'Detachment of Primitive World' into mere particles, removing all helpful skills from that enemy and dealing 40 damage to them. This skill cannot be ignored or countered.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/L9B79qi.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:34:14.116Z"
+}

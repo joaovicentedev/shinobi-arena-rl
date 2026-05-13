@@ -1,0 +1,110 @@
+{
+  "name": "Asura Path Pein (S)",
+  "slug": "asura-path-pein-(s)",
+  "url": "https://www.naruto-arena.site/chars/asura-path-pein-(s)",
+  "pageTitle": "Asura Path Pein (S) - Naruto Arena Classic",
+  "description": "Asura Path Pein (S) is one of the six paths of Pein. His body style is similar to a puppet filled with hidden weapons.",
+  "requirement": "Mission: Asura Path",
+  "image": "https://i.imgur.com/aVbEBLw.png",
+  "skills": [
+    {
+      "name": "Chakra Burst",
+      "description": "Asura prevents one enemy from becoming invulnerable or reducing damage, then deals 20 damage for 1 turn. During this time, any enemy that uses a new skill on him will take 10 damage. This skill will be replaced permanently.",
+      "cooldown": null,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Unique",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/zEudeFK.png"
+    },
+    {
+      "name": "Cluster Bombs",
+      "description": "Asura Path bombs all enemies, dealing 20 piercing damage to them. For 1 turn, any enemy that uses a new harmful physical or chakra skill will be dealt 10 piercing damage.",
+      "cooldown": 1,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Ranged"
+      ],
+      "image": "https://i.imgur.com/6OwwejZ.png"
+    },
+    {
+      "name": "Heat Seeker",
+      "description": "Asura Path uses Heat Seeker on one enemy. After 3 turns, that enemy will take 25 piercing damage. This skill is invisible until triggered. This skill stacks.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Ranged",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/n61eNZT.png"
+    },
+    {
+      "name": "Rinnegan Evasion",
+      "description": "This skill makes Asura Path Pein (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/pS3OQal.png"
+    },
+    {
+      "name": "Crown Shockwave",
+      "description": "Asura Path deals 20 damage to all enemies. The following turn, they will be dealt 5 affliction damage. This skill becomes 'Chakra Burst' after being used.",
+      "cooldown": null,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique",
+        "Ranged"
+      ],
+      "image": "https://i.imgur.com/cclxprX.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:35:47.710Z"
+}

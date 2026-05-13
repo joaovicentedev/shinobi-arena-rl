@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
+
+if TYPE_CHECKING:
+    from naruto_arena.engine.chakra import ChakraType
+    from naruto_arena.engine.skills import SkillClass
+    from naruto_arena.engine.state import CharacterState, GameState
 
 
 class Effect(Protocol):
-    def apply(self, state: "GameState", source_id: str, target_ids: tuple[str, ...]) -> None:
-        ...
+    def apply(self, state: "GameState", source_id: str, target_ids: tuple[str, ...]) -> None: ...
 
 
 @dataclass(frozen=True)
@@ -24,9 +28,8 @@ class DirectDamage:
         for target_id in target_ids:
             target = state.get_character(target_id)
             amount = self.amount
-            if (
-                self.conditional_marker_prefix is not None
-                and target.status.has_marker(f"{self.conditional_marker_prefix}:{source_id}")
+            if self.conditional_marker_prefix is not None and target.status.has_marker(
+                f"{self.conditional_marker_prefix}:{source_id}"
             ):
                 if self.conditional_bonus_per_stack:
                     stacks = target.status.marker_stacks(
@@ -47,6 +50,26 @@ class DirectDamage:
                 piercing=self.piercing,
                 ignore_defenses=ignore_defenses,
             )
+
+
+@dataclass(frozen=True)
+class SelfDamage:
+    amount: int
+    piercing: bool = False
+    ignore_defenses: bool = False
+
+    def apply(self, state: "GameState", source_id: str, target_ids: tuple[str, ...]) -> None:
+        del target_ids
+        from naruto_arena.engine.rules import deal_damage
+
+        deal_damage(
+            state,
+            source_id,
+            source_id,
+            self.amount,
+            piercing=self.piercing,
+            ignore_defenses=self.ignore_defenses,
+        )
 
 
 @dataclass(frozen=True)
@@ -175,9 +198,9 @@ class ChakraSteal:
         for chakra_type, amount in removed.items():
             state.players[source_owner].chakra.add(chakra_type, amount)
         if removed and self.success_marker is not None and self.success_duration > 0:
-            state.get_character(source_id).status.active_markers[
-                self.success_marker
-            ] = self.success_duration
+            state.get_character(source_id).status.active_markers[self.success_marker] = (
+                self.success_duration
+            )
 
 
 @dataclass(frozen=True)
@@ -263,9 +286,7 @@ class ConditionalDamageIncrease:
     def applies_to(self, character: "CharacterState", skill_id: str) -> bool:
         if self.skill_ids and skill_id not in self.skill_ids:
             return False
-        if self.required_passive_id and not character.passives.get(
-            self.required_passive_id, False
-        ):
+        if self.required_passive_id and not character.passives.get(self.required_passive_id, False):
             return False
         if (
             self.required_status_id

@@ -1,0 +1,108 @@
+{
+  "name": "Tobi (S)",
+  "slug": "tobi-(s)",
+  "url": "https://www.naruto-arena.site/chars/tobi-(s)",
+  "pageTitle": "Tobi (S) - Naruto Arena Classic",
+  "description": "Tobi is the leader of Akatsuki, as well as an Uchiha. He possesses dimensional skills, being able to suck his targets into his dimension or use the Uchihas' forbidden techniques.",
+  "requirement": "Mission: A Nameless Man",
+  "image": "https://i.imgur.com/P4fDYJB.png",
+  "skills": [
+    {
+      "name": "Kamui",
+      "description": "If used on an ally: That ally will become invulnerable for 1 turn. If used on an enemy: deals 20 piercing damage to them and Tobi becomes invulnerable to that enemy for 1 turn. If they are invulnerable, deals 10 additional damage. Ignores invulnerability.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Unique",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/NOk9oxN.png"
+    },
+    {
+      "name": "Kamui Snare",
+      "description": "Tobi deals 10 piercing damage to an enemy, making them invulnerable to helpful skills and nullifying the non-damage effects of their next harmful skill for 1 turn. During 'Tobi Sharingan', this skill will deal 15 piercing damage and will nullify non-damage effects for 2 turns.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/NY0SoPG.png"
+    },
+    {
+      "name": "Tobi Sharingan",
+      "description": "For 4 turns, Tobi gains 10 points of unpierceable damage reduction. During this time, 'Kamui' deals 15 additional damage, and removes all harmful effects when used on an ally. This skill will be replaced. When used, 100% of Tobi's current health is stored.",
+      "cooldown": 3,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Mental",
+        "Unique",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/eKymPHu.png"
+    },
+    {
+      "name": "Uchiha Perception",
+      "description": "This skill makes Tobi (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/8nVf4Gc.png"
+    },
+    {
+      "name": "Hidden Izanagi",
+      "description": "Tobi uses Hidden Izanagi. After 2 turns Tobi's health will return to the health value stored by 'Tobi Sharingan'. This skill is invisible and can only be used once. This skill will be activated even if Tobi is killed.",
+      "cooldown": null,
+      "chakra": [
+        "bloodline",
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red",
+        "red"
+      ],
+      "classes": [
+        "Mental",
+        "Unique",
+        "Ranged*",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/0a4phiY.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:36:17.641Z"
+}

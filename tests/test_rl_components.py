@@ -11,6 +11,7 @@ from naruto_arena.engine.rules import create_initial_state
 from naruto_arena.rl.action_space import (
     ACTION_CATALOG,
     ACTION_KIND_COUNT,
+    MAX_SKILLS_PER_CHARACTER,
     MAX_TEAM_SIZE,
     NUM_ACTIONS,
     RANDOM_CHAKRA_OFFSET,
@@ -33,6 +34,9 @@ from naruto_arena.rl.observation import (
     SKILL_FEATURE_SIZE,
     encode_observation,
     observation_size,
+)
+from naruto_arena.rl.observation import (
+    MAX_SKILLS_PER_CHARACTER as OBSERVATION_MAX_SKILLS_PER_CHARACTER,
 )
 
 
@@ -77,8 +81,13 @@ def test_rl_observation_includes_skill_feature_map() -> None:
     assert observation[lion_combo_features] == 1.0
     assert observation[lion_combo_features + 6] == 0.25
     assert observation[lion_combo_features + 9] == 0.25
-    assert observation[lion_combo_features + 31] == 0.30
+    assert observation[lion_combo_features + 32] == 0.30
     assert observation[lion_combo_features + SKILL_FEATURE_SIZE] == 1.0
+
+
+def test_rl_skill_vectors_allow_catalog_max_skill_slots() -> None:
+    assert MAX_SKILLS_PER_CHARACTER == 9
+    assert OBSERVATION_MAX_SKILLS_PER_CHARACTER == 9
 
 
 def test_rl_use_skill_action_selects_random_chakra_payment() -> None:
@@ -173,7 +182,7 @@ def test_rl_factored_masks_expose_small_policy_heads() -> None:
 
     assert len(masks["kind"]) == ACTION_KIND_COUNT
     assert len(masks["actor"]) == MAX_TEAM_SIZE
-    assert len(masks["skill"]) == 5
+    assert len(masks["skill"]) == MAX_SKILLS_PER_CHARACTER
     assert len(masks["target"]) == 10
     assert len(masks["random_chakra"]) == 5
     assert len(masks["reorder_destination"]) == REORDER_DESTINATION_COUNT
@@ -197,7 +206,7 @@ def test_transformer_actor_critic_outputs_factored_policy_shapes() -> None:
 
     assert policy.kind.shape == (1, ACTION_KIND_COUNT)
     assert policy.actor.shape == (1, MAX_TEAM_SIZE)
-    assert policy.skill.shape == (1, 5)
+    assert policy.skill.shape == (1, MAX_SKILLS_PER_CHARACTER)
     assert policy.target.shape == (1, 10)
     assert policy.random_chakra.shape == (1, 5)
     assert policy.reorder_destination.shape == (1, REORDER_DESTINATION_COUNT)

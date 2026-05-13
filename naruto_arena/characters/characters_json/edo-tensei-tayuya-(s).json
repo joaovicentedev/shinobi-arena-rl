@@ -1,0 +1,91 @@
+{
+  "name": "Edo Tensei Tayuya (S)",
+  "slug": "edo-tensei-tayuya-(s)",
+  "url": "https://www.naruto-arena.site/chars/edo-tensei-tayuya-(s)",
+  "pageTitle": "Edo Tensei Tayuya (S) - Naruto Arena Classic",
+  "description": "Edo Tensei Tayuya was resurrected by Kabuto as a cruel battlefield conductor, her malice and arrogance undimmed by death. She uses her cursed flute to summon demonic warriors and unravel enemies through sound-based genjutsu and mental pressure. As the fight drags on, her control tightens, turning chaos into a carefully orchestrated nightmare.",
+  "requirement": "Mission: Tayuya is revived",
+  "image": "https://i.imgur.com/R7lKGuL.png",
+  "skills": [
+    {
+      "name": "Demonic Melody",
+      "description": "Tayuya deals 10 affliction damage to all enemies for 3 turns. During this time, if they use a new harmful damage skill, Tayuya will steal 5 health from them. The following 3 turns, 'Doki Ghost' will be improved.",
+      "cooldown": 3,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Affliction",
+        "Ranged",
+        "Action"
+      ],
+      "image": "https://i.imgur.com/hEktiW3.png"
+    },
+    {
+      "name": "Doki Ghost",
+      "description": "Tayuya summons her doki ghosts, dealing 20 affliction damage to one enemy. While improved, this skill will also steal 1 ninjutsu or bloodline chakra.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Affliction",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/JoDd9Jj.png"
+    },
+    {
+      "name": "Summoning: Doki Demons",
+      "description": "For 1 turn, the first harmful damage skill used on her, or an ally, will be countered. If successful, the countered enemy will be dealt 5 damage and will have their harmfull skills stunned for 1 turn. This skill is invisible.",
+      "cooldown": 2,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/3cRtXCn.png"
+    },
+    {
+      "name": "Tayuya: Chakra Unseal",
+      "description": "This skill makes Edo Tensei Tayuya (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/fgDn2Ku.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:38:53.312Z"
+}

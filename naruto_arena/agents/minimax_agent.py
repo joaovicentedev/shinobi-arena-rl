@@ -164,4 +164,3 @@ def evaluate_state(state: GameState, player_id: int) -> float:
         score -= sum(reduction.percent for reduction in character.status.damage_reductions) * 0.4
 
     return score
-

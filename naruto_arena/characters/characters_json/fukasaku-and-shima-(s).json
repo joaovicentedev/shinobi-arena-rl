@@ -1,0 +1,90 @@
+{
+  "name": "Fukasaku and Shima (S)",
+  "slug": "fukasaku-and-shima-(s)",
+  "url": "https://www.naruto-arena.site/chars/fukasaku-and-shima-(s)",
+  "pageTitle": "Fukasaku and Shima (S) - Naruto Arena Classic",
+  "description": "Fukasaku and Shima (S) are known as the two great sage toads of Mount Myoboku. They taught both Jiraiya and Naruto sage jutsu and are each skilled in elemental techniques as well as genjutsu techniques.",
+  "requirement": "Mission: The Sages of Mount Myoboku",
+  "image": "https://i.imgur.com/oXOirA4.jpg",
+  "skills": [
+    {
+      "name": "Frog Song",
+      "description": "Fukasaku and Shima (S) use their pattened genjustu to use Frog Song. They target 1 enemy and deal 15 affliction damage for 2 turns. During Toad Confrontation Singing this skill will cost 1 random chakra instead.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Mental",
+        "Action",
+        "Ranged",
+        "Unique",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/NZKucJD.jpg"
+    },
+    {
+      "name": "Sand Dust",
+      "description": "Fukasaku and Shima (S) use Sand Dust. All allies will be invulnerable to enemy ranged skills for 1 turn.",
+      "cooldown": 2,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/tvcevTA.jpg"
+    },
+    {
+      "name": "Toad Confrontation Singing",
+      "description": "Fukasaku and Shima (S) use Toad Confrontation Singing on all enemies dealing 15 damage for 2 turns. If any enemy uses a new skill during Toad Confrontation Singing they will have their mental and ranged skills stunned for 1 turn.",
+      "cooldown": 3,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Control",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/A0eWnDM.jpg"
+    },
+    {
+      "name": "Frogs Tag Team",
+      "description": "This skill makes Fukasaku and Shima (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/iaBGOtU.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:33:25.362Z"
+}

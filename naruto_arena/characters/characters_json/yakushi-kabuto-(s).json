@@ -1,0 +1,89 @@
+{
+  "name": "Yakushi Kabuto (S)",
+  "slug": "yakushi-kabuto-(s)",
+  "url": "https://www.naruto-arena.site/chars/yakushi-kabuto-(s)",
+  "pageTitle": "Yakushi Kabuto (S) - Naruto Arena Classic",
+  "description": "After two years, Kabuto remains Orochimaru's subordinate and Sasori's spy. His medical skills continue to improve, in addition to being able to use his current chakra to attack, Kabuto can use the chakra to heal himself instantly.",
+  "requirement": "Mission: A Double Agent",
+  "image": "https://i.imgur.com/lBkxaOw.png",
+  "skills": [
+    {
+      "name": "Charged Mystical Palm",
+      "description": "If used on an enemy: Kabuto heals 5 health, deals 20 piercing damage to one enemy and stuns their stunning skills for 1 turn. If used on himself or an ally: They will heal 20 health, remove all affliction skills from themselves, and ignore stun effects for 1 turn.",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/qGHoQYR.png"
+    },
+    {
+      "name": "Dead Soul Jutsu",
+      "description": "Kabuto deals 25 damage to one enemy. For 2 turns, all other enemies will have their healing skills stunned. Permanently, 'Charged Mystical Palm' will increase its damage and heal by 10. This skill cannot be countered.",
+      "cooldown": 1,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/3LOLnbG.png"
+    },
+    {
+      "name": "Orochimaru Cells Takeover",
+      "description": "Kabuto target himself for 2 turns. During this time, if his health reaches 0, it will be set to 35 and he will gain 2 random chakras and then this skill will end. This skill is invisible until triggered.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/OzDQTw0.png"
+    },
+    {
+      "name": "Kabuto Dodge",
+      "description": "This skill makes Yakushi Kabuto (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/SzVzU5l.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:33:35.591Z"
+}

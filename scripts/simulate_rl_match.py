@@ -159,8 +159,7 @@ def character_to_json(character: CharacterState) -> dict[str, Any]:
                 for reduction in character.status.damage_reductions
             ],
             "damage_over_time": [
-                damage_over_time_to_json(dot)
-                for dot in character.status.damage_over_time
+                damage_over_time_to_json(dot) for dot in character.status.damage_over_time
             ],
             "active_markers": dict(sorted(character.status.active_markers.items())),
             "active_marker_stacks": dict(sorted(character.status.active_marker_stacks.items())),
@@ -195,12 +194,10 @@ def action_to_json(state: GameState, action: Action) -> dict[str, Any]:
             "skill_name": skill.name,
             "target_ids": list(action.target_ids),
             "target_names": [
-                state.get_character(target_id).definition.name
-                for target_id in action.target_ids
+                state.get_character(target_id).definition.name for target_id in action.target_ids
             ],
             "random_payment": {
-                chakra_type.value: amount
-                for chakra_type, amount in action.random_payment.items()
+                chakra_type.value: amount for chakra_type, amount in action.random_payment.items()
             },
             "classes": sorted(skill_class.value for skill_class in skill.classes),
             "target_rule": skill.target_rule.value,

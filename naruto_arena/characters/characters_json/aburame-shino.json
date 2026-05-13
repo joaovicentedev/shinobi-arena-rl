@@ -1,0 +1,89 @@
+{
+  "name": "Aburame Shino",
+  "slug": "aburame-shino",
+  "url": "https://www.naruto-arena.site/chars/aburame-shino",
+  "pageTitle": "Aburame Shino - Naruto Arena Classic",
+  "description": "A Genin from Team 8, Shino is the successor of the Aburame clan, and a very reserved and tactical fighter. Using the bugs that live inside his body, Shino is able to leech the chakra off his enemies, or protect his entire team.",
+  "requirement": "No requirements",
+  "image": "https://i.imgur.com/XSgn9p9.png",
+  "skills": [
+    {
+      "name": "Chakra Leach",
+      "description": "Shino directs his chakra draining bugs to one enemy, dealing 20 affliction damage and stealing 1 taijutsu or genjutsu chakra from their chakra pool. If this skill successfully steals a chakra from the opponent, this skill will cost an extra random chakra for 1 turn.",
+      "cooldown": null,
+      "chakra": [
+        "bloodline"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/mNTreml.png",
+      "chakraColors": [
+        "red"
+      ]
+    },
+    {
+      "name": "Female Bug",
+      "description": "Shino directs one of his female bugs to attach itself. For 4 turns, 'Chakra Leach' will deal 5 additional damage to one enemy. During this time, if that enemy uses a new harmful skill, they will deal 5 less non-affliction damage for 1 turn. This skill stacks.",
+      "cooldown": 2,
+      "chakra": [],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant",
+        "Unique",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/MRWPHSi.png",
+      "chakraColors": []
+    },
+    {
+      "name": "Bug Wall",
+      "description": "Shino calls millions of bugs to create a wall protecting himself and his allies and granting them 20 points of permanent destructible defense.",
+      "cooldown": 5,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/Zvu9ydw.png",
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Bug Clone",
+      "description": "This skill makes Aburame Shino invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/MnV2zJn.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    }
+  ],
+  "scrapedAt": "2026-05-13T01:26:13.621Z",
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "name": "Karin (S)",
+  "slug": "karin-(s)",
+  "url": "https://www.naruto-arena.site/chars/karin-(s)",
+  "pageTitle": "Karin (S) - Naruto Arena Classic",
+  "description": "Karin is a former subordinate of Orochimaru who oversaw one of his secret laboratories. She is a skilled sensor and master of chakra control who now follows Uchiha Sasuke.",
+  "requirement": "Mission: Tsundere Sensor",
+  "image": "https://i.imgur.com/IiLO959.png",
+  "skills": [
+    {
+      "name": "Minds Eye of Kagura",
+      "description": "Karin predicts one enemy. For 1 turn, if that enemy uses a new harmful skill they will be countered and will have their harmful skills stunned for 1 turn; If that enemy uses a helpful skill, the cost of their skills will increase by 1 random chakra for 2 turns. This skill is invisible.",
+      "cooldown": 2,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/Wii6lUN.jpg"
+    },
+    {
+      "name": "Raging Punch",
+      "description": "Karin deals 30 damage to 1 enemy. For 2 turn, that enemy will be unable to use stun skills (this is a stun effect); Does not stack. This skill ignores invulnerability.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "green",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/OlX4UNQ.jpg"
+    },
+    {
+      "name": "Chakra Transfer",
+      "description": "Karin allows one ally to bite her, transferring her chakra to them. That ally will be healed for 35 health and Karin will take 5 affliction damage*.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Chakra",
+        "Affliction*",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/L836ND0.jpg"
+    },
+    {
+      "name": "Precipitous Retreat",
+      "description": "This skill makes Karin (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/NVluVlD.jpg"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:33:49.772Z"
+}

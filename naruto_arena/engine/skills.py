@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
+from typing import TYPE_CHECKING
 
 from naruto_arena.engine.chakra import ChakraCost
 from naruto_arena.engine.effects import ConditionalDamageIncrease, Effect
+
+if TYPE_CHECKING:
+    from naruto_arena.engine.state import GameState
 
 
 class SkillClass(StrEnum):
@@ -16,6 +20,7 @@ class SkillClass(StrEnum):
     RANGED = "Ranged"
     INSTANT = "Instant"
     ACTION = "Action"
+    CONTROL = "Control"
     STUN = "Stun"
     AFFLICTION = "Affliction"
     PASSIVE = "Passive"

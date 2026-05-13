@@ -1,0 +1,133 @@
+{
+  "name": "Sasori of the Red Sand (S)",
+  "slug": "sasori-of-the-red-sand-(s)",
+  "url": "https://www.naruto-arena.site/chars/sasori-of-the-red-sand-(s)",
+  "pageTitle": "Sasori of the Red Sand (S) - Naruto Arena Classic",
+  "description": "Sasori is a senior Akatsuki member and a legendary puppet master. He is even rumored to have defeated an entire nation with puppets alone. ORIGINAL DESIGN: Pavera",
+  "requirement": "Mission: Master of Puppets",
+  "image": "https://i.imgur.com/zosLJnp.png",
+  "skills": [
+    {
+      "name": "Thousand Hands",
+      "description": "Using this skill, Sasori deals 10 damage to an enemy for 2 turns and gains 5 points of destructible defense each turn. If 'Poison Gas' is used on the target in the following turn, it will last 1 additional turn on them.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/uH3QQ4A.png"
+    },
+    {
+      "name": "Poison Gas",
+      "description": "Sasori deals 5 affliction damage to all enemies for 5 turns. During this time, Sasori gains 5 points of destructible defense and any enemy that uses a new harmful skill will be dealt 5 affliction damage. This skill lasts one additional turn on an enemy affected by 'Thousand Hands'. This skill cannot be countered and ends when Sasori is killed.",
+      "cooldown": 4,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/rO92pL5.png"
+    },
+    {
+      "name": "Iron Sand",
+      "description": "Sasori summons the third kazekage's puppet for 3 turns. Each turn, Sasori gains 10 permanent destructible defense and any enemy that uses a new harmful skill on Sasori will take 5 piercing damage. During this time, this skill becomes 'Satetsu Kaiho' and 'Thousand Hands' becomes 'Satetsu Kesshu'.",
+      "cooldown": 4,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/S86HOEG.png"
+    },
+    {
+      "name": "Puppet Protection",
+      "description": "This skill makes Sasori invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/DOMTlX3.png"
+    },
+    {
+      "name": "Satetsu Kaiho",
+      "description": "Sasori gathers a great volume of iron san. This skill deals 30 piercing damage to one enemy. For 2 turns, that enemy will be unable to reduce damage or become invulnerable. Afterwards, Sasori gains 15 points of destructible defense for 1 turn.",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "blue",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/pjprSct.png"
+    },
+    {
+      "name": "Satetsu Kesshu",
+      "description": "Sasori creates a giant sphere of branching spikes. This skill deals 25 piercing damage to all enemies. If an enemy's health drops to 10 or lower, they will be killed. This skill cannot be countered or reflected.",
+      "cooldown": 3,
+      "chakra": [
+        "bloodline",
+        "ninjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "blue",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/XM4Cwb1.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:35:03.985Z"
+}

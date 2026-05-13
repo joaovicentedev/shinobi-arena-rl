@@ -1,0 +1,92 @@
+{
+  "name": "Edo Tensei Deidara (S)",
+  "slug": "edo-tensei-deidara-(s)",
+  "url": "https://www.naruto-arena.site/chars/edo-tensei-deidara-(s)",
+  "pageTitle": "Edo Tensei Deidara (S) - Naruto Arena Classic",
+  "description": "Edo Tensei Deidara (S) has been revived and is immediately sent out to battle. Fighting on the front lines is nothing new to this old soul.",
+  "requirement": "Mission: Deidara Revived",
+  "image": "https://i.imgur.com/7aBMAQ1.jpg",
+  "skills": [
+    {
+      "name": "Katsu!",
+      "description": "Deidara detonates all his bombs creating a great explosion, first becoming invulnerable for 1 turn and after dealing 5 piercing damage to all enemies. Afterwards, all stacks from Deidara's skills will be removed. This skill cannot be countered.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/FxYBog1.png"
+    },
+    {
+      "name": "Bat Bombs",
+      "description": "Deidara deals 10 affliction damage to all enemies. Permanently, 'Katsu!' will deal 5 additional damage to them. For 1 turn, any enemy that uses a new skill will receive 15 additional damage instead from 'Katsu!'. The following turn, 'Jellyfish Explosives' will deal 5 additional damage.",
+      "cooldown": 1,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Affliction",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/uUJNeJC.png"
+    },
+    {
+      "name": "Jellyfish Explosives",
+      "description": "Deidara deals 20 piercing damage to one enemy. Permanently, 'Katsu!' will deal 10 additional damage to that enemy. For 1 turn, any enemy that uses a new skill will permanently receive 10 additional damage from 'Katsu!'. The following turn, 'Bat Bombs' will deal 5 additional damage.",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/jLHzVyh.png"
+    },
+    {
+      "name": "Chakra Clay Trap",
+      "description": "Deidara creates a trap to one enemy. For 1 turn, if that enemy uses a new harmful skill they will be countered and will take 20 piercing damage. Permanently, the countered enemy will receive 10 additional damage from 'Katsu!'. The target of this skill is invisible.",
+      "cooldown": 2,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/x8ZtRYB.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:37:15.804Z"
+}

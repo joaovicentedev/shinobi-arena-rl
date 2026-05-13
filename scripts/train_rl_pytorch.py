@@ -12,15 +12,11 @@ import torch
 import torch.nn.functional as F
 from torch.distributions import Categorical
 
-from naruto_arena.rl.action_space import (
-    ACTION_KIND_ORDER,
-    FactoredAction,
-    ActionKind,
-)
+from naruto_arena.rl.action_space import ACTION_KIND_ORDER, ActionKind, FactoredAction
 from naruto_arena.rl.env import NarutoArenaLearningEnv
 from naruto_arena.rl.model import (
-    MODEL_ARCHITECTURES,
     MODEL_ARCH_MLP,
+    MODEL_ARCHITECTURES,
     PolicyOutput,
     create_actor_critic,
     model_arch_from_checkpoint,
@@ -169,9 +165,7 @@ def load_initial_model(
         )
     checkpoint_perfect_info = bool(checkpoint.get("perfect_info", False))
     if checkpoint_perfect_info != perfect_info:
-        raise ValueError(
-            "Initial checkpoint perfect_info setting does not match current training."
-        )
+        raise ValueError("Initial checkpoint perfect_info setting does not match current training.")
     model.load_state_dict(checkpoint["model_state_dict"])
 
 
@@ -304,7 +298,7 @@ def _sample_masked(
 
 
 def update_model(
-    model: ActorCritic,
+    model: torch.nn.Module,
     optimizer: torch.optim.Optimizer,
     batch: list[dict[str, list[torch.Tensor] | list[float] | int | None]],
     value_coef: float,

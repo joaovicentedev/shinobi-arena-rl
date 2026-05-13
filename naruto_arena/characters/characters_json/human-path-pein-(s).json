@@ -1,0 +1,110 @@
+{
+  "name": "Human Path Pein (S)",
+  "slug": "human-path-pein-(s)",
+  "url": "https://www.naruto-arena.site/chars/human-path-pein-(s)",
+  "pageTitle": "Human Path Pein (S) - Naruto Arena Classic",
+  "description": "Human Path Pein (S) is one of the six paths of Pein. This path is a mind reader and gathers intel for the other paths.",
+  "requirement": "Mission: Human Path",
+  "image": "https://i.imgur.com/xTKMxAC.png",
+  "skills": [
+    {
+      "name": "Mind Invasion",
+      "description": "Human Path deals 20 piercing damage to one enemy and stuns their harmful skills for 1 turn. The following turn, this skill becomes 'Soul Steal'.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Mental",
+        "Instant",
+        "Melee",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/6xhap33.png"
+    },
+    {
+      "name": "Brain Plunder",
+      "description": "Human Path steals 10 HP from one enemy, makes them unable to reduce damage or become invulnerable for 1 turn, and reveals their invisible skills for 3 turns. Next turn, if Human uses a new harmful skill, that enemy will have their helpful skills stunned for 1 turn.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Melee",
+        "Instant",
+        "Affliction",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/mrdaBde.png"
+    },
+    {
+      "name": "Sneak Attack",
+      "description": "Human Path Pein (S) launches a sneak attack dealing 25 piercing damage to one enemy. This skill ignores invulnerability.",
+      "cooldown": 1,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/Dj31tST.png"
+    },
+    {
+      "name": "Rinnegan Awareness",
+      "description": "This skill makes Human Path Pein (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/yaN7Bbk.png"
+    },
+    {
+      "name": "Soul Steal",
+      "description": "Human Path rips the soul of an enemy affected by 'Mind Invasion', stealing 20 HP from them and dealing 15 affliction damage. If that enemy's health drops to 5 or less health, they will be instantly killed. This skill ignores invulnerability.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu",
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "green",
+        "white"
+      ],
+      "classes": [
+        "Mental",
+        "Instant",
+        "Melee",
+        "Unique",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/Vutl4fY.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:35:51.382Z"
+}

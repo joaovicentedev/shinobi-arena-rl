@@ -1,0 +1,112 @@
+{
+  "name": "Chiyo (S)",
+  "slug": "chiyo-(s)",
+  "url": "https://www.naruto-arena.site/chars/chiyo-(s)",
+  "pageTitle": "Chiyo (S) - Naruto Arena Classic",
+  "description": "The grandmother of Sasori(s) and elder ninja of the Sand Village, Chiyo is a well known and accomplished puppet master and builder.",
+  "requirement": "Mission: Coming Out of Retirement",
+  "image": "https://i.imgur.com/Xwi4eLx.png",
+  "skills": [
+    {
+      "name": "White Secret Attack Rampage",
+      "description": "Chiyo directs her puppets to devastate the battlefield, dealing 20 damage to a random enemy for 1 turn. The following turn, a second random enemy will also be dealt 20 damage. The second target is invisible. The next use of 'Sanbou Kyuukai' will deal 5 aditional damage. This skill stacks.",
+      "cooldown": null,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Action",
+        "Ranged",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/6rGUR71.png"
+    },
+    {
+      "name": "Sanbou Kyuukai",
+      "description": "This skill deals 20 piercing damage to one enemy and stuns their non-mental skills for 1 turn. Also for 1 turn, that enemy will receive 5 additional damage from all sources. This skill ignores invulnerability.",
+      "cooldown": 2,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Ranged",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/nEG0auz.png"
+    },
+    {
+      "name": "Ally Puppetry",
+      "description": "Chiyo controls one ally for 3 turns. Each turn, that ally will nullify the first physical or chakra non-affliction skill used on them. During this time, their melee skills will deal 25% more damage. The following 2 turns, this skill will be replaced. This skill ends if Chiyo is killed.",
+      "cooldown": 2,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/bMu8gne.png"
+    },
+    {
+      "name": "Chakra Shield",
+      "description": "This skill makes Chiyo (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/BdXtVD4.png"
+    },
+    {
+      "name": "One's Own Life Reincarnation",
+      "description": "Chiyo selects one ally, giving them all of her current remaining health. Afterwards, Chiyo will instantly die. The chosen ally gains 1 random chakra for the rest of the game. This skill can also be used on dead allies.",
+      "cooldown": null,
+      "chakra": [
+        "random",
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/8tkBGN3.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:32:11.706Z"
+}

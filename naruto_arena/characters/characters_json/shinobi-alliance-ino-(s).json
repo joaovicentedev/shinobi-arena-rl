@@ -1,0 +1,84 @@
+{
+  "name": "Shinobi Alliance Ino (S)",
+  "slug": "shinobi-alliance-ino-(s)",
+  "url": "https://www.naruto-arena.site/chars/shinobi-alliance-ino-(s)",
+  "pageTitle": "Shinobi Alliance Ino (S) - Naruto Arena Classic",
+  "description": "Not one to be left behind, Ino has trained non-stop to improve her abilities and teamwork. With her improved techniques, Ino can not only control her enemies, but her allies too all while seeing everything on the battlefield.",
+  "requirement": "Mission: Yamanaka Florist at War",
+  "image": "https://i.imgur.com/QO2cH82.png",
+  "skills": [
+    {
+      "name": "Mind Body Switch Interference",
+      "description": "Ino prepares to interfere with one enemy for 1 turn. The following turn, that enemy will receive 15 damage and if that enemy uses a new harmful skill, they will be countered and this skill will be replaced by the countered skill for 1 turn. This skill is invisible and can copy all skills.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/TMRliKS.png"
+    },
+    {
+      "name": "Enhanced Proxy Surveillance",
+      "description": "For 3 turns all damage reduction and destructible defense effects all enemies use will be reduced by 15, percentage damage reduction will be reduced by 50% and Ino will know when and where any skill is used. This skill can't be countered, reflected and is invisible.",
+      "cooldown": 3,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/3PFyj5Q.png"
+    },
+    {
+      "name": "Mind Clone Switch",
+      "description": "Ino enters the mind of both of her allies, making their bodies fight on regardless of their state. For 3 turns, both of Ino's allies will ignore all harmful effects other than damage and chakra cost changes. This skill is invisible and will end if Ino dies.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/XG8euoA.png"
+    },
+    {
+      "name": "Ino Dodge",
+      "description": "This skill makes Shinobi Alliance Ino (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/tvbIXcC.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:36:49.290Z"
+}

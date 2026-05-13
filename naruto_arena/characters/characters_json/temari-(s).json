@@ -1,0 +1,84 @@
+{
+  "name": "Temari (S)",
+  "slug": "temari-(s)",
+  "url": "https://www.naruto-arena.site/chars/temari-(s)",
+  "pageTitle": "Temari (S) - Naruto Arena Classic",
+  "description": "Temari (S) has grown over the years. She is now a Jounin as well as the sister of Kankuro and Gaara. Temari is also the Hidden Sand Village's ambassador to the Hidden Leaf Village.",
+  "requirement": "Mission: The Third Sand Sibling",
+  "image": "https://i.imgur.com/jKSd8JS.png",
+  "skills": [
+    {
+      "name": "Fan Increase Moon",
+      "description": "Temari opens her fan and reveals a moon. Temari gains 5 points of damage reduction and increase her damage by 5 permanently. This skill stacks and can only be used 3 times.",
+      "cooldown": null,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/1wTEObW.png"
+    },
+    {
+      "name": "Wind Scythe",
+      "description": "Using Wind Scythe Temari (S) deals 20 piercing damage to one enemy.",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/1Dw5I8M.png"
+    },
+    {
+      "name": "Immense Cutting Whirlwind",
+      "description": "Temari creates an immense whirlwind in the battlefield, dealing 20 damage to all enemies and lowering their non-affliction damage by 10 for 1 turn.",
+      "cooldown": 1,
+      "chakra": [
+        "ninjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "blue",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/Lwfgjry.png"
+    },
+    {
+      "name": "Fan Barrier",
+      "description": "This skill makes Temari (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/dIOxpHr.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:32:22.464Z"
+}

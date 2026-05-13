@@ -169,6 +169,18 @@ def check_passive_triggers(state: GameState, character: CharacterState) -> None:
             character.status.damage_reductions.append(
                 ActiveDamageReduction(0, 1_000_000, unpierceable=True, percent=25)
             )
+    if character.definition.id == "akimichi_chouji":
+        passive_id = "butterfly_mode"
+        if (
+            character.status.marker_stacks("akimichi_pills") >= 3
+            and not character.passives.get(passive_id, False)
+            and not character.passive_triggered.get(passive_id, False)
+        ):
+            character.passives[passive_id] = True
+            character.passive_triggered[passive_id] = True
+            character.status.damage_reductions.append(
+                ActiveDamageReduction(0, 1_000_000, unpierceable=True, percent=75)
+            )
 
 
 def tick_start_of_turn_effects(state: GameState, player_id: int) -> None:
@@ -176,6 +188,8 @@ def tick_start_of_turn_effects(state: GameState, player_id: int) -> None:
     for character in player.living_characters():
         if character.passives.get("kyuubi_chakra_awakening", False):
             character.hp = min(character.max_hp, character.hp + 5)
+        if character.passives.get("butterfly_mode", False):
+            player.chakra.add(state.rng.choice(list(ChakraType)), 1)
         dots: list[ActiveDamageOverTime] = []
         for dot in character.status.damage_over_time:
             deal_damage(

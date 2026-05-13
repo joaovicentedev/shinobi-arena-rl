@@ -1,0 +1,85 @@
+{
+  "name": "Edo Tensei Muu (S)",
+  "slug": "edo-tensei-muu-(s)",
+  "url": "https://www.naruto-arena.site/chars/edo-tensei-muu-(s)",
+  "pageTitle": "Edo Tensei Muu (S) - Naruto Arena Classic",
+  "description": "Muu, the Second Tsuchikage, was revived against his will to fight. He is a skilled spy, capable of infiltrating the battlefield undetected, in addition to his Kekkei Touta, the atomic detachment, capable of turning enemies into dust in a matter of moments.",
+  "requirement": "Mission: The Null Man",
+  "image": "https://i.imgur.com/Ms96j1y.png",
+  "skills": [
+    {
+      "name": "Fission",
+      "description": "ET Muu grant himself or one ally 50% of unpierceable damage reduction points for 1 turn. During this turn, any enemy that uses a new skill on that ally will receive 5 additional damage from non-affliction skills permanently. This skill is invisible.",
+      "cooldown": 2,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/IDYuApM.png"
+    },
+    {
+      "name": "Atomic Detachment",
+      "description": "ET Muu deals 20 damage to one enemy and an additional 15 piercing damage the first turn and 10 piercing damage the following turn. During this time, that enemy's skills will cost 1 additional random chakra. This skill ends if that enemy uses a new skill.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/rUORWDd.png"
+    },
+    {
+      "name": "Chameleon Covering",
+      "description": "ET Muu makes himself or one ally ignore all harmful effects except damage for 1 turn. If the protected character receive a new harmful skill, 'Atomic Detachment1 will cost 2 random chakra for 1 turn. This skill is invisible.",
+      "cooldown": 2,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/ssBY4vX.png"
+    },
+    {
+      "name": "Sensorial Awareness",
+      "description": "This skill makes Edo Tensei Muu (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://imgur.com/tFwLc31.jpg"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:38:23.430Z"
+}

@@ -1,0 +1,88 @@
+{
+  "name": "Edo Tensei Jinin (S)",
+  "slug": "edo-tensei-jinin-(s)",
+  "url": "https://www.naruto-arena.site/chars/edo-tensei-jinin-(s)",
+  "pageTitle": "Edo Tensei Jinin (S) - Naruto Arena Classic",
+  "description": "Edo Tensei Jinin (S) is a former member of the seven swordsman of the mist. Using his sword Kabutowari he will demonstrate the power of the previous generation on the battttle.",
+  "requirement": "Mission: The Hammer of the Mist",
+  "image": "https://i.imgur.com/e8llxor.png",
+  "skills": [
+    {
+      "name": "Silent Killing Axe",
+      "description": "ET Jinin deals 20 piercing damage to one enemy and marks them for 2 turns. While marked, they will be unable to reduce damage or become invulnerable. If the target is marked by 'Silent Killing Hammer', it's duration is extended by 1 turn.",
+      "cooldown": 1,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/lPSrqRk.png"
+    },
+    {
+      "name": "Silent Killing Hammer",
+      "description": "ET Jinin deals 20 damage to one enemy, stuns their non-mental skills and markes them for 1 turn. While marked, they will receive 5 additional non-affliction damage and will ignore counters and reflects. If the target is marked by 'Silent Killing Axe', it's duration is extended by 1 turn.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/vGy1eyq.png"
+    },
+    {
+      "name": "Axe & Hammer Smash",
+      "description": "ET Jinin deals 30 damage to one enemy. Before dealing damage, if they are marked by 'Silent Killing Axe', this will destroy destructible defense. If marked by 'Silent Killing Hammer', this will convert any damage reduction into additional non-affliction damage received instead. If marked by both, this deals an additional 10 damage and stuns them for 1 turn.",
+      "cooldown": 1,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/DzoBZvG.png"
+    },
+    {
+      "name": "Skilled Evasion",
+      "description": "This skill makes Edo Tensei Jinin (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/URUFtuo.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:37:50.112Z"
+}

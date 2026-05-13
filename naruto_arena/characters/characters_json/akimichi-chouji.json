@@ -1,0 +1,97 @@
+{
+  "name": "Akimichi Chouji",
+  "slug": "akimichi-chouji",
+  "url": "https://www.naruto-arena.site/chars/akimichi-chouji",
+  "pageTitle": "Akimichi Chouji - Naruto Arena Classic",
+  "description": "A Genin from Team 10, Chouji is a member of the Akimichi clan, a large eater, and a close friend to his allies. While innately strong, Chouji is able to sacrifice his own life using special pills from his clan to become insanely powerful.",
+  "requirement": "No requirements",
+  "image": "https://i.imgur.com/NxOq035.png",
+  "skills": [
+    {
+      "name": "Partial Double Size",
+      "description": "Chouji doubles the size of his arms and attacks one enemy, dealing 20 damage to them.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/cnZD5Wd.png",
+      "chakraColors": [
+        "green"
+      ]
+    },
+    {
+      "name": "Meat Tank",
+      "description": "Chouji transforms into a meat tank, becoming invulnerable for 2 turns. If targetable, one enemy will be dealt 10 damage for 2 turns.",
+      "cooldown": 2,
+      "chakra": [
+        "bloodline"
+      ],
+      "classes": [
+        "Physical",
+        "Action",
+        "Instant*",
+        "Melee"
+      ],
+      "image": "https://i.imgur.com/sCIWub7.png",
+      "chakraColors": [
+        "red"
+      ]
+    },
+    {
+      "name": "Akimichi Pills",
+      "description": "Chouji eats a pill, taking 15 affliction damage*. 'Partial Double Size' will deal 20 additional damage and 'Meat Tank' will deal 10 additional damage permanently. Each use of this skill will deal 5 more affliction damage and will cost 2 additional random chakra. Chouji can only eat three pills.",
+      "cooldown": null,
+      "chakra": [],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique",
+        "Affliction*"
+      ],
+      "image": "https://i.imgur.com/mlL0qYo.png",
+      "chakraColors": []
+    },
+    {
+      "name": "Effortless Block",
+      "description": "This skill makes Akimichi Chouji invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/wVVFj3V.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Passive: Butterfly Mode",
+      "description": "When Chouji eats the three pills, he will activate the Butterfly Mode, gaining 75% unpierceable damage reduction permanently and gaining 1 random chakra every turn.",
+      "cooldown": null,
+      "chakra": [],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/cRqzTG1.png",
+      "chakraColors": []
+    }
+  ],
+  "scrapedAt": "2026-05-13T01:26:24.118Z",
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  }
+}

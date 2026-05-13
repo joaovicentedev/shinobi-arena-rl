@@ -1,0 +1,91 @@
+{
+  "name": "Morino Ibiki (S)",
+  "slug": "morino-ibiki-(s)",
+  "url": "https://www.naruto-arena.site/chars/morino-ibiki-(s)",
+  "pageTitle": "Morino Ibiki (S) - Naruto Arena Classic",
+  "description": "Morino Ibiki (S) is a jounin and the designer of the chuunin exams. He is the leader of the Konoha interrogation squad.",
+  "requirement": "Mission: The Ruthless Interrogater",
+  "image": "https://i.imgur.com/2SLQHTC.png",
+  "skills": [
+    {
+      "name": "Payback",
+      "description": "Ibiki deals 5 affliction damage to one enemy permanently. During this time, if that enemy's health drops to 15 or less, they will be instantly killed. While active, Ibiki's other harmful skills will cost 1 less random chakra. This skill ends when Ibiki or the target dies and cannot be used while active.",
+      "cooldown": null,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Melee",
+        "Instant",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/H8ASuee.png"
+    },
+    {
+      "name": "Summoning: Iron Maiden",
+      "description": "Ibiki summons a giant cat and traps one enemy inside of it, dealing 20 piercing damage to that enemy. For 2 turns, each turn that enemy uses a new harmful skill, they will be dealt 20 piercing damage. Ibiki will also gain 20 destructible defense when this skill is used.",
+      "cooldown": 3,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/dlz9xZH.png"
+    },
+    {
+      "name": "Summoning: Torture Chamber",
+      "description": "Ibiki traps one enemy inside his torture chambers, dealing 20 piercing damage to that enemy. For 2 turns, each turn that enemy does not a new skill, they will be dealt 20 piercing damage. Ibiki will also gain 20 destructible defense when this skill is used.",
+      "cooldown": 3,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/hOOexDH.png"
+    },
+    {
+      "name": "Sliding Evasion",
+      "description": "This skill makes Morino Ibiki (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/MU5P2zq.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:31:46.547Z"
+}

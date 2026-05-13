@@ -1,0 +1,93 @@
+{
+  "name": "Mangekyou Sasuke (S)",
+  "slug": "mangekyou-sasuke-(s)",
+  "url": "https://www.naruto-arena.site/chars/mangekyou-sasuke-(s)",
+  "pageTitle": "Mangekyou Sasuke (S) - Naruto Arena Classic",
+  "description": "Mangekyou Sasuke (S), Sasuke after defeating his older brother Itachi has gained the mangekyou sharingan. Sasuke is now a member of the Akatsuki, and also the leader of the newly created Team Taka, whose goal is to destroy the Hidden Leaf.",
+  "requirement": "Mission: Awakening of the Mangekyou Sharingan",
+  "image": "https://i.imgur.com/Q3IFFH5.png",
+  "skills": [
+    {
+      "name": "Amaterasu Wave",
+      "description": "Using his Amaterasu in the battlefield, Sasuke deals 12 affliction damage to all enemies for 2 turns. While active, any enemy that does not use a new skill will make 'Amaterasu Wave' last 1 turn longer on them. This skill cannot be used on enemies already affected by it and it cannot be removed.",
+      "cooldown": 2,
+      "chakra": [
+        "ninjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "blue",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Action",
+        "Unique",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/EQO9Xwr.png"
+    },
+    {
+      "name": "Enton Amaterasu",
+      "description": "Sasuke uses his Amaterasu as a shield on himself for 4 turns, granting him 15 points of destructible defense. During this time, any enemy that uses a new non-mental skill on Sasuke will *receive 5 affliction damage permanently. This skill stacks.",
+      "cooldown": 4,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/ZOECvbm.png"
+    },
+    {
+      "name": "Dark Genjutsu",
+      "description": "Mangekyou Sasuke (S) deals 25 piercing damage to one enemy. That enemy's physical and chakra skills will be stunned for 1 turn.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/WvskJD1.png"
+    },
+    {
+      "name": "Hawk Summoning",
+      "description": "This skill makes Mangekyou Sasuke (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/TRvpMVO.jpg"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:34:00.231Z"
+}

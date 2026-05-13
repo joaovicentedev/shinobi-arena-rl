@@ -1,0 +1,88 @@
+{
+  "name": "Rock Lee (S)",
+  "slug": "rock-lee-(s)",
+  "url": "https://www.naruto-arena.site/chars/rock-lee-(s)",
+  "pageTitle": "Rock Lee (S) - Naruto Arena Classic",
+  "description": "Now a chuunin, Lee has trained endlessly with Gai, and not only learned new abilities, but has learned what it truly means to fight. In battle, Lee now fights for his friends and allies, growing stronger as they fall around him.",
+  "requirement": "Mission: A Genius of Hard Work",
+  "image": "https://i.imgur.com/DTqDmu4.png",
+  "skills": [
+    {
+      "name": "Leaf Rising Wind",
+      "description": "Lee tries to hinder an enemy, dealing 15 damage to them and lowering all their non-affliction damage by 15 for 2 turns. This skill will deal an additional 10 damage, and the damage reduction effect will last 1 additional turn for each ally that is dead.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/DSfZAbq.png"
+    },
+    {
+      "name": "Leaf Great Whirlwind",
+      "description": "Lee gains momentum, dealing 20 damage to one enemy and gaining 10 points of damage reduction for 1 turn. The following turn this skill will deal an additional 10 damage and grant 10 more damage reduction. This skill will deal an additional 10 damage for every ally that has been killed.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/66wenY8.png"
+    },
+    {
+      "name": "Maximum Force Blast",
+      "description": "Mixing the power of his gates, his allies and everything Lee fights for, he unleashes a powerful attack at one enemy dealing 20 damage to them. This skill will deal an additional 20 damage for each ally",
+      "cooldown": 2,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/1T89JYR.png"
+    },
+    {
+      "name": "Jumping Dodge",
+      "description": "This skill makes Rock Lee (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/Z8QItbi.jpeg"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:31:09.317Z"
+}

@@ -1,0 +1,95 @@
+{
+  "name": "Mizukage (S)",
+  "slug": "mizukage-(s)",
+  "url": "https://www.naruto-arena.site/chars/mizukage-(s)",
+  "pageTitle": "Mizukage (S) - Naruto Arena Classic",
+  "description": "Terumi Mei is the Fifth Mizukage, after the dreadful reign of Yagura Karatachi ended, she became Mizukage and worked tirelessly to reform internal policies and recreate diplomatic relations with other villages",
+  "requirement": "Mission: The Fifth Mizukage",
+  "image": "https://i.imgur.com/1WgnEmN.png",
+  "skills": [
+    {
+      "name": "Lava Wall",
+      "description": "Terumi Mei Uses lava wall dealing 25 affliction damage to one enemy and stuns their mental and ranged skills for 1 turn. This skill cannot be countered or reflected. During 'Prision Lava Wall' this skill will deal 35 affliction damage and cost one more random chakra.",
+      "cooldown": 1,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Unique",
+        "Instant",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/q55j0xl.png"
+    },
+    {
+      "name": "Prision Lava Wall",
+      "description": "Terumi Mei creates a Prision of Lava dealing 5 affliction damage for 3 turns to all enemies. During this time, each turn a random enemy will become invulnerable to friendly skills. 'Lava Wall' and 'Skilled Mist' is improved during this skill*.",
+      "cooldown": 4,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Unique",
+        "Action",
+        "Affliction",
+        "Instant*"
+      ],
+      "image": "https://i.imgur.com/yxgf33E.png"
+    },
+    {
+      "name": "Skilled Mist",
+      "description": "Terumi Mei uses Skilled Mist to destroy all enemies destructible defense and dealing 15 affliction damage to them for 2 turns. This skill cannot be countered, reflected or removed. During 'Prision Lava Wall' this skill will deals 5 more affliction damage.",
+      "cooldown": 2,
+      "chakra": [
+        "bloodline",
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "red",
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Action",
+        "Unique",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/LJbscdA.png"
+    },
+    {
+      "name": "Fast Evade",
+      "description": "This skill makes Mizukage (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/UZ6Erok.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:34:10.417Z"
+}

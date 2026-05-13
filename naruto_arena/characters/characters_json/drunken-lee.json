@@ -1,0 +1,87 @@
+{
+  "name": "Drunken Lee",
+  "slug": "drunken-lee",
+  "url": "https://www.naruto-arena.site/chars/drunken-lee",
+  "pageTitle": "Drunken Lee - Naruto Arena Classic",
+  "description": "Rock Lee has accidentally drunk too much Alcohol and has awakened his natural Drunken Fist Technique which has given him amazing speed and unpredictability.",
+  "requirement": "Mission: The Drunken Master",
+  "image": "https://i.imgur.com/QYXQyIZ.png",
+  "skills": [
+    {
+      "name": "Unpredictable Assault",
+      "description": "Using his drunken master abilities, Lee deals 20 damage to one enemy that cannot be countered. For 1 turn, if that enemy uses a new harmful skill, Lee will instantly heal 10 health. Permanently, Lee will deal 5 additional damage. This effect stacks.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/cMMgVUq.png"
+    },
+    {
+      "name": "Drunken Fist",
+      "description": "Lee charges at an enemy and hits them with a knockout blow, dealing 30 damage to that enemy, and for 1 turn, their skills will deal 100% less damage.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/qQsZR3t.png"
+    },
+    {
+      "name": "Drunken Counter",
+      "description": "Lee targets himself or an ally. For 1 turn, the first harmful physical or melee skill used on that ally will be countered. If successfully, the countered enemy will have 'Unpredictable Assault' used on them. This skill is invisible.",
+      "cooldown": 2,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/56rirZI.png"
+    },
+    {
+      "name": "Drunken Leap",
+      "description": "This skill makes Drunken Lee invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/WWza0iI.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:29:50.214Z"
+}

@@ -1,0 +1,91 @@
+{
+  "name": "Edo Tensei Sakon (S)",
+  "slug": "edo-tensei-sakon-(s)",
+  "url": "https://www.naruto-arena.site/chars/edo-tensei-sakon-(s)",
+  "pageTitle": "Edo Tensei Sakon (S) - Naruto Arena Classic",
+  "description": "Reanimated by Kabuto during the Fourth Shinobi World War along with their Sound Four teammates, Sakon and Ukon relish being on the battlefield once again. Dynamically splitting and merging their bodies through the use of their Cursed Seal, the twins fight as a powerful unit, showing no mercy to anyone.",
+  "requirement": "Mission: Sakon is revived",
+  "image": "https://i.imgur.com/SZvKvma.png",
+  "skills": [
+    {
+      "name": "Enhanced Gatling Punch",
+      "description": "Sakon rapidly punches one enemy, dealing 20 damage and 15 piercing damage to them. For 1 turn, that enemy deal 15 less non-affliction damage and will be unable to become invulnerable. The following turn, 'Parasite Demon' will be improved and deal 20 affliction damage instead.",
+      "cooldown": 1,
+      "chakra": [
+        "taijutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "green",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/ZR38u95.png"
+    },
+    {
+      "name": "Parasite Demon",
+      "description": "Sakon enters an enemy's body, dealing 20 damage to them and stunning their harmful skills for 1 turn. This skill cannot be used on the same target next turn. The following turn, 'Enhanced Gatling Punch' will deal 5 additional damage.",
+      "cooldown": null,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/gYjh7DV.png"
+    },
+    {
+      "name": "Summoning: Triple Rashoman",
+      "description": "Sakon summons the walls of triple Rashoman, removing all harmful skills from him and gaining 15 points of destructible defense for every skill he has used in the game. This skill will increase its current cooldown by 1 for every 15 destructible defense granted. These stacks reset when used.",
+      "cooldown": 1,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/myrNy2w.png"
+    },
+    {
+      "name": "Sakon: Chakra Unseal",
+      "description": "This skill makes Sakon invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/KxXqw14.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:38:49.871Z"
+}

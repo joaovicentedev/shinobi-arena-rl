@@ -1,0 +1,86 @@
+{
+  "name": "Kinuta Dosu",
+  "slug": "kinuta-dosu",
+  "url": "https://www.naruto-arena.site/chars/kinuta-dosu",
+  "pageTitle": "Kinuta Dosu - Naruto Arena Classic",
+  "description": "Perhaps the strongest of the three sound genin, Kinuta Dosu uses his implanted Melody Arm to amplify sound waves and increase the power of his taijutsu.",
+  "requirement": "No requirements",
+  "image": "https://i.imgur.com/eX7lgm2.png",
+  "skills": [
+    {
+      "name": "Resonating Echo Drill",
+      "description": "Dosu attacks with his drill, dealing 20 damage to one enemy. For 1 turn, that enemy will deal 15 less non-affliction damage with their physical and chakra skills. If used after 'Sound Manipulation', this skill will deal an additional 10 damage.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/iiBIyJS.png",
+      "chakraColors": [
+        "green"
+      ]
+    },
+    {
+      "name": "Sound Manipulation",
+      "description": "Dosu manipulates the sound to directly disorient one enemy, dealing 10 damage to them and stunning their skills for 1 turn.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu"
+      ],
+      "classes": [
+        "Mental",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/FsCfPfd.png",
+      "chakraColors": [
+        "white"
+      ]
+    },
+    {
+      "name": "Melody Arm Tuning",
+      "description": "Dosu fine-tunes his Melody Arm to produce debilitating sound vibrations. The following 5 turns, 'Resonating Echo Drill' will deal 20 additional damage and 'Sound Manipulation' will deal 10 additional damage.",
+      "cooldown": 5,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/ONsIZzw.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Dosu Hide",
+      "description": "This skill makes Kinuta Dosu invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/Jqlym0M.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    }
+  ],
+  "scrapedAt": "2026-05-13T01:26:59.509Z",
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  }
+}

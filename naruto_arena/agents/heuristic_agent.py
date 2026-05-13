@@ -20,7 +20,8 @@ class SimpleHeuristicAgent:
         for action in actions:
             if isinstance(action, UseSkillAction):
                 skill = resolved_skill(state, action.actor_id, action.skill_id)
-                if any(isinstance(effect, DirectDamage) for effect in skill.all_effects(state, action.actor_id)):
+                effects = skill.all_effects(state, action.actor_id)
+                if any(isinstance(effect, DirectDamage) for effect in effects):
                     damaging.append(action)
         if damaging:
             damaging.sort(key=lambda action: state.get_character(action.target_ids[0]).hp)

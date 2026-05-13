@@ -1,0 +1,93 @@
+{
+  "name": "Naraka Path Pein (S)",
+  "slug": "naraka-path-pein-(s)",
+  "url": "https://www.naruto-arena.site/chars/naraka-path-pein-(s)",
+  "pageTitle": "Naraka Path Pein (S) - Naruto Arena Classic",
+  "description": "Naraka Path Pein (S) is one of the six paths of Pein. This path is able to interrogate it's enemies at will. Naraka Path Pein (S) can also give life as well as take it.",
+  "requirement": "Mission: Naraka Path",
+  "image": "https://i.imgur.com/mkVVxYO.png",
+  "skills": [
+    {
+      "name": "Outer Path",
+      "description": "Naraka Path summons the Outer Path, dealing 10 affliction damage to all enemies for 3 turns. During this time, 'Judgement' can be used.",
+      "cooldown": 2,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Action",
+        "Ranged",
+        "Unique",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/4aboIoQ.png"
+    },
+    {
+      "name": "Judgement",
+      "description": "Naraka executes an enemy affected by 'Outer Path', stealing 35 health from them. For 1 turn, that enemy will ignore healing effects.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant",
+        "Melee",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/xf6e75f.png"
+    },
+    {
+      "name": "Rejuvenation",
+      "description": "Naraka Path uses Rejuvination on himself or an ally, healing them for 25 health and removing all affliction skills from them. This skill can be used on dead allies. If used on a dead ally, 'Rejuvination' will have its cost increased by 1 genjutsu chakra and heal increased by 15 permanently.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Mental",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/zaX6YtB.png"
+    },
+    {
+      "name": "Chakra Rod Deflection",
+      "description": "This skill makes Naraka Path Pein (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/Ry4Xmau.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:35:58.444Z"
+}

@@ -1,0 +1,97 @@
+{
+  "name": "White Zetsu (S)",
+  "slug": "white-zetsu-(s)",
+  "url": "https://www.naruto-arena.site/chars/white-zetsu-(s)",
+  "pageTitle": "White Zetsu (S) - Naruto Arena Classic",
+  "description": "A countless army born from Hashirama's cells—harmless in appearance, deadly in numbers. Character submited by: Akats.",
+  "requirement": "Mission: The clones of Zetsu",
+  "image": "https://i.imgur.com/p9n6C0W.png",
+  "skills": [
+    {
+      "name": "White Zetsu Host",
+      "description": "White Zetsu cannot go invulnerable permanently. Each turn he stacks 3 clones, and if stunned will gain 15 unpiearceable damage the following turn. At 3 Clones stacks he gains 15 damage reduction. At 6, he gains 15 destructible defens. At 9, he ignores affliction damage. Each skill he use consumes 3 clones.",
+      "cooldown": 4,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://imgur.com/Eq2B2IB.jpg"
+    },
+    {
+      "name": "Clones Assault",
+      "description": "At 3/6/9 clones, this skill cost an additional random chakra and deals 20/40/60 piercing damage to one enemy. This skill cannot be countered.",
+      "cooldown": null,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://imgur.com/JD95N1j.jpg"
+    },
+    {
+      "name": "Mass Reproduction",
+      "description": "White Zetsu Clones will mass produce all over the battlefield for 4 turns, dealing 10 damage to one random enemy at the same time one random ally will gain 10 damage reduction. During this time this turns into Parasitic Grab.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Action"
+      ],
+      "image": "https://imgur.com/fp698ah.jpg"
+    },
+    {
+      "name": "White Assimilation: Poison Mist",
+      "description": "White Zetsu will target all enemies on the battlefield for 2 turns. All enemies will become invulnerable to friendly skills and take 5 more damage from White Zetsu skills.",
+      "cooldown": 3,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Control"
+      ],
+      "image": "https://imgur.com/VVo9M1W.jpg"
+    },
+    {
+      "name": "Parasitic Grab",
+      "description": "White Zetsu will make one enemy unable to target anyone else but White Zetsu for 1 turn. They will take 50% more damage from White Zetsu skills for 2 turns.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/Kko8ZaJ.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:36:14.039Z"
+}

@@ -1,0 +1,91 @@
+{
+  "name": "Abumi Zaku",
+  "slug": "abumi-zaku",
+  "url": "https://www.naruto-arena.site/chars/abumi-zaku",
+  "pageTitle": "Abumi Zaku - Naruto Arena Classic",
+  "description": "Abumi Zaku is one of the three sound genin sent to the chuunin exams. He was surgically altered with hollow tubes in his arms, allowing him to create waves of compressed air.",
+  "requirement": "No requirements",
+  "image": "https://i.imgur.com/zCdcIJ8.png",
+  "skills": [
+    {
+      "name": "Air Cutter",
+      "description": "Zaku fires a blast of supersonic air at one enemy, dealing 25 damage to them. The following turn, Zaku can use 'Extreme Air Cutter'.",
+      "cooldown": null,
+      "chakra": [
+        "bloodline"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/tm12H2k.png",
+      "chakraColors": [
+        "red"
+      ]
+    },
+    {
+      "name": "Wall of Air",
+      "description": "Zaku alters his air wave to protect one ally for 1 turn. The first harmful skill used on that ally will be countered. If successful, Zaku will instantly apply 'Air Cutter' on the countered enemy. This skill is invisible.",
+      "cooldown": 2,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/upWnlDl.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Extreme Air Cutter",
+      "description": "Zaku boosts his air waves to a frightening level and deals 45 damage to all enemies. Afterwards, Zaku gains 1 random chakra.",
+      "cooldown": null,
+      "chakra": [
+        "bloodline",
+        "random",
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/Yo7IQNe.png",
+      "chakraColors": [
+        "red",
+        "black/gray",
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Airwave Deflection",
+      "description": "This skill makes Abumi Zaku invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/xssUpbi.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    }
+  ],
+  "scrapedAt": "2026-05-13T01:26:56.104Z",
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  }
+}

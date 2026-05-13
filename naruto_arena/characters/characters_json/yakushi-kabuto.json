@@ -1,0 +1,85 @@
+{
+  "name": "Yakushi Kabuto",
+  "slug": "yakushi-kabuto",
+  "url": "https://www.naruto-arena.site/chars/yakushi-kabuto",
+  "pageTitle": "Yakushi Kabuto - Naruto Arena Classic",
+  "description": "Kabuto was once found on the battlefield, was taught medical ninjutsu, and now assists Orochimaru. He uses his medical skill for both offence and defense.",
+  "requirement": "Mission: Survival",
+  "image": "https://i.imgur.com/ZIyW33w.png",
+  "skills": [
+    {
+      "name": "Mystical Palm Technique",
+      "description": "Kabuto custs one enemy through their flesh like a scalpel, dealing 20 piercing damage to them. For 1 turn, that enemy's harmful skills will cost 1 additional random chakra, and they will receive 10 additional damage from melee skills. This additional damage effect may only trigger once per turn.",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Melee"
+      ],
+      "image": "https://i.imgur.com/jyPztJT.png"
+    },
+    {
+      "name": "Temple of Nirvana",
+      "description": "Kabuto creates a large scale genjutsu. For 1 turn, any enemy that uses a new skill will have their harmful skills stunned and will receive 5 additional damage from melee skills for 1 turn. This skill is invisible.",
+      "cooldown": 3,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Mental",
+        "Instant",
+        "Ranged"
+      ],
+      "image": "https://i.imgur.com/6MjweCd.png"
+    },
+    {
+      "name": "Secret Healing Wound Destruction",
+      "description": "Kabuto removes all enemy affliction skills from himself, gains 50% damage reduction for 1 turn and heals 35 health. This skill will heal 5 less health each time it is used.",
+      "cooldown": 1,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/nFIj8h6.png"
+    },
+    {
+      "name": "Dead Soul Technique",
+      "description": "This skill makes Yakushi Kabuto invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/1DqPb41.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:28:31.209Z"
+}

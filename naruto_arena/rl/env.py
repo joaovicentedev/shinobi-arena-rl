@@ -113,11 +113,16 @@ class NarutoArenaLearningEnv:
         reward = _shaped_reward(before, after, terminated, self.state.winner, self.learning_player)
         if isinstance(action, EndTurnAction):
             reward -= _unused_chakra_penalty(self.state, self.learning_player)
-        return self.observation(), reward, terminated or truncated, {
-            "winner": self.state.winner,
-            "truncated": truncated,
-            "actions": self.actions_taken,
-        }
+        return (
+            self.observation(),
+            reward,
+            terminated or truncated,
+            {
+                "winner": self.state.winner,
+                "truncated": truncated,
+                "actions": self.actions_taken,
+            },
+        )
 
     def _play_opponent_turn_if_needed(self) -> None:
         assert self.state is not None

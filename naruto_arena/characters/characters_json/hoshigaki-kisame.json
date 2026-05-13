@@ -1,0 +1,89 @@
+{
+  "name": "Hoshigaki Kisame",
+  "slug": "hoshigaki-kisame",
+  "url": "https://www.naruto-arena.site/chars/hoshigaki-kisame",
+  "pageTitle": "Hoshigaki Kisame - Naruto Arena Classic",
+  "description": "Formerly one of the Seven Swordsmen of the Mist Village, Kisame is an S-Rank missing nin. He is Itachi's partner and a member of a mysterious organization. Designed with Redxmaverick.",
+  "requirement": "Mission: S-Rank Criminal Kisame!",
+  "image": "https://i.imgur.com/M8xGMby.png",
+  "skills": [
+    {
+      "name": "Samehada Slash",
+      "description": "Using his sword, Samehada, Kisame slashes one enemy who takes 20 damage and stunning their physical or chakra skills for 1 turn.",
+      "cooldown": 1,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Melee"
+      ],
+      "image": "https://i.imgur.com/kyyyNkG.png"
+    },
+    {
+      "name": "Samehada Shred",
+      "description": "Kisame unwraps Samehada and shreds one enemy. For 3 turns that enemy takes 15 piercing damage and one bloodline or genjutsu chakra is stolen from their pool.",
+      "cooldown": 3,
+      "chakra": [
+        "taijutsu",
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "green",
+        "blue"
+      ],
+      "classes": [
+        "Physical",
+        "Action",
+        "Melee",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/7ZVF8bP.png"
+    },
+    {
+      "name": "Water Shark Projectile",
+      "description": "Using a stream of compressed water Kisame does 20 damage to one enemy and stuns their chakra or ranged skills for 1 turn.",
+      "cooldown": 1,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Ranged"
+      ],
+      "image": "https://i.imgur.com/5Y5yd7c.png"
+    },
+    {
+      "name": "Kisame Replacement Technique",
+      "description": "This skill makes Hoshigaki Kisame invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/hGOwcqv.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:30:08.724Z"
+}

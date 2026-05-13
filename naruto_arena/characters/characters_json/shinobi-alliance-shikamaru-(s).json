@@ -1,0 +1,107 @@
+{
+  "name": "Shinobi Alliance Shikamaru (S)",
+  "slug": "shinobi-alliance-shikamaru-(s)",
+  "url": "https://www.naruto-arena.site/chars/shinobi-alliance-shikamaru-(s)",
+  "pageTitle": "Shinobi Alliance Shikamaru (S) - Naruto Arena Classic",
+  "description": "Shikamaru, now in the war. He remains a good and talented ninja, using his shadows more effectively, in addition to using the help of his allies very well, and forcing his enemies to help him too.",
+  "requirement": "Mission: The Strategist At War",
+  "image": "https://i.imgur.com/fVgHpUK.png",
+  "skills": [
+    {
+      "name": "Continuous Shadow Sewing",
+      "description": "Shikamaru deals 30 piercing damage to one enemy, stuns their physical and ranged skills. If that enemy doesn't use any new skill, they will take more 15 piercing damage. During 'Tatical Range Increase' this skill deal 15 more damage.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/aLnt17m.png"
+    },
+    {
+      "name": "Tatical Range Increase",
+      "description": "For 1 turn, Shikamaru will ignore all damage dealt and will target all enemies. During this time, the enemies that use a new skill will be able to be target of 'Tatical Shadow Bind' for 1 turn. This skill becomes 'Tatical Shadow Bind' for 1 turn and is invisible.",
+      "cooldown": 2,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/PNq9tnn.png"
+    },
+    {
+      "name": "Ally Shadow Control",
+      "description": "Shikamaru target one ally for 3 turns, making their skills have 1 cooldown decreased, and if Shikamaru uses a new skill that ally will become invulnerable to damage skills for 1 turn.",
+      "cooldown": 3,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/73Vhlng.png"
+    },
+    {
+      "name": "Hide and Thinking",
+      "description": "This skill makes Shinobi Alliance Shikamaru (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/pPAXCWL.png"
+    },
+    {
+      "name": "Tatical Shadow Bind",
+      "description": "Shikamaru deals 30 damage to all enemies affected by 'Tatical Range Increase', and for 2 turns stuns their physical and chakra skills.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Control"
+      ],
+      "image": "https://i.imgur.com/vnSogry.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:36:42.366Z"
+}

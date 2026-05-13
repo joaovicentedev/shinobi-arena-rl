@@ -1,0 +1,86 @@
+{
+  "name": "Tsuchi Kin",
+  "slug": "tsuchi-kin",
+  "url": "https://www.naruto-arena.site/chars/tsuchi-kin",
+  "pageTitle": "Tsuchi Kin - Naruto Arena Classic",
+  "description": "One of the three sound genin; Kin is a confident ninja that likes to toy with her enemies before finishing them off. Using a set of needles and bells, Kin has a number of different effects she can create to attack her enemies.",
+  "requirement": "No requirements",
+  "image": "https://i.imgur.com/omC0mq2.png",
+  "skills": [
+    {
+      "name": "Illusion Bell Needles",
+      "description": "One enemy receives 15 damage. If used one turn after 'Needle and Bell Trap', that enemy will receive 15 additional damage. If used one turn after 'Unnerving Bells', that enemy will receive 25 additional damage.",
+      "cooldown": null,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/GpC5xdJ.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Needle and Bell Trap",
+      "description": "One enemy will be stunned for 1 turn. If used one turn after 'Illusion Bell Needles', that enemy will be unable to reduce damage or become invulnerbale for 2 turns.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/jvEeZjs.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Unnerving Bells",
+      "description": "One enemy loses 1 random chakra. If used one turn after 'Illusion Bell Needles', that enemy will receive 5 additional non-affliction damage from physical skills permanently.",
+      "cooldown": 2,
+      "chakra": [
+        "genjutsu"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/SDppNlB.png",
+      "chakraColors": [
+        "white"
+      ]
+    },
+    {
+      "name": "Sharp Analysis",
+      "description": "This skill makes Tsuchi Kin invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/E4r6BN9.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    }
+  ],
+  "scrapedAt": "2026-05-13T01:26:52.671Z",
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  }
+}

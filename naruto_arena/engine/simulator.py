@@ -54,9 +54,7 @@ def legal_actions(state: GameState, player_id: int) -> list[Action]:
             if skill.target_rule == TargetRule.ALL_ALLIES:
                 if not targets_meet_requirements(state, character.instance_id, skill.id, ally_ids):
                     continue
-                actions.append(
-                    UseSkillAction(player_id, character.instance_id, skill.id, ally_ids)
-                )
+                actions.append(UseSkillAction(player_id, character.instance_id, skill.id, ally_ids))
                 continue
             if skill.target_rule == TargetRule.SELF:
                 targets = (character.instance_id,)
@@ -103,6 +101,11 @@ def can_use_skill(state: GameState, actor_id: str, skill_id: str) -> bool:
         skill = resolved_skill(state, actor_id, skill_id)
     except KeyError:
         return False
+    if actor.status.has_marker("harmful_skills_stunned") and skill.target_rule in {
+        TargetRule.ONE_ENEMY,
+        TargetRule.ALL_ENEMIES,
+    }:
+        return False
     if any(skill_class.value in actor.status.class_stuns for skill_class in skill.classes):
         return False
     if skill.is_passive() or actor.cooldowns.get(skill.id, 0) > 0:
@@ -144,6 +147,9 @@ def apply_skill(state: GameState, action: UseSkillAction) -> None:
             delattr(state, "_current_damage_penalty")
         else:
             state._current_damage_penalty = previous_penalty  # type: ignore[attr-defined]
+    from naruto_arena.engine.rules import check_passive_triggers
+
+    check_passive_triggers(state, actor)
     if skill.cooldown > 0:
         actor.cooldowns[skill.id] = skill.cooldown + 1
     actor.used_skill_this_turn = True
@@ -209,8 +215,7 @@ def validate_targets(
             raise RulesError("Invalid ally target.")
     if target_rule == TargetRule.ALL_ALLIES:
         ally_ids = {
-            character.instance_id
-            for character in state.players[player_id].living_characters()
+            character.instance_id for character in state.players[player_id].living_characters()
         }
         if set(target_ids) != ally_ids:
             raise RulesError("Invalid ally targets.")
@@ -219,8 +224,7 @@ def validate_targets(
             raise RulesError("Invalid enemy target.")
     if target_rule == TargetRule.ALL_ENEMIES:
         enemy_ids = {
-            character.instance_id
-            for character in state.players[1 - player_id].living_characters()
+            character.instance_id for character in state.players[1 - player_id].living_characters()
         }
         if set(target_ids) != enemy_ids:
             raise RulesError("Invalid enemy targets.")

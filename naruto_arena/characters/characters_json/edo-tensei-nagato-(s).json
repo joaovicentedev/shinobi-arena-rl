@@ -1,0 +1,96 @@
+{
+  "name": "Edo Tensei Nagato (S)",
+  "slug": "edo-tensei-nagato-(s)",
+  "url": "https://www.naruto-arena.site/chars/edo-tensei-nagato-(s)",
+  "pageTitle": "Edo Tensei Nagato (S) - Naruto Arena Classic",
+  "description": "Edo Tensei Nagato (S) has been summoned to do battle. He is fully aware of the fact that he is being controlled again as he was while he was living.",
+  "requirement": "Mission: The Fallen Uzumaki",
+  "image": "https://i.imgur.com/OHrOGRY.png",
+  "skills": [
+    {
+      "name": "Human Path",
+      "description": "Nagato draws out the lifeforce of an enemy, stealing 10 health and dealing 20 damage. That enemy will be stunned for 1 turn.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Melee",
+        "Unique",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/fxmFmAZ.png"
+    },
+    {
+      "name": "Preta Path",
+      "description": "Nagato drains an enemy's energy, stealing 10 health points and removing 1 taijutsu or ninjutsu chakra from their chakra pool.",
+      "cooldown": 1,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Unique",
+        "Instant",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/VFpdMPm.png"
+    },
+    {
+      "name": "Animal Path",
+      "description": "Nagato summons various animals and creatures, dealing 10 damage to all enemies for 2 turns. The following 2 turns, any enemy that uses a new skill on Edo Tensei Nagato will be *dealt 10 piercing damage.",
+      "cooldown": 2,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Unique",
+        "Action",
+        "*Instant"
+      ],
+      "image": "https://i.imgur.com/bEnVUtF.png"
+    },
+    {
+      "name": "Naraka Path",
+      "description": "This skill makes Edo Tensei Nagato (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Unique",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/dZTXSyj.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:38:16.610Z"
+}

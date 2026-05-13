@@ -1,0 +1,83 @@
+{
+  "name": "Tenten",
+  "slug": "tenten",
+  "url": "https://www.naruto-arena.site/chars/tenten",
+  "pageTitle": "Tenten - Naruto Arena Classic",
+  "description": "A member of team Gai, Tenten is a tomboyish weapon specialist who believes a kunoichi can be as strong as a male ninja. In battle, Tenten surrounds the battlefield in weapons, using them for damage and for disabling her",
+  "requirement": "No requirements",
+  "image": "https://i.imgur.com/3RNjwki.png",
+  "skills": [
+    {
+      "name": "Twin Rising Dragons",
+      "description": "Tenten creates numerous weapons from her scroll, dealing 15 damage to all enemies for 2 turns. The following 2 turns, this skill will cost 1 taijutsu and will deal 20 damage to one enemy and 10 to all others.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu",
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Action"
+      ],
+      "image": "https://i.imgur.com/9UePPXl.png",
+      "chakraColors": [
+        "green",
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Twin Rising Dragons Trap",
+      "description": "Tenten uses multiple projectiles on all enemies, dealing 0 damage to them and an additional 5 damage for every time they were damaged by 'Twin Rising Dragons'. While improved, all enemies will have their harmful non-mental skills stunned for 1 turn.",
+      "cooldown": 2,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/4XOUAzc.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Twin Rising Dragons Full Release",
+      "description": "Tenten releases her full potential, becoming invulnerable to non-mental damage skills for 1 turn. The following 4 turns, the initial use of 'Twin Rising Dragons' will last 3 turns instead and 'Twin Rising Dragons Trap' will stun all harmful non-mental skills for 1 turn.",
+      "cooldown": 4,
+      "chakra": [],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/HYiz4vX.png",
+      "chakraColors": []
+    },
+    {
+      "name": "Spiked Boulder Shield",
+      "description": "This skill makes Tenten invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/Wft7mi8.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    }
+  ],
+  "scrapedAt": "2026-05-13T01:26:30.921Z",
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  }
+}

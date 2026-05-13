@@ -1,0 +1,107 @@
+{
+  "name": "Cursed Seal Mizuki",
+  "slug": "cursed-seal-mizuki",
+  "url": "https://www.naruto-arena.site/chars/cursed-seal-mizuki",
+  "pageTitle": "Cursed Seal Mizuki - Naruto Arena Classic",
+  "description": "Touji Mizuki is now a missing nin that has been corrupted by his own dark ambitions and the will of Orochimaru.",
+  "requirement": "Mission: The Corrupted by Dark Ambitons",
+  "image": "https://i.imgur.com/V6AYlxZ.png",
+  "skills": [
+    {
+      "name": "Curse Seal: Tiger",
+      "description": "By drinking a curse seal potion, Mizuki transforms into a wild tiger. The following 3 turns, Mizuki will gain 35 points of destructible defense and during this time, 'Curse Seal: Tiger Punch' will be >improved< and 'Puppets Genjutsu' will be replaced by its alternate version.",
+      "cooldown": 3,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/wZY8Gg2.jpg"
+    },
+    {
+      "name": "Curse Seal: Tiger Punch",
+      "description": "Mizuki fiercely punches one enemy, dealing 30 damage to them. For 2 turns, that enemy's skills will deal 15 less non-affliction damage. During 'Curse Seal: Tiger', this skill is improved and will deal 45 damage instead. This skill does not stack.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "green",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/EEkuwOc.png"
+    },
+    {
+      "name": "Puppets Genjutsu",
+      "description": "Mizuki puts an enemy under a genjutsu. For 2 turns, that enemy will be unable to reduce damage or become invulnerable, and their skills will deal 5 less damage and will cost 1 additional random chakra. During this time, if that enemy does not use a new skill, they will take 10 damage.",
+      "cooldown": 2,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/jHkf7ow.png"
+    },
+    {
+      "name": "Evil Intentions",
+      "description": "This skill makes Cursed Seal Mizuki invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/eus0S47.png"
+    },
+    {
+      "name": "Curse Seal: Tiger Bomb",
+      "description": "Mizuki charges like a bomb, dealing 45 damage to one enemy and becoming invulnerable for 1 turn.",
+      "cooldown": 1,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/P7chy1d.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:29:54.666Z"
+}

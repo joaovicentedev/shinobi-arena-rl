@@ -1,0 +1,101 @@
+{
+  "name": "Edo Tensei Kimimaro (S)",
+  "slug": "edo-tensei-kimimaro-(s)",
+  "url": "https://www.naruto-arena.site/chars/edo-tensei-kimimaro-(s)",
+  "pageTitle": "Edo Tensei Kimimaro (S) - Naruto Arena Classic",
+  "description": "Edo Tensei Kimimaro was resurrected by Kabuto as an unfeeling weapon of war, his loyalty and discipline preserved even beyond death. He wields the Shikotsumyaku Kekkei Genkai to turn his own skeleton into blades and armor, growing stronger the longer he remains unbroken. Every strike hardens his defenses, and every moment of restraint builds toward an inevitable, bone-shattering end.",
+  "requirement": "Mission: Kimimaro is revived",
+  "image": "https://i.imgur.com/RsnAqle.png",
+  "skills": [
+    {
+      "name": "Bone Rush",
+      "description": "Kimimaro rushes one enemy, dealing 20 damage to them and gaining 1 stack of 'Bone Spikes'. This skill will deal 10 additional damage for every 2 stacks of 'Bone Spikes'.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/R99hVji.png"
+    },
+    {
+      "name": "Skeleton Splinters",
+      "description": "Kimimaro unleashes sharpened bone shards at all enemies, dealing 15 piercing damage to them and gaining 1 stack of 'Bones Spikes'. This skill will deal 5 additional damage for every 2 stacks of 'Bone Spikes'.",
+      "cooldown": 1,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/zAM5MKp.png"
+    },
+    {
+      "name": "Dead Man's Skewer",
+      "description": "Kimimaro impales his opponents, dealing 40 piercing damage to one enemy and 15 piercing damage to all other enemies. This skill cannot be countered, and requires at least 4 stacks of 'Bone Spikes' to be used, and all stacks are removed afterwards.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu",
+        "bloodline"
+      ],
+      "chakraColors": [
+        "green",
+        "red"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/Ndsk2qL.png"
+    },
+    {
+      "name": "Shikotsumyaku Guard",
+      "description": "For 1 turn, he gains 30 points of destructible defense. During this time, any enemy that uses a new non-mental skill on Kimimaro will be dealt 5 piercing damage and Kimimaro will gain 1 stack of 'Bone Spikes'.",
+      "cooldown": 2,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/A7hIwUT.png"
+    },
+    {
+      "name": "Bone Spikes",
+      "description": "Every time Kimimaro gains 1 stack of 'Bone Spikes', he will gain 5% unpierceable damage reduction permanently. During this time, any enemy that uses a new non-mental skill on Kimimaro will take 3 piercing damage*. This skill stacks, and cannot be removed.",
+      "cooldown": null,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Melee*"
+      ],
+      "image": "https://i.imgur.com/Mua5XgZ.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:38:56.982Z"
+}

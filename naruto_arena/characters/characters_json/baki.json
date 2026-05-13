@@ -1,0 +1,90 @@
+{
+  "name": "Baki",
+  "slug": "baki",
+  "url": "https://www.naruto-arena.site/chars/baki",
+  "pageTitle": "Baki - Naruto Arena Classic",
+  "description": "Baki is the Jounin team leader of Gaara, Temari, and Kankuro. A mysterious and perhaps devious but loyal man, he specializes in wind element jutsu.",
+  "requirement": "Mission: Sand Siblings at War",
+  "image": "https://i.imgur.com/f0YWgRx.png",
+  "skills": [
+    {
+      "name": "Wind Blade",
+      "description": "Baki conjures a maelstrom of blade-like wind and does 40 piercing damage to one enemy.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu",
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "white",
+        "blue"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Ranged"
+      ],
+      "image": "https://i.imgur.com/eBHHYKn.png"
+    },
+    {
+      "name": "Sudden Strike",
+      "description": "A simple, blindingly fast attack leaving an illusionary trail to throw off enemies. Baki does 20 piercing damage to one enemy.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Melee"
+      ],
+      "image": "https://i.imgur.com/TvDIanB.png"
+    },
+    {
+      "name": "Flak Jacket",
+      "description": "Baki puts on a specialized flak jacket from the sand village on himself, or one ally granting that character 50 destructible defense for 4 turns. During this time, that character will ignore all harmful effects except damage until this defense is destroyed.",
+      "cooldown": 4,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/kaJlaHV.png"
+    },
+    {
+      "name": "Baki Teleportation",
+      "description": "This skill makes Baki invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/ZBwSMFi.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:29:11.071Z"
+}

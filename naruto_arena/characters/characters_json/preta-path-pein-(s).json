@@ -1,0 +1,90 @@
+{
+  "name": "Preta Path Pein (S)",
+  "slug": "preta-path-pein-(s)",
+  "url": "https://www.naruto-arena.site/chars/preta-path-pein-(s)",
+  "pageTitle": "Preta Path Pein (S) - Naruto Arena Classic",
+  "description": "Preta Path Pein (S) is one of the six paths of Pein. This path is able to nulify jutsus and is used mostly for defensive tactics.",
+  "requirement": "Mission: Preta Path",
+  "image": "https://i.imgur.com/kvUIdzR.jpg",
+  "skills": [
+    {
+      "name": "Energy Shield",
+      "description": "Preta Path (S) uses Energy Shield on one enemy removing 1 bloodline or Genjutsu chakra. That enemy will be dealt 25 piercing damage.",
+      "cooldown": 1,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Ranged",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/aSF7Q2O.jpg"
+    },
+    {
+      "name": "Rinnegan Absorption",
+      "description": "Preta Path Pein (S) uses Rinnegan Absorption to protect himself. All damage dealt on Preta Path Pein (S) will be ignored and any enemy that uses a new damaging harmful skill on him will lose chakra equal the chakra cost of the skill used (except Random Chakra). This skill is invisible.",
+      "cooldown": 2,
+      "chakra": [
+        "ninjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "blue",
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/n1Rd3Tt.jpg"
+    },
+    {
+      "name": "Chakra Pin",
+      "description": "Using Chakra Pin Preta Path Pein (S) stuns one enemy's harmful skills. Preta Path Pein (S) will steal 1 bloodline or genjutsu chakra.",
+      "cooldown": 1,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/RyzGOhN.jpg"
+    },
+    {
+      "name": "Agile Dodge",
+      "description": "This skill makes Preta Path Pein (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/9RZKQtI.jpg"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:35:55.056Z"
+}

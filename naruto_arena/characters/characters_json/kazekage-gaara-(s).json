@@ -1,0 +1,85 @@
+{
+  "name": "Kazekage Gaara (S)",
+  "slug": "kazekage-gaara-(s)",
+  "url": "https://www.naruto-arena.site/chars/kazekage-gaara-(s)",
+  "pageTitle": "Kazekage Gaara (S) - Naruto Arena Classic",
+  "description": "After a few short years and much soul-searching, Gaara(s) has risen to be his village's Kazekage. Rather than destroying others he now protects those he cares about to prove his existence.",
+  "requirement": "Mission: Finding His Purpose",
+  "image": "https://i.imgur.com/Osg9lfR.png",
+  "skills": [
+    {
+      "name": "Desert Missile",
+      "description": "Using thin ropes of sand Kazekage Gaara hunts down one enemy dealing 10 piercing damage to them. New skills used by the target of this skill will deal 15 less non-affliction damage for 1 turn.",
+      "cooldown": null,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Ranged"
+      ],
+      "image": "https://i.imgur.com/etCSgky.png"
+    },
+    {
+      "name": "Desert Prison",
+      "description": "Kazekage Gaara entraps and crushes one enemy in a giant maw of sand stunning their physical and chakra skills for 1 turn and dealing 10 piercing damage to them.",
+      "cooldown": 1,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Ranged"
+      ],
+      "image": "https://i.imgur.com/qYDrZ1Z.png"
+    },
+    {
+      "name": "Sand Summoning",
+      "description": "Gaara and his allies will gain 5 permanent destructible defense every 3 turns, for the rest of the game. Permanently, 'Desert Missile' will deal 15 additional damage and 'Desert Prison' will deal 20 additional damage. This skill can only be used twice.",
+      "cooldown": 4,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/JkrNwQV.png"
+    },
+    {
+      "name": "Sand Sphere",
+      "description": "This skill makes Kazekage Gaara (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/0g1o76R.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:32:18.943Z"
+}

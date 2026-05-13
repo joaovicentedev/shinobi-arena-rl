@@ -123,8 +123,7 @@ def test_bug_wall_grants_all_allies_permanent_destructible_defense() -> None:
     )
 
     assert [
-        character.status.damage_reductions[-1].amount
-        for character in state.players[0].characters
+        character.status.damage_reductions[-1].amount for character in state.players[0].characters
     ] == [20, 20, 20]
 
 

@@ -1,0 +1,88 @@
+{
+  "name": "Shizune",
+  "slug": "shizune",
+  "url": "https://www.naruto-arena.site/chars/shizune",
+  "pageTitle": "Shizune - Naruto Arena Classic",
+  "description": "Shizune is the aid of Tsunade. A competent combatant using poisons and needles, she is also a highly skilled medic who is able to heal her allies.",
+  "requirement": "Mission: Medical Training",
+  "image": "https://i.imgur.com/V4ZPeu0.png",
+  "skills": [
+    {
+      "name": "Prepared Needle Shot",
+      "description": "Shizune shoots hidden needles at one enemy dealing 15 piercing damage to them. During 'Poison Mist', this skill will be improved and will make an enemy receive 25% more damage from harmful skills for 1 turn.",
+      "cooldown": null,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Ranged"
+      ],
+      "image": "https://i.imgur.com/IXgvJIk.png"
+    },
+    {
+      "name": "Poison Mist",
+      "description": "Shizune breaths a poison cloud on one enemy who takes 12 affliction damage for 3 turns. During this time, 'Prepared Needle Shot' will improved and will make an enemy receive 25% more damage from all harmful skills for 1 turn.",
+      "cooldown": 2,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Ranged",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/pAf7GAy.png"
+    },
+    {
+      "name": "Healing Resuscitation Regeneration",
+      "description": "Using this advanced healing technique, Shizune heals one ally for 35 health and removes all enemy affliction skills from them.",
+      "cooldown": 1,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/PXcTQUt.png"
+    },
+    {
+      "name": "Shizune Dodge",
+      "description": "This skill makes Shizune invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/ykKkwKV.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:28:26.676Z"
+}

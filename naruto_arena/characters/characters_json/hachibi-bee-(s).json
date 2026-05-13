@@ -1,0 +1,86 @@
+{
+  "name": "Hachibi Bee (S)",
+  "slug": "hachibi-bee-(s)",
+  "url": "https://www.naruto-arena.site/chars/hachibi-bee-(s)",
+  "pageTitle": "Hachibi Bee (S) - Naruto Arena Classic",
+  "description": "Having fully bonded with and gained control of the Eight-Tails, Gyuuki, and thus having become what is known as a perfect jinchuuriki, Killer Bee is able to use its abilities to their fullest extent. Using the Eight-Tails' protective chakra to gradually become much stronger, Bee can run a rampage on the battlefield.",
+  "requirement": "Mission: Eight Tails Released",
+  "image": "https://i.imgur.com/B1cuEbq.png",
+  "skills": [
+    {
+      "name": "Hachibi Chakra Bones",
+      "description": "Hachibi Bee enables his skills and gains 1 Hachibe Stack. At 1 Hachibi Stack, he gains 5 points of unpierceable damage reduction. At 2 Hachibi Stacks, he gains 30% unpierceable damage reduction. At 3 Hachibi Stacks, he gains 50% unpierceable damage reduction and heals 5 health.",
+      "cooldown": 2,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/SKBAxY8.png"
+    },
+    {
+      "name": "Lariat",
+      "description": "Bee decapitates an enemy, healing 10 health and dealing 30 damage to that enemy. At 2 Hachibi Stacks, this skill will instead deal 40 damage to one enemy and stuns the harmful skills of all other enemies for 1 turn; At 3 Hachibi Stacks, deals 65 piercing damage to one enemy ignoring invulnerability.",
+      "cooldown": 1,
+      "chakra": [
+        "taijutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "green",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/LIy6FVP.png"
+    },
+    {
+      "name": "Hachibi Tailed Beast Bomb",
+      "description": "Bee fires a concentrated energy bomb, healing 10 health and then dealing 20 damage to all enemies; At 2 Hachibi Stacks, this skill will instead deal 20 affliction damage to all enemies for 2 turns (Action classed); At 3 Hachibi Stacks, this skill will instead deal 40 damage to all enemies.",
+      "cooldown": 1,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/HI57mTr.png"
+    },
+    {
+      "name": "Hachibi Tails Block",
+      "description": "This skill makes Hachibi Bee (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/9IKr5u2.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:32:51.200Z"
+}

@@ -1,0 +1,86 @@
+{
+  "name": "Nohara Rin",
+  "slug": "nohara-rin",
+  "url": "https://www.naruto-arena.site/chars/nohara-rin",
+  "pageTitle": "Nohara Rin - Naruto Arena Classic",
+  "description": "A chuunin medical nin assigned to Team Minato, Rin is a quiet and passive girl who focuses on keeping her team mates alive. Using her healing abilities, and her intelligence, Rin is able to heal her allies while trapping her enemies.",
+  "requirement": "No requirements",
+  "image": "https://i.imgur.com/kJ3u53S.png",
+  "skills": [
+    {
+      "name": "Pit Trap",
+      "description": "Rin traps one enemy, dealing 20 piercing damage to them. For 1 turn, if that enemy uses a new skill, they will take another 10 piercing damage. This skill ignores invulnerability.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/k6wzRLL.png",
+      "chakraColors": [
+        "white"
+      ]
+    },
+    {
+      "name": "Healing Touch",
+      "description": "Rin heals herself or an ally for 25 health and removes all harmful affliction skills from them.",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/zLmVk8s.png",
+      "chakraColors": [
+        "blue"
+      ]
+    },
+    {
+      "name": "Medical Kit",
+      "description": "Rin gives her medical kit to herself or an ally, granting them 50% damage reduction and healing them 15 health for 3 turns.",
+      "cooldown": 4,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/c4HwOLU.png",
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Flee",
+      "description": "This skill makes Nohara Rin invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/0XboBBP.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    }
+  ],
+  "scrapedAt": "2026-05-13T01:27:15.483Z",
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  }
+}

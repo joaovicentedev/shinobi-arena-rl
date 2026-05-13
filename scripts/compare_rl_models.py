@@ -200,14 +200,8 @@ def write_report(
             "max_actions": args.max_actions,
             "deterministic": not args.sample,
         },
-        "characters": [
-            {"id": character.id, "name": character.name}
-            for character in characters
-        ],
-        "models": {
-            label: model_stats.to_json()
-            for label, model_stats in stats.items()
-        },
+        "characters": [{"id": character.id, "name": character.name} for character in characters],
+        "models": {label: model_stats.to_json() for label, model_stats in stats.items()},
         "games": games,
     }
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")

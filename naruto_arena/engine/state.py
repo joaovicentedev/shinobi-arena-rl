@@ -25,9 +25,7 @@ class CharacterState:
     def __post_init__(self) -> None:
         if not self.skill_order:
             self.skill_order = [
-                skill.id
-                for skill in self.definition.skills
-                if skill.replacement_for is None
+                skill.id for skill in self.definition.skills if skill.replacement_for is None
             ]
         for skill in self.definition.skills:
             if skill.is_passive():

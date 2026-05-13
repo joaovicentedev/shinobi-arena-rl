@@ -146,10 +146,7 @@ def write_report(
             "model_path": str(model_path),
             "deterministic": deterministic,
         },
-        "characters": [
-            {"id": character.id, "name": character.name}
-            for character in characters
-        ],
+        "characters": [{"id": character.id, "name": character.name} for character in characters],
         "teams": [
             {
                 "rank": rank,

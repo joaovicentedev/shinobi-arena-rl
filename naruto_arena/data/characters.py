@@ -3,15 +3,16 @@ from __future__ import annotations
 from naruto_arena.engine.chakra import ChakraCost, ChakraType
 from naruto_arena.engine.characters import CharacterDefinition
 from naruto_arena.engine.effects import (
-    ConditionalDamageIncrease,
-    ChakraRemoval,
     ChakraGainSteal,
-    DamageReduction,
+    ChakraRemoval,
+    ConditionalDamageIncrease,
     DamageOverTime,
+    DamageReduction,
     DirectDamage,
     Healing,
     Invulnerability,
     PassiveEffect,
+    SelfDamage,
     StatusMarker,
     Stun,
 )
@@ -84,9 +85,7 @@ def has_double_headed_wolf(state, actor_id: str) -> bool:
 
 
 def target_not_marked_by_dynamic_air_marking(state, actor_id: str, target_id: str) -> bool:
-    return not state.get_character(target_id).status.has_marker(
-        f"dynamic_air_marking:{actor_id}"
-    )
+    return not state.get_character(target_id).status.has_marker(f"dynamic_air_marking:{actor_id}")
 
 
 def kiba_damage(amount: int) -> DirectDamage:
@@ -143,6 +142,98 @@ def eight_trigrams_64_palms_protection_effects(
             target_all_allies=True,
         ),
     ]
+
+
+def target_not_marked_by_meditate(state, actor_id: str, target_id: str) -> bool:
+    return not state.get_character(target_id).status.has_marker(f"meditate:{actor_id}")
+
+
+def shikamaru_shadow_imitation_effects(state, actor_id: str, skill: SkillDefinition):
+    del state, actor_id, skill
+    return [
+        Stun(
+            1,
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.CHAKRA, SkillClass.AFFLICTION}),
+        )
+    ]
+
+
+def chouji_pill_stacks(state, actor_id: str) -> int:
+    return state.get_character(actor_id).status.marker_stacks("akimichi_pills")
+
+
+def has_no_akimichi_pills(state, actor_id: str) -> bool:
+    return chouji_pill_stacks(state, actor_id) == 0
+
+
+def has_one_akimichi_pill(state, actor_id: str) -> bool:
+    return chouji_pill_stacks(state, actor_id) == 1
+
+
+def has_two_akimichi_pills(state, actor_id: str) -> bool:
+    return chouji_pill_stacks(state, actor_id) == 2
+
+
+def can_eat_akimichi_pill(state, actor_id: str) -> bool:
+    return chouji_pill_stacks(state, actor_id) < 3
+
+
+def partial_double_size_effects(state, actor_id: str, skill: SkillDefinition):
+    del skill
+    return [DirectDamage(20 + (20 * chouji_pill_stacks(state, actor_id)))]
+
+
+def meat_tank_effects(state, actor_id: str, skill: SkillDefinition):
+    del skill
+    return [
+        DamageOverTime(10 + (10 * chouji_pill_stacks(state, actor_id)), duration=2),
+        Invulnerability(2),
+    ]
+
+
+def akimichi_pills_effects(state, actor_id: str, skill: SkillDefinition):
+    del skill
+    stacks = chouji_pill_stacks(state, actor_id)
+    return [
+        SelfDamage(15 + (5 * stacks), piercing=True, ignore_defenses=True),
+        StatusMarker("akimichi_pills", duration=1_000_000, target_self=True, stackable=True),
+    ]
+
+
+def target_has_chakra_hair_trap(state, actor_id: str, target_id: str) -> bool:
+    return state.get_character(target_id).status.has_marker(f"chakra_hair_strand_trap:{actor_id}")
+
+
+def mind_body_disturbance_effects(state, actor_id: str, skill: SkillDefinition):
+    del skill
+    duration = (
+        2
+        if any(
+            target_has_chakra_hair_trap(state, actor_id, enemy.instance_id)
+            for enemy in state.players[1 - state.owner_of(actor_id)].living_characters()
+        )
+        else 1
+    )
+    return [
+        Stun(1, classes=frozenset({SkillClass.PHYSICAL, SkillClass.CHAKRA})),
+        StatusMarker("cannot_reduce_or_invulnerable", duration=duration),
+    ]
+
+
+def change_of_heart_effects(state, actor_id: str, skill: SkillDefinition):
+    del skill
+    duration = 3
+    return [
+        StatusMarker("cannot_reduce_or_invulnerable", duration=duration),
+        StatusMarker("harmful_skills_stunned", duration=duration),
+        StatusMarker("change_of_heart", duration=duration, source_scoped=True),
+        StatusMarker("art_of_valentine_available", duration=2, target_self=True),
+    ]
+
+
+def art_of_valentine_effects(state, actor_id: str, skill: SkillDefinition):
+    del state, actor_id, skill
+    return [DirectDamage(25, conditional_marker_prefix="change_of_heart", conditional_bonus=5)]
 
 
 UZUMAKI_NARUTO = CharacterDefinition(
@@ -235,9 +326,7 @@ UZUMAKI_NARUTO = CharacterDefinition(
             ),
             cooldown=0,
             chakra_cost=ChakraCost.none(),
-            classes=frozenset(
-                {SkillClass.INSTANT, SkillClass.PASSIVE, SkillClass.UNREMOVABLE}
-            ),
+            classes=frozenset({SkillClass.INSTANT, SkillClass.PASSIVE, SkillClass.UNREMOVABLE}),
             target_rule=TargetRule.NONE,
             effects=(PassiveEffect("kyuubi_chakra_awakening", "Kyuubi's Chakra Awakening"),),
             conditional_damage=(
@@ -277,7 +366,9 @@ SAKURA_HARUNO = CharacterDefinition(
         SkillDefinition(
             id="cure",
             name="Cure",
-            description="Using basic healing techniques, Sakura heals herself or an ally for 25 health.",
+            description=(
+                "Using basic healing techniques, Sakura heals herself or an ally for 25 health."
+            ),
             cooldown=0,
             chakra_cost=ChakraCost({ChakraType.NINJUTSU: 1}),
             classes=frozenset({SkillClass.CHAKRA, SkillClass.INSTANT}),
@@ -360,7 +451,9 @@ SASUKE_UCHIHA = CharacterDefinition(
             ),
             cooldown=3,
             chakra_cost=ChakraCost.none(),
-            classes=frozenset({SkillClass.MENTAL, SkillClass.RANGED, SkillClass.INSTANT, SkillClass.UNIQUE}),
+            classes=frozenset(
+                {SkillClass.MENTAL, SkillClass.RANGED, SkillClass.INSTANT, SkillClass.UNIQUE}
+            ),
             target_rule=TargetRule.ONE_ENEMY,
             effects=(
                 DamageReduction(0, duration=4, percent=25),
@@ -683,6 +776,284 @@ HYUUGA_HINATA = CharacterDefinition(
     ),
 )
 
+NARA_SHIKAMARU = CharacterDefinition(
+    id="nara_shikamaru",
+    name="Nara Shikamaru",
+    description=(
+        "A Genin from Team 10, a member of the Nara clan, Shikamaru is considered "
+        "to be the smartest Genin of all the Konoha 11. Using his bloodline, "
+        "Shikamaru can manipulate the shadows in the battlefield to disable and "
+        "attack his enemies."
+    ),
+    skills=(
+        SkillDefinition(
+            id="meditate",
+            name="Meditate",
+            description=(
+                "Shikamaru begins thinking up a strategy against one enemy, marking "
+                "them for 5 turns. During this time, the initial use of "
+                "'Shadow-Neck Bind' and 'Shadow Imitation' will last 1 additional "
+                "turn on them."
+            ),
+            cooldown=0,
+            chakra_cost=ChakraCost.none(),
+            classes=frozenset({SkillClass.MENTAL, SkillClass.RANGED, SkillClass.INSTANT}),
+            target_rule=TargetRule.ONE_ENEMY,
+            target_requirements=(target_not_marked_by_meditate,),
+            effects=(StatusMarker("meditate", duration=5, source_scoped=True),),
+        ),
+        SkillDefinition(
+            id="shadow_neck_bind",
+            name="Shadow-Neck Bind",
+            description=(
+                "Shikamaru chokes all enemies, making them unable to reduce damage "
+                "or become invulnerable while dealing 15 damage to them for 1 turn."
+            ),
+            cooldown=0,
+            chakra_cost=ChakraCost({ChakraType.GENJUTSU: 1}),
+            classes=frozenset(
+                {
+                    SkillClass.CHAKRA,
+                    SkillClass.RANGED,
+                    SkillClass.ACTION,
+                    SkillClass.INSTANT,
+                }
+            ),
+            target_rule=TargetRule.ALL_ENEMIES,
+            effects=(
+                DamageOverTime(15, duration=1),
+                StatusMarker("cannot_reduce_or_invulnerable", duration=1),
+            ),
+        ),
+        SkillDefinition(
+            id="shadow_imitation",
+            name="Shadow Imitation",
+            description=(
+                "Shikamaru captures all enemies in shadows, stunning their "
+                "non-mental skills for 1 turn."
+            ),
+            cooldown=3,
+            chakra_cost=ChakraCost({ChakraType.GENJUTSU: 1}, random=1),
+            classes=frozenset({SkillClass.CHAKRA, SkillClass.RANGED, SkillClass.CONTROL}),
+            target_rule=TargetRule.ALL_ENEMIES,
+            effect_factory=shikamaru_shadow_imitation_effects,
+        ),
+        SkillDefinition(
+            id="shikamaru_hide",
+            name="Shikamaru Hide",
+            description="This skill makes Nara Shikamaru invulnerable for 1 turn.",
+            cooldown=4,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.MENTAL, SkillClass.INSTANT}),
+            target_rule=TargetRule.SELF,
+            effects=(Invulnerability(1),),
+        ),
+    ),
+)
+
+AKIMICHI_CHOUJI = CharacterDefinition(
+    id="akimichi_chouji",
+    name="Akimichi Chouji",
+    description=(
+        "A Genin from Team 10, Chouji is a member of the Akimichi clan, a large "
+        "eater, and a close friend to his allies. While innately strong, Chouji "
+        "is able to sacrifice his own life using special pills from his clan to "
+        "become insanely powerful."
+    ),
+    skills=(
+        SkillDefinition(
+            id="partial_double_size",
+            name="Partial Double Size",
+            description=(
+                "Chouji doubles the size of his arms and attacks one enemy, "
+                "dealing 20 damage to them."
+            ),
+            cooldown=0,
+            chakra_cost=ChakraCost({ChakraType.TAIJUTSU: 1}),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.MELEE, SkillClass.INSTANT}),
+            target_rule=TargetRule.ONE_ENEMY,
+            effect_factory=partial_double_size_effects,
+        ),
+        SkillDefinition(
+            id="meat_tank",
+            name="Meat Tank",
+            description=(
+                "Chouji transforms into a meat tank, becoming invulnerable for 2 "
+                "turns. If targetable, one enemy will be dealt 10 damage for 2 turns."
+            ),
+            cooldown=2,
+            chakra_cost=ChakraCost({ChakraType.BLOODLINE: 1}),
+            classes=frozenset(
+                {
+                    SkillClass.PHYSICAL,
+                    SkillClass.ACTION,
+                    SkillClass.INSTANT,
+                    SkillClass.MELEE,
+                }
+            ),
+            target_rule=TargetRule.ONE_ENEMY,
+            effect_factory=meat_tank_effects,
+        ),
+        SkillDefinition(
+            id="akimichi_pills",
+            name="Akimichi Pills",
+            description=(
+                "Chouji eats a pill, taking 15 affliction damage. 'Partial Double "
+                "Size' will deal 20 additional damage and 'Meat Tank' will deal "
+                "10 additional damage permanently. Each use of this skill will "
+                "deal 5 more affliction damage and will cost 2 additional random "
+                "chakra. Chouji can only eat three pills."
+            ),
+            cooldown=0,
+            chakra_cost=ChakraCost.none(),
+            classes=frozenset(
+                {SkillClass.CHAKRA, SkillClass.INSTANT, SkillClass.UNIQUE, SkillClass.AFFLICTION}
+            ),
+            target_rule=TargetRule.SELF,
+            requirements=(can_eat_akimichi_pill, has_no_akimichi_pills),
+            effect_factory=akimichi_pills_effects,
+        ),
+        SkillDefinition(
+            id="effortless_block",
+            name="Effortless Block",
+            description="This skill makes Akimichi Chouji invulnerable for 1 turn.",
+            cooldown=4,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.INSTANT}),
+            target_rule=TargetRule.SELF,
+            effects=(Invulnerability(1),),
+        ),
+        SkillDefinition(
+            id="butterfly_mode",
+            name="Passive: Butterfly Mode",
+            description=(
+                "When Chouji eats the three pills, he will activate the Butterfly "
+                "Mode, gaining 75% unpierceable damage reduction permanently and "
+                "gaining 1 random chakra every turn."
+            ),
+            cooldown=0,
+            chakra_cost=ChakraCost.none(),
+            classes=frozenset(
+                {
+                    SkillClass.CHAKRA,
+                    SkillClass.INSTANT,
+                    SkillClass.UNIQUE,
+                    SkillClass.PASSIVE,
+                    SkillClass.UNREMOVABLE,
+                }
+            ),
+            target_rule=TargetRule.NONE,
+            effects=(PassiveEffect("butterfly_mode", "Passive: Butterfly Mode"),),
+        ),
+        SkillDefinition(
+            id="akimichi_pills_after_one",
+            name="Akimichi Pills",
+            description="Chouji eats his second Akimichi pill.",
+            cooldown=0,
+            chakra_cost=ChakraCost(random=2),
+            classes=frozenset(
+                {SkillClass.CHAKRA, SkillClass.INSTANT, SkillClass.UNIQUE, SkillClass.AFFLICTION}
+            ),
+            target_rule=TargetRule.SELF,
+            requirements=(can_eat_akimichi_pill, has_one_akimichi_pill),
+            effect_factory=akimichi_pills_effects,
+            replacement_for="akimichi_pills",
+        ),
+        SkillDefinition(
+            id="akimichi_pills_after_two",
+            name="Akimichi Pills",
+            description="Chouji eats his third Akimichi pill.",
+            cooldown=0,
+            chakra_cost=ChakraCost(random=4),
+            classes=frozenset(
+                {SkillClass.CHAKRA, SkillClass.INSTANT, SkillClass.UNIQUE, SkillClass.AFFLICTION}
+            ),
+            target_rule=TargetRule.SELF,
+            requirements=(can_eat_akimichi_pill, has_two_akimichi_pills),
+            effect_factory=akimichi_pills_effects,
+            replacement_for="akimichi_pills",
+        ),
+    ),
+)
+
+YAMANAKA_INO = CharacterDefinition(
+    id="yamanaka_ino",
+    name="Yamanaka Ino",
+    description=(
+        "A Genin from Team 10, Ino is a member of the Yamanaka clan, and a very "
+        "confident and vain girl. Ino is able to use a variety of abilities to "
+        "take over and control her enemies, making it difficult to tell friend "
+        "from foe."
+    ),
+    skills=(
+        SkillDefinition(
+            id="mind_body_disturbance",
+            name="Mind Body Disturbance",
+            description=(
+                "Using this skill Ino stuns one enemy's physical and chakra skills "
+                "for 1 turn. During this time, that enemy will be unable to reduce "
+                "damage or become invulnerable."
+            ),
+            cooldown=0,
+            chakra_cost=ChakraCost({ChakraType.GENJUTSU: 1}),
+            classes=frozenset({SkillClass.MENTAL, SkillClass.RANGED, SkillClass.INSTANT}),
+            target_rule=TargetRule.ONE_ENEMY,
+            effect_factory=mind_body_disturbance_effects,
+        ),
+        SkillDefinition(
+            id="change_of_heart",
+            name="Change of Heart",
+            description=(
+                "Ino takes over the mind of an enemy. For 3 turns, that enemy "
+                "cannot reduce damage or become invulnerable and their harmful "
+                "skills are stunned."
+            ),
+            cooldown=3,
+            chakra_cost=ChakraCost({ChakraType.GENJUTSU: 2}),
+            classes=frozenset({SkillClass.MENTAL, SkillClass.RANGED, SkillClass.CONTROL}),
+            target_rule=TargetRule.ONE_ENEMY,
+            effect_factory=change_of_heart_effects,
+        ),
+        SkillDefinition(
+            id="chakra_hair_strand_trap",
+            name="Chakra Hair Strand Trap",
+            description=(
+                "Ino creates a trap for an enemy. For 1 turn, if that enemy uses "
+                "a new harmful skill, then for 2 turns, Ino's control skills are "
+                "improved against that enemy. This skill is invisible."
+            ),
+            cooldown=1,
+            chakra_cost=ChakraCost.none(),
+            classes=frozenset({SkillClass.CHAKRA, SkillClass.INSTANT, SkillClass.RANGED}),
+            target_rule=TargetRule.ONE_ENEMY,
+            effects=(StatusMarker("chakra_hair_strand_trap", duration=1, source_scoped=True),),
+        ),
+        SkillDefinition(
+            id="ino_block",
+            name="Ino Block",
+            description="This skill makes Yamanaka Ino invulnerable for 1 turn.",
+            cooldown=4,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.INSTANT}),
+            target_rule=TargetRule.SELF,
+            effects=(Invulnerability(1),),
+        ),
+        SkillDefinition(
+            id="art_of_the_valentine",
+            name="Art of the Valentine",
+            description=(
+                "Ino deals 25 damage to one enemy. If used on an enemy affected "
+                "by 'Change of Heart', this skill will deal 30 damage instead."
+            ),
+            cooldown=0,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.RANGED, SkillClass.INSTANT}),
+            target_rule=TargetRule.ONE_ENEMY,
+            effect_factory=art_of_valentine_effects,
+        ),
+    ),
+)
+
 ALL_CHARACTERS = {
     character.id: character
     for character in (
@@ -692,5 +1063,8 @@ ALL_CHARACTERS = {
         INUZUKA_KIBA,
         ABURAME_SHINO,
         HYUUGA_HINATA,
+        NARA_SHIKAMARU,
+        AKIMICHI_CHOUJI,
+        YAMANAKA_INO,
     )
 }

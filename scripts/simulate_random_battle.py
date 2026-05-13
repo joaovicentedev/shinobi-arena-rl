@@ -22,7 +22,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--game-seed", type=int, default=7, help="Seed for chakra generation.")
     parser.add_argument("--p0-seed", type=int, default=1, help="Seed for player 0 agent decisions.")
     parser.add_argument("--p1-seed", type=int, default=2, help="Seed for player 1 agent decisions.")
-    parser.add_argument("--max-actions", type=int, default=500, help="Maximum actions before stopping.")
+    parser.add_argument(
+        "--max-actions",
+        type=int,
+        default=500,
+        help="Maximum actions before stopping.",
+    )
     parser.add_argument(
         "--allow-reorder",
         action="store_true",

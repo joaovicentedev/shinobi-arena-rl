@@ -1,0 +1,89 @@
+{
+  "name": "Itachi Body Double (S)",
+  "slug": "itachi-body-double-(s)",
+  "url": "https://www.naruto-arena.site/chars/itachi-body-double-(s)",
+  "pageTitle": "Itachi Body Double (S) - Naruto Arena Classic",
+  "description": "By using one of Pein's techniques a Sand Nin spy for Akatsuki is changed to look like Itachi. The body double is controlled by Itachi but only has a third of his chakra.",
+  "requirement": "Mission: The Real Itachi",
+  "image": "https://i.imgur.com/U1zO7L5.jpg",
+  "skills": [
+    {
+      "name": "Finger Genjutsu",
+      "description": "Itachi affects one enemy with Finger Genjutsu for 1 turn. If the affected enemy uses any skill on Itachi Body Double (S) or his allies that skill will be countered and that enemy will take 10 damage and Itachi Body Double (S) will gain 1 genjutsu chakra. The target of this skill is invisible.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Mental",
+        "Instant",
+        "Ranged"
+      ],
+      "image": "https://i.imgur.com/9kA7uYQ.jpg"
+    },
+    {
+      "name": "Genjutsu Reversal",
+      "description": "For 2 turns if any enemy uses a skill which is non-unique on Itachi Body Double (S), he will reflect that skill onto the enemy who used it. This skill is invisible.",
+      "cooldown": 4,
+      "chakra": [
+        "bloodline",
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "red",
+        "white"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/oif8mlK.jpg"
+    },
+    {
+      "name": "Goukakyuu no Jutsu",
+      "description": "Itachi Body Double (S) creates a large fireball that scorches the battlefield. One enemy takes 20 damage. The following turn all enemies take an additional 10 affliction damage.*",
+      "cooldown": 1,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Ranged",
+        "Affliction*"
+      ],
+      "image": "https://i.imgur.com/HUCVDhp.jpg"
+    },
+    {
+      "name": "Illusionary Raven Bunshin",
+      "description": "This skill makes Itachi Body Double (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/oyzXfwY.jpg"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:35:00.526Z"
+}

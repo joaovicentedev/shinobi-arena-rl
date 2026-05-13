@@ -1,0 +1,101 @@
+{
+  "name": "Yamanaka Ino",
+  "slug": "yamanaka-ino",
+  "url": "https://www.naruto-arena.site/chars/yamanaka-ino",
+  "pageTitle": "Yamanaka Ino - Naruto Arena Classic",
+  "description": "A Genin from Team 10, Ino is a member of the Yamanaka clan, and a very confident and vain girl. Ino is able to use a variety of abilities to take over and control her enemies, making it difficult to tell friend from foe.",
+  "requirement": "No requirements",
+  "image": "https://i.imgur.com/5pxmVTr.png",
+  "skills": [
+    {
+      "name": "Mind Body Disturbance",
+      "description": "Using this skill Ino stuns one enemy's physical and chakra skills for 1 turn. During this time, that enemy will be unable to reduce damage or become invulnerable. One random different enemy will receive 20 damage that ignores invulnerability.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/rAnVK81.png",
+      "chakraColors": [
+        "white"
+      ]
+    },
+    {
+      "name": "Change of Heart",
+      "description": "Ino takes over the mind of an enemy. For 3 turns, that enemy cannot reduce damage or become invulnerable and their harmful skills are stunned. The following 2 turns, this skill will be replaced by 'Art of the Valentine'.",
+      "cooldown": 3,
+      "chakra": [
+        "genjutsu",
+        "genjutsu"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Control"
+      ],
+      "image": "https://i.imgur.com/r6vPVIR.png",
+      "chakraColors": [
+        "white",
+        "white"
+      ]
+    },
+    {
+      "name": "Chakra Hair Strand Trap",
+      "description": "Ino creates a trap for an enemy. For 1 turn, if that enemy uses a new harmful skill, then for 2 turns, 'Change of Heart' will last 1 additional turn on that enemy and 'Mind Body Disturbance' will make that enemy unable to reduce damage or become invulnerable for 2 turns instead. This skill is invisible.",
+      "cooldown": 1,
+      "chakra": [],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Ranged"
+      ],
+      "image": "https://i.imgur.com/4VxNq83.png",
+      "chakraColors": []
+    },
+    {
+      "name": "Ino Block",
+      "description": "This skill makes Yamanaka Ino invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/2o5RnKa.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Art of the Valentine",
+      "description": "Ino deals 25 damage to one enemy. If used on an enemy affected by 'Change of Heart', this skill will deal 30 damage instead.",
+      "cooldown": null,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/RfWzT2j.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    }
+  ],
+  "scrapedAt": "2026-05-13T01:26:27.509Z",
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  }
+}

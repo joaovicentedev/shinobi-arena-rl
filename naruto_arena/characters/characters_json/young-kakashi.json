@@ -1,0 +1,83 @@
+{
+  "name": "Young Kakashi",
+  "slug": "young-kakashi",
+  "url": "https://www.naruto-arena.site/chars/young-kakashi",
+  "pageTitle": "Young Kakashi - Naruto Arena Classic",
+  "description": "A jounin at the age of 13 and the son of the legendary White Fang, Kakashi is a member of Team Minato. Using his early ninjutsu, and borrowed sharingan, Kakashi can fight any adult on an equal level.",
+  "requirement": "No requirements",
+  "image": "https://i.imgur.com/Jgctdrf.png",
+  "skills": [
+    {
+      "name": "White Fang Slash",
+      "description": "Using his sword, Young Kakashi deals 20 piercing damage to one enemy. For 1 turn, that enemy will deal 5 less non-affliction damage. The following turn, Young Kakashi will deal 10 additional damage with his skills.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/IpdntOA.png",
+      "chakraColors": [
+        "green"
+      ]
+    },
+    {
+      "name": "Amateur Raikiri",
+      "description": "Using a weaker form of his signature jutsu, Young Kakashi deals 25 piercing damage to one enemy. For 1 turn, that enemy will deal 5 less non-affliction damage. The following turn, Young Kakashi will deal 10 additional damage with his skills.",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/DFBg2VL.png",
+      "chakraColors": [
+        "blue"
+      ]
+    },
+    {
+      "name": "Implanted Sharingan",
+      "description": "For 1 turn, if one enemy uses a skill that removes/steals chakra, Kakashi will gain 1 random chakra; if they use a skill that stuns, Kakashi's skills will stun for 1 turn; if they use a skill that damages, Kakashi will deal additional 10 damage for 1 turn. This skill is invisible. Ends when triggered.",
+      "cooldown": 1,
+      "chakra": [],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/nBwjX6M.png",
+      "chakraColors": []
+    },
+    {
+      "name": "Sword Parry",
+      "description": "This skill makes Young Kakashi invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/2L2GQSA.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    }
+  ],
+  "scrapedAt": "2026-05-13T01:27:07.619Z",
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "name": "Shigure",
+  "slug": "shigure",
+  "url": "https://www.naruto-arena.site/chars/shigure",
+  "pageTitle": "Shigure - Naruto Arena Classic",
+  "description": "A Genin from the Village of Rain, Shigure specializes in using his chakra to control needles hidden in his umbrellas.",
+  "requirement": "Mission: A Rare Opportunity",
+  "image": "https://i.imgur.com/lLYJBpS.png",
+  "skills": [
+    {
+      "name": "Umbrella Toss",
+      "description": "Shigure tosses his umbrellas into the air, gaining 5 points of damage reduction for 3 turns. During this time, any enemy that uses a new skill on Shigure or his allies will be dealt 5 piercing damage. The following 3 turns, 'Sprinkling Needles' may be used. This skill ends when Shigure dies.",
+      "cooldown": 3,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/oo2VNIZ.png"
+    },
+    {
+      "name": "Sprinkling Needles",
+      "description": "Needles rain down from Shigure's umbrellas, dealing 10 piercing damage to all enemies for 3 turns. The following 3 turns, 'Needle Barrage' may be used on enemies affected by this skill. This skill cannot be countered and it requires 'Umbrella Toss' to be used.",
+      "cooldown": 2,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Action",
+        "Ranged"
+      ],
+      "image": "https://i.imgur.com/IiYoFlG.png"
+    },
+    {
+      "name": "Needle Barrage",
+      "description": "Shigure specifically directs needles at one enemy, dealing 30 damage to them. This skill can only target enemies that are affected by 'Sprinkling Needles'.",
+      "cooldown": null,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/72iKrUX.png"
+    },
+    {
+      "name": "Umbrella Block",
+      "description": "This skill makes Shigure invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/SVXZnxK.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:27:41.468Z"
+}

@@ -1,0 +1,113 @@
+{
+  "name": "Shinobi Alliance Chouji (S)",
+  "slug": "shinobi-alliance-chouji-(s)",
+  "url": "https://www.naruto-arena.site/chars/shinobi-alliance-chouji-(s)",
+  "pageTitle": "Shinobi Alliance Chouji (S) - Naruto Arena Classic",
+  "description": "After nearly three years, Chouji has developed in both strength and size, mastering the Akimichi clan techniques. No longer does Chouji need the Akimichi pills to tap into his true strength, instead, he merely needs to control his chakra and become a force to reckon with.",
+  "requirement": "Mission: The Kind Heart Warrior At War",
+  "image": "https://i.imgur.com/ZnJky3h.png",
+  "skills": [
+    {
+      "name": "Butterfly Bullet Bombing",
+      "description": "Chouji slams his fist into an enemy's face, first ignoring all harmful effects other than chakra cost changes for 1 turn and then dealing 30 damage to one enemy. This skill cannot be countered or reflected and Chouji's skills will cost 2 additional random chakra afterwards.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu",
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "green",
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/HTFxUzW.png"
+    },
+    {
+      "name": "Human Bullet Tank",
+      "description": "Chouji rolls over one enemy for 2 turns, dealing 15 damage to them. During this time, Chouji will counter all new physical and chakra skills used on him.* This skill will increase the cost of Chouji's skills by 1 random chakra each turn.",
+      "cooldown": 2,
+      "chakra": [
+        "bloodline",
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Action",
+        "Instant*"
+      ],
+      "image": "https://i.imgur.com/M6ojTSg.png"
+    },
+    {
+      "name": "Butterfly Control",
+      "description": "Using his new found control, Chouji taps into even more power. This skill will be replaced by 'Super-Punch'. Each turn, the existing cost of Chouji's skills will be decreased by 1 random chakra.",
+      "cooldown": null,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/80bFCaV.png"
+    },
+    {
+      "name": "Butterfly Block",
+      "description": "This skill makes Shinobi Alliance Chouji (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/88638R1.png"
+    },
+    {
+      "name": "Super-Punch",
+      "description": "Chouji punches an enemy down with a fistful of chakra, removing all Harmfull effects on him and then dealing 30 damage to one enemy, this skill cannot be countered or reflected and chouji skills cost 2 additional random chakras afterwards.",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu",
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "blue",
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/CZimKdS.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:36:46.016Z"
+}

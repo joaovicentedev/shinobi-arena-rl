@@ -1,0 +1,1402 @@
+[
+  {
+    "name": "Abumi Zaku",
+    "slug": "abumi-zaku",
+    "file": "characters_json/abumi-zaku.json",
+    "url": "https://www.naruto-arena.site/chars/abumi-zaku",
+    "skills": 4
+  },
+  {
+    "name": "Aburame Shino (S)",
+    "slug": "aburame-shino-(s)",
+    "file": "characters_json/aburame-shino-(s).json",
+    "url": "https://www.naruto-arena.site/chars/aburame-shino-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Aburame Shino",
+    "slug": "aburame-shino",
+    "file": "characters_json/aburame-shino.json",
+    "url": "https://www.naruto-arena.site/chars/aburame-shino",
+    "skills": 4
+  },
+  {
+    "name": "Aburame Torune (S)",
+    "slug": "aburame-torune-(s)",
+    "file": "characters_json/aburame-torune-(s).json",
+    "url": "https://www.naruto-arena.site/chars/aburame-torune-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Akadou Yoroi",
+    "slug": "akadou-yoroi",
+    "file": "characters_json/akadou-yoroi.json",
+    "url": "https://www.naruto-arena.site/chars/akadou-yoroi",
+    "skills": 4
+  },
+  {
+    "name": "Akatsuchi (S)",
+    "slug": "akatsuchi-(s)",
+    "file": "characters_json/akatsuchi-(s).json",
+    "url": "https://www.naruto-arena.site/chars/akatsuchi-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Akimichi Chouji (S)",
+    "slug": "akimichi-chouji-(s)",
+    "file": "characters_json/akimichi-chouji-(s).json",
+    "url": "https://www.naruto-arena.site/chars/akimichi-chouji-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Akimichi Chouji",
+    "slug": "akimichi-chouji",
+    "file": "characters_json/akimichi-chouji.json",
+    "url": "https://www.naruto-arena.site/chars/akimichi-chouji",
+    "skills": 5
+  },
+  {
+    "name": "Akimichi Chouza (S)",
+    "slug": "akimichi-chouza-(s)",
+    "file": "characters_json/akimichi-chouza-(s).json",
+    "url": "https://www.naruto-arena.site/chars/akimichi-chouza-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Animal Path Pein (S)",
+    "slug": "animal-path-pein-(s)",
+    "file": "characters_json/animal-path-pein-(s).json",
+    "url": "https://www.naruto-arena.site/chars/animal-path-pein-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Ao (S)",
+    "slug": "ao-(s)",
+    "file": "characters_json/ao-(s).json",
+    "url": "https://www.naruto-arena.site/chars/ao-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Asura Path Pein (S)",
+    "slug": "asura-path-pein-(s)",
+    "file": "characters_json/asura-path-pein-(s).json",
+    "url": "https://www.naruto-arena.site/chars/asura-path-pein-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Baki",
+    "slug": "baki",
+    "file": "characters_json/baki.json",
+    "url": "https://www.naruto-arena.site/chars/baki",
+    "skills": 4
+  },
+  {
+    "name": "Chiyo (S)",
+    "slug": "chiyo-(s)",
+    "file": "characters_json/chiyo-(s).json",
+    "url": "https://www.naruto-arena.site/chars/chiyo-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Chojuro (S)",
+    "slug": "chojuro-(s)",
+    "file": "characters_json/chojuro-(s).json",
+    "url": "https://www.naruto-arena.site/chars/chojuro-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Cursed Seal Juugo (S)",
+    "slug": "cursed-seal-juugo-(s)",
+    "file": "characters_json/cursed-seal-juugo-(s).json",
+    "url": "https://www.naruto-arena.site/chars/cursed-seal-juugo-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Cursed Seal Mizuki",
+    "slug": "cursed-seal-mizuki",
+    "file": "characters_json/cursed-seal-mizuki.json",
+    "url": "https://www.naruto-arena.site/chars/cursed-seal-mizuki",
+    "skills": 5
+  },
+  {
+    "name": "Cursed Seal Sasuke",
+    "slug": "cursed-seal-sasuke",
+    "file": "characters_json/cursed-seal-sasuke.json",
+    "url": "https://www.naruto-arena.site/chars/cursed-seal-sasuke",
+    "skills": 5
+  },
+  {
+    "name": "Darui (S)",
+    "slug": "darui-(s)",
+    "file": "characters_json/darui-(s).json",
+    "url": "https://www.naruto-arena.site/chars/darui-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Deidara (S)",
+    "slug": "deidara-(s)",
+    "file": "characters_json/deidara-(s).json",
+    "url": "https://www.naruto-arena.site/chars/deidara-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Demon Brothers",
+    "slug": "demon-brothers",
+    "file": "characters_json/demon-brothers.json",
+    "url": "https://www.naruto-arena.site/chars/demon-brothers",
+    "skills": 5
+  },
+  {
+    "name": "Deva Path Pein (S)",
+    "slug": "deva-path-pein-(s)",
+    "file": "characters_json/deva-path-pein-(s).json",
+    "url": "https://www.naruto-arena.site/chars/deva-path-pein-(s)",
+    "skills": 6
+  },
+  {
+    "name": "Drunken Lee",
+    "slug": "drunken-lee",
+    "file": "characters_json/drunken-lee.json",
+    "url": "https://www.naruto-arena.site/chars/drunken-lee",
+    "skills": 4
+  },
+  {
+    "name": "Edo Tensei Ameyuri (S)",
+    "slug": "edo-tensei-ameyuri-(s)",
+    "file": "characters_json/edo-tensei-ameyuri-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-ameyuri-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Edo Tensei Chiyo (S)",
+    "slug": "edo-tensei-chiyo-(s)",
+    "file": "characters_json/edo-tensei-chiyo-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-chiyo-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Edo Tensei Deidara (S)",
+    "slug": "edo-tensei-deidara-(s)",
+    "file": "characters_json/edo-tensei-deidara-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-deidara-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Edo Tensei Fuguki (S)",
+    "slug": "edo-tensei-fuguki-(s)",
+    "file": "characters_json/edo-tensei-fuguki-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-fuguki-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Edo Tensei Fuu (S)",
+    "slug": "edo-tensei-fuu-(s)",
+    "file": "characters_json/edo-tensei-fuu-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-fuu-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Edo Tensei Ginkaku (S)",
+    "slug": "edo-tensei-ginkaku-(s)",
+    "file": "characters_json/edo-tensei-ginkaku-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-ginkaku-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Edo Tensei Haku (S)",
+    "slug": "edo-tensei-haku-(s)",
+    "file": "characters_json/edo-tensei-haku-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-haku-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Edo Tensei Hanzo (S)",
+    "slug": "edo-tensei-hanzo-(s)",
+    "file": "characters_json/edo-tensei-hanzo-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-hanzo-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Edo Tensei Itachi (S)",
+    "slug": "edo-tensei-itachi-(s)",
+    "file": "characters_json/edo-tensei-itachi-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-itachi-(s)",
+    "skills": 7
+  },
+  {
+    "name": "Edo Tensei Jinin (S)",
+    "slug": "edo-tensei-jinin-(s)",
+    "file": "characters_json/edo-tensei-jinin-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-jinin-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Edo Tensei Jinpachi (S)",
+    "slug": "edo-tensei-jinpachi-(s)",
+    "file": "characters_json/edo-tensei-jinpachi-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-jinpachi-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Edo Tensei Jiroubou (S)",
+    "slug": "edo-tensei-jiroubou-(s)",
+    "file": "characters_json/edo-tensei-jiroubou-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-jiroubou-(s)",
+    "skills": 6
+  },
+  {
+    "name": "Edo Tensei Kidoumaru (S)",
+    "slug": "edo-tensei-kidoumaru-(s)",
+    "file": "characters_json/edo-tensei-kidoumaru-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-kidoumaru-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Edo Tensei Kimimaro (S)",
+    "slug": "edo-tensei-kimimaro-(s)",
+    "file": "characters_json/edo-tensei-kimimaro-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-kimimaro-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Edo Tensei Kinkaku (S)",
+    "slug": "edo-tensei-kinkaku-(s)",
+    "file": "characters_json/edo-tensei-kinkaku-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-kinkaku-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Edo Tensei Mangetsu (S)",
+    "slug": "edo-tensei-mangetsu-(s)",
+    "file": "characters_json/edo-tensei-mangetsu-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-mangetsu-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Edo Tensei Muu (S)",
+    "slug": "edo-tensei-muu-(s)",
+    "file": "characters_json/edo-tensei-muu-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-muu-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Edo Tensei Nagato (S)",
+    "slug": "edo-tensei-nagato-(s)",
+    "file": "characters_json/edo-tensei-nagato-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-nagato-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Edo Tensei Pakura (S)",
+    "slug": "edo-tensei-pakura-(s)",
+    "file": "characters_json/edo-tensei-pakura-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-pakura-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Edo Tensei Sakon (S)",
+    "slug": "edo-tensei-sakon-(s)",
+    "file": "characters_json/edo-tensei-sakon-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-sakon-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Edo Tensei Sasori (S)",
+    "slug": "edo-tensei-sasori-(s)",
+    "file": "characters_json/edo-tensei-sasori-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-sasori-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Edo Tensei Tayuya (S)",
+    "slug": "edo-tensei-tayuya-(s)",
+    "file": "characters_json/edo-tensei-tayuya-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-tayuya-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Edo Tensei Yagura (S)",
+    "slug": "edo-tensei-yagura-(s)",
+    "file": "characters_json/edo-tensei-yagura-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-yagura-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Edo Tensei Yota (S)",
+    "slug": "edo-tensei-yota-(s)",
+    "file": "characters_json/edo-tensei-yota-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-yota-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Edo Tensei Yugito (S)",
+    "slug": "edo-tensei-yugito-(s)",
+    "file": "characters_json/edo-tensei-yugito-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-yugito-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Edo Tensei Zabuza (S)",
+    "slug": "edo-tensei-zabuza-(s)",
+    "file": "characters_json/edo-tensei-zabuza-(s).json",
+    "url": "https://www.naruto-arena.site/chars/edo-tensei-zabuza-(s)",
+    "skills": 4
+  },
+  {
+    "name": "ET Nidaime Mizukage (S)",
+    "slug": "et-nidaime-mizukage-(s)",
+    "file": "characters_json/et-nidaime-mizukage-(s).json",
+    "url": "https://www.naruto-arena.site/chars/et-nidaime-mizukage-(s)",
+    "skills": 5
+  },
+  {
+    "name": "ET Sandaime Raikage (S)",
+    "slug": "et-sandaime-raikage-(s)",
+    "file": "characters_json/et-sandaime-raikage-(s).json",
+    "url": "https://www.naruto-arena.site/chars/et-sandaime-raikage-(s)",
+    "skills": 5
+  },
+  {
+    "name": "ET Susanoo Itachi (S)",
+    "slug": "et-susanoo-itachi-(s)",
+    "file": "characters_json/et-susanoo-itachi-(s).json",
+    "url": "https://www.naruto-arena.site/chars/et-susanoo-itachi-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Female Animal Path Pein (S)",
+    "slug": "female-animal-path-pein-(s)",
+    "file": "characters_json/female-animal-path-pein-(s).json",
+    "url": "https://www.naruto-arena.site/chars/female-animal-path-pein-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Four Tail Kyuubi Naruto (S)",
+    "slug": "four-tail-kyuubi-naruto-(s)",
+    "file": "characters_json/four-tail-kyuubi-naruto-(s).json",
+    "url": "https://www.naruto-arena.site/chars/four-tail-kyuubi-naruto-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Fukasaku and Shima (S)",
+    "slug": "fukasaku-and-shima-(s)",
+    "file": "characters_json/fukasaku-and-shima-(s).json",
+    "url": "https://www.naruto-arena.site/chars/fukasaku-and-shima-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Gaara of the Desert",
+    "slug": "gaara-of-the-desert",
+    "file": "characters_json/gaara-of-the-desert.json",
+    "url": "https://www.naruto-arena.site/chars/gaara-of-the-desert",
+    "skills": 4
+  },
+  {
+    "name": "Gaara Rehabilitated",
+    "slug": "gaara-rehabilitated",
+    "file": "characters_json/gaara-rehabilitated.json",
+    "url": "https://www.naruto-arena.site/chars/gaara-rehabilitated",
+    "skills": 4
+  },
+  {
+    "name": "Gekko Hayate",
+    "slug": "gekko-hayate",
+    "file": "characters_json/gekko-hayate.json",
+    "url": "https://www.naruto-arena.site/chars/gekko-hayate",
+    "skills": 4
+  },
+  {
+    "name": "Hachibi Bee (S)",
+    "slug": "hachibi-bee-(s)",
+    "file": "characters_json/hachibi-bee-(s).json",
+    "url": "https://www.naruto-arena.site/chars/hachibi-bee-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Haku",
+    "slug": "haku",
+    "file": "characters_json/haku.json",
+    "url": "https://www.naruto-arena.site/chars/haku",
+    "skills": 4
+  },
+  {
+    "name": "Haruno Sakura (S)",
+    "slug": "haruno-sakura-(s)",
+    "file": "characters_json/haruno-sakura-(s).json",
+    "url": "https://www.naruto-arena.site/chars/haruno-sakura-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Haruno Sakura",
+    "slug": "haruno-sakura",
+    "file": "characters_json/haruno-sakura.json",
+    "url": "https://www.naruto-arena.site/chars/haruno-sakura",
+    "skills": 4
+  },
+  {
+    "name": "Hatake Kakashi (S)",
+    "slug": "hatake-kakashi-(s)",
+    "file": "characters_json/hatake-kakashi-(s).json",
+    "url": "https://www.naruto-arena.site/chars/hatake-kakashi-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Hatake Kakashi",
+    "slug": "hatake-kakashi",
+    "file": "characters_json/hatake-kakashi.json",
+    "url": "https://www.naruto-arena.site/chars/hatake-kakashi",
+    "skills": 4
+  },
+  {
+    "name": "Hidan (S)",
+    "slug": "hidan-(s)",
+    "file": "characters_json/hidan-(s).json",
+    "url": "https://www.naruto-arena.site/chars/hidan-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Hiruko Sasori (S)",
+    "slug": "hiruko-sasori-(s)",
+    "file": "characters_json/hiruko-sasori-(s).json",
+    "url": "https://www.naruto-arena.site/chars/hiruko-sasori-(s)",
+    "skills": 7
+  },
+  {
+    "name": "Hoshigaki Kisame (S)",
+    "slug": "hoshigaki-kisame-(s)",
+    "file": "characters_json/hoshigaki-kisame-(s).json",
+    "url": "https://www.naruto-arena.site/chars/hoshigaki-kisame-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Hoshigaki Kisame",
+    "slug": "hoshigaki-kisame",
+    "file": "characters_json/hoshigaki-kisame.json",
+    "url": "https://www.naruto-arena.site/chars/hoshigaki-kisame",
+    "skills": 4
+  },
+  {
+    "name": "Hozuki Suigetsu (S)",
+    "slug": "hozuki-suigetsu-(s)",
+    "file": "characters_json/hozuki-suigetsu-(s).json",
+    "url": "https://www.naruto-arena.site/chars/hozuki-suigetsu-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Human Path Pein (S)",
+    "slug": "human-path-pein-(s)",
+    "file": "characters_json/human-path-pein-(s).json",
+    "url": "https://www.naruto-arena.site/chars/human-path-pein-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Hyuuga Hanabi",
+    "slug": "hyuuga-hanabi",
+    "file": "characters_json/hyuuga-hanabi.json",
+    "url": "https://www.naruto-arena.site/chars/hyuuga-hanabi",
+    "skills": 4
+  },
+  {
+    "name": "Hyuuga Hiashi (S)",
+    "slug": "hyuuga-hiashi-(s)",
+    "file": "characters_json/hyuuga-hiashi-(s).json",
+    "url": "https://www.naruto-arena.site/chars/hyuuga-hiashi-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Hyuuga Hinata (S)",
+    "slug": "hyuuga-hinata-(s)",
+    "file": "characters_json/hyuuga-hinata-(s).json",
+    "url": "https://www.naruto-arena.site/chars/hyuuga-hinata-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Hyuuga Hinata",
+    "slug": "hyuuga-hinata",
+    "file": "characters_json/hyuuga-hinata.json",
+    "url": "https://www.naruto-arena.site/chars/hyuuga-hinata",
+    "skills": 4
+  },
+  {
+    "name": "Hyuuga Neji (S)",
+    "slug": "hyuuga-neji-(s)",
+    "file": "characters_json/hyuuga-neji-(s).json",
+    "url": "https://www.naruto-arena.site/chars/hyuuga-neji-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Hyuuga Neji",
+    "slug": "hyuuga-neji",
+    "file": "characters_json/hyuuga-neji.json",
+    "url": "https://www.naruto-arena.site/chars/hyuuga-neji",
+    "skills": 4
+  },
+  {
+    "name": "Inuzuka Kiba (S)",
+    "slug": "inuzuka-kiba-(s)",
+    "file": "characters_json/inuzuka-kiba-(s).json",
+    "url": "https://www.naruto-arena.site/chars/inuzuka-kiba-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Inuzuka Kiba",
+    "slug": "inuzuka-kiba",
+    "file": "characters_json/inuzuka-kiba.json",
+    "url": "https://www.naruto-arena.site/chars/inuzuka-kiba",
+    "skills": 4
+  },
+  {
+    "name": "Inuzuka Tsume (S)",
+    "slug": "inuzuka-tsume-(s)",
+    "file": "characters_json/inuzuka-tsume-(s).json",
+    "url": "https://www.naruto-arena.site/chars/inuzuka-tsume-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Itachi Body Double (S)",
+    "slug": "itachi-body-double-(s)",
+    "file": "characters_json/itachi-body-double-(s).json",
+    "url": "https://www.naruto-arena.site/chars/itachi-body-double-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Izumo and Kotetsu (S)",
+    "slug": "izumo-and-kotetsu-(s)",
+    "file": "characters_json/izumo-and-kotetsu-(s).json",
+    "url": "https://www.naruto-arena.site/chars/izumo-and-kotetsu-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Jiraiya (S)",
+    "slug": "jiraiya-(s)",
+    "file": "characters_json/jiraiya-(s).json",
+    "url": "https://www.naruto-arena.site/chars/jiraiya-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Jiraiya",
+    "slug": "jiraiya",
+    "file": "characters_json/jiraiya.json",
+    "url": "https://www.naruto-arena.site/chars/jiraiya",
+    "skills": 4
+  },
+  {
+    "name": "Jiroubou",
+    "slug": "jiroubou",
+    "file": "characters_json/jiroubou.json",
+    "url": "https://www.naruto-arena.site/chars/jiroubou",
+    "skills": 4
+  },
+  {
+    "name": "Juugo (S)",
+    "slug": "juugo-(s)",
+    "file": "characters_json/juugo-(s).json",
+    "url": "https://www.naruto-arena.site/chars/juugo-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Kakuzu (S)",
+    "slug": "kakuzu-(s)",
+    "file": "characters_json/kakuzu-(s).json",
+    "url": "https://www.naruto-arena.site/chars/kakuzu-(s)",
+    "skills": 6
+  },
+  {
+    "name": "Kankuro (S)",
+    "slug": "kankuro-(s)",
+    "file": "characters_json/kankuro-(s).json",
+    "url": "https://www.naruto-arena.site/chars/kankuro-(s)",
+    "skills": 6
+  },
+  {
+    "name": "Kankuro",
+    "slug": "kankuro",
+    "file": "characters_json/kankuro.json",
+    "url": "https://www.naruto-arena.site/chars/kankuro",
+    "skills": 4
+  },
+  {
+    "name": "Karatachi Yagura",
+    "slug": "karatachi-yagura",
+    "file": "characters_json/karatachi-yagura.json",
+    "url": "https://www.naruto-arena.site/chars/karatachi-yagura",
+    "skills": 4
+  },
+  {
+    "name": "Karin (S)",
+    "slug": "karin-(s)",
+    "file": "characters_json/karin-(s).json",
+    "url": "https://www.naruto-arena.site/chars/karin-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Kazekage Gaara (S)",
+    "slug": "kazekage-gaara-(s)",
+    "file": "characters_json/kazekage-gaara-(s).json",
+    "url": "https://www.naruto-arena.site/chars/kazekage-gaara-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Kidoumaru",
+    "slug": "kidoumaru",
+    "file": "characters_json/kidoumaru.json",
+    "url": "https://www.naruto-arena.site/chars/kidoumaru",
+    "skills": 4
+  },
+  {
+    "name": "Killer Bee (S)",
+    "slug": "killer-bee-(s)",
+    "file": "characters_json/killer-bee-(s).json",
+    "url": "https://www.naruto-arena.site/chars/killer-bee-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Kimimaro",
+    "slug": "kimimaro",
+    "file": "characters_json/kimimaro.json",
+    "url": "https://www.naruto-arena.site/chars/kimimaro",
+    "skills": 4
+  },
+  {
+    "name": "Kinuta Dosu",
+    "slug": "kinuta-dosu",
+    "file": "characters_json/kinuta-dosu.json",
+    "url": "https://www.naruto-arena.site/chars/kinuta-dosu",
+    "skills": 4
+  },
+  {
+    "name": "Kisame Body Double (S)",
+    "slug": "kisame-body-double-(s)",
+    "file": "characters_json/kisame-body-double-(s).json",
+    "url": "https://www.naruto-arena.site/chars/kisame-body-double-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Konan (S)",
+    "slug": "konan-(s)",
+    "file": "characters_json/konan-(s).json",
+    "url": "https://www.naruto-arena.site/chars/konan-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Konan of the Rain (S)",
+    "slug": "konan-of-the-rain-(s)",
+    "file": "characters_json/konan-of-the-rain-(s).json",
+    "url": "https://www.naruto-arena.site/chars/konan-of-the-rain-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Kurotsuchi (S)",
+    "slug": "kurotsuchi-(s)",
+    "file": "characters_json/kurotsuchi-(s).json",
+    "url": "https://www.naruto-arena.site/chars/kurotsuchi-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Kyuubi Naruto",
+    "slug": "kyuubi-naruto",
+    "file": "characters_json/kyuubi-naruto.json",
+    "url": "https://www.naruto-arena.site/chars/kyuubi-naruto",
+    "skills": 4
+  },
+  {
+    "name": "Maito Gai (S)",
+    "slug": "maito-gai-(s)",
+    "file": "characters_json/maito-gai-(s).json",
+    "url": "https://www.naruto-arena.site/chars/maito-gai-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Maito Gai",
+    "slug": "maito-gai",
+    "file": "characters_json/maito-gai.json",
+    "url": "https://www.naruto-arena.site/chars/maito-gai",
+    "skills": 4
+  },
+  {
+    "name": "Maki (S)",
+    "slug": "maki-(s)",
+    "file": "characters_json/maki-(s).json",
+    "url": "https://www.naruto-arena.site/chars/maki-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Mangekyou Sasuke (S)",
+    "slug": "mangekyou-sasuke-(s)",
+    "file": "characters_json/mangekyou-sasuke-(s).json",
+    "url": "https://www.naruto-arena.site/chars/mangekyou-sasuke-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Masked Man",
+    "slug": "masked-man",
+    "file": "characters_json/masked-man.json",
+    "url": "https://www.naruto-arena.site/chars/masked-man",
+    "skills": 5
+  },
+  {
+    "name": "Mifune (S)",
+    "slug": "mifune-(s)",
+    "file": "characters_json/mifune-(s).json",
+    "url": "https://www.naruto-arena.site/chars/mifune-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Mitarashi Anko",
+    "slug": "mitarashi-anko",
+    "file": "characters_json/mitarashi-anko.json",
+    "url": "https://www.naruto-arena.site/chars/mitarashi-anko",
+    "skills": 5
+  },
+  {
+    "name": "Mizukage (S)",
+    "slug": "mizukage-(s)",
+    "file": "characters_json/mizukage-(s).json",
+    "url": "https://www.naruto-arena.site/chars/mizukage-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Momochi Zabuza",
+    "slug": "momochi-zabuza",
+    "file": "characters_json/momochi-zabuza.json",
+    "url": "https://www.naruto-arena.site/chars/momochi-zabuza",
+    "skills": 4
+  },
+  {
+    "name": "Morino Ibiki (S)",
+    "slug": "morino-ibiki-(s)",
+    "file": "characters_json/morino-ibiki-(s).json",
+    "url": "https://www.naruto-arena.site/chars/morino-ibiki-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Nagato (S)",
+    "slug": "nagato-(s)",
+    "file": "characters_json/nagato-(s).json",
+    "url": "https://www.naruto-arena.site/chars/nagato-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Namikaze Minato",
+    "slug": "namikaze-minato",
+    "file": "characters_json/namikaze-minato.json",
+    "url": "https://www.naruto-arena.site/chars/namikaze-minato",
+    "skills": 4
+  },
+  {
+    "name": "Nara Shikaku (S)",
+    "slug": "nara-shikaku-(s)",
+    "file": "characters_json/nara-shikaku-(s).json",
+    "url": "https://www.naruto-arena.site/chars/nara-shikaku-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Nara Shikamaru (S)",
+    "slug": "nara-shikamaru-(s)",
+    "file": "characters_json/nara-shikamaru-(s).json",
+    "url": "https://www.naruto-arena.site/chars/nara-shikamaru-(s)",
+    "skills": 6
+  },
+  {
+    "name": "Nara Shikamaru",
+    "slug": "nara-shikamaru",
+    "file": "characters_json/nara-shikamaru.json",
+    "url": "https://www.naruto-arena.site/chars/nara-shikamaru",
+    "skills": 4
+  },
+  {
+    "name": "Naraka Path Pein (S)",
+    "slug": "naraka-path-pein-(s)",
+    "file": "characters_json/naraka-path-pein-(s).json",
+    "url": "https://www.naruto-arena.site/chars/naraka-path-pein-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Nidaime Hokage",
+    "slug": "nidaime-hokage",
+    "file": "characters_json/nidaime-hokage.json",
+    "url": "https://www.naruto-arena.site/chars/nidaime-hokage",
+    "skills": 4
+  },
+  {
+    "name": "Nii Yugito (S)",
+    "slug": "nii-yugito-(s)",
+    "file": "characters_json/nii-yugito-(s).json",
+    "url": "https://www.naruto-arena.site/chars/nii-yugito-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Nohara Rin",
+    "slug": "nohara-rin",
+    "file": "characters_json/nohara-rin.json",
+    "url": "https://www.naruto-arena.site/chars/nohara-rin",
+    "skills": 4
+  },
+  {
+    "name": "Oboro",
+    "slug": "oboro",
+    "file": "characters_json/oboro.json",
+    "url": "https://www.naruto-arena.site/chars/oboro",
+    "skills": 4
+  },
+  {
+    "name": "Omoi (S)",
+    "slug": "omoi-(s)",
+    "file": "characters_json/omoi-(s).json",
+    "url": "https://www.naruto-arena.site/chars/omoi-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Orochimaru (S)",
+    "slug": "orochimaru-(s)",
+    "file": "characters_json/orochimaru-(s).json",
+    "url": "https://www.naruto-arena.site/chars/orochimaru-(s)",
+    "skills": 6
+  },
+  {
+    "name": "Orochimaru",
+    "slug": "orochimaru",
+    "file": "characters_json/orochimaru.json",
+    "url": "https://www.naruto-arena.site/chars/orochimaru",
+    "skills": 4
+  },
+  {
+    "name": "Preta Path Pein (S)",
+    "slug": "preta-path-pein-(s)",
+    "file": "characters_json/preta-path-pein-(s).json",
+    "url": "https://www.naruto-arena.site/chars/preta-path-pein-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Raikage (S)",
+    "slug": "raikage-(s)",
+    "file": "characters_json/raikage-(s).json",
+    "url": "https://www.naruto-arena.site/chars/raikage-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Rock Lee (S)",
+    "slug": "rock-lee-(s)",
+    "file": "characters_json/rock-lee-(s).json",
+    "url": "https://www.naruto-arena.site/chars/rock-lee-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Rock Lee",
+    "slug": "rock-lee",
+    "file": "characters_json/rock-lee.json",
+    "url": "https://www.naruto-arena.site/chars/rock-lee",
+    "skills": 6
+  },
+  {
+    "name": "Sai (S)",
+    "slug": "sai-(s)",
+    "file": "characters_json/sai-(s).json",
+    "url": "https://www.naruto-arena.site/chars/sai-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Sakon",
+    "slug": "sakon",
+    "file": "characters_json/sakon.json",
+    "url": "https://www.naruto-arena.site/chars/sakon",
+    "skills": 4
+  },
+  {
+    "name": "Samehada Fusion Kisame (S)",
+    "slug": "samehada-fusion-kisame-(s)",
+    "file": "characters_json/samehada-fusion-kisame-(s).json",
+    "url": "https://www.naruto-arena.site/chars/samehada-fusion-kisame-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Sandaime Hokage",
+    "slug": "sandaime-hokage",
+    "file": "characters_json/sandaime-hokage.json",
+    "url": "https://www.naruto-arena.site/chars/sandaime-hokage",
+    "skills": 4
+  },
+  {
+    "name": "Sarutobi Asuma (S)",
+    "slug": "sarutobi-asuma-(s)",
+    "file": "characters_json/sarutobi-asuma-(s).json",
+    "url": "https://www.naruto-arena.site/chars/sarutobi-asuma-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Sarutobi Asuma",
+    "slug": "sarutobi-asuma",
+    "file": "characters_json/sarutobi-asuma.json",
+    "url": "https://www.naruto-arena.site/chars/sarutobi-asuma",
+    "skills": 4
+  },
+  {
+    "name": "Sasori of the Red Sand (S)",
+    "slug": "sasori-of-the-red-sand-(s)",
+    "file": "characters_json/sasori-of-the-red-sand-(s).json",
+    "url": "https://www.naruto-arena.site/chars/sasori-of-the-red-sand-(s)",
+    "skills": 6
+  },
+  {
+    "name": "Senju Hashirama",
+    "slug": "senju-hashirama",
+    "file": "characters_json/senju-hashirama.json",
+    "url": "https://www.naruto-arena.site/chars/senju-hashirama",
+    "skills": 4
+  },
+  {
+    "name": "Sennin Jiraiya (S)",
+    "slug": "sennin-jiraiya-(s)",
+    "file": "characters_json/sennin-jiraiya-(s).json",
+    "url": "https://www.naruto-arena.site/chars/sennin-jiraiya-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Sennin Naruto (S)",
+    "slug": "sennin-naruto-(s)",
+    "file": "characters_json/sennin-naruto-(s).json",
+    "url": "https://www.naruto-arena.site/chars/sennin-naruto-(s)",
+    "skills": 6
+  },
+  {
+    "name": "Shee (S)",
+    "slug": "shee-(s)",
+    "file": "characters_json/shee-(s).json",
+    "url": "https://www.naruto-arena.site/chars/shee-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Shigure",
+    "slug": "shigure",
+    "file": "characters_json/shigure.json",
+    "url": "https://www.naruto-arena.site/chars/shigure",
+    "skills": 4
+  },
+  {
+    "name": "Shimura Danzo (S)",
+    "slug": "shimura-danzo-(s)",
+    "file": "characters_json/shimura-danzo-(s).json",
+    "url": "https://www.naruto-arena.site/chars/shimura-danzo-(s)",
+    "skills": 7
+  },
+  {
+    "name": "Shinobi Alliance Chouji (S)",
+    "slug": "shinobi-alliance-chouji-(s)",
+    "file": "characters_json/shinobi-alliance-chouji-(s).json",
+    "url": "https://www.naruto-arena.site/chars/shinobi-alliance-chouji-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Shinobi Alliance Gaara (S)",
+    "slug": "shinobi-alliance-gaara-(s)",
+    "file": "characters_json/shinobi-alliance-gaara-(s).json",
+    "url": "https://www.naruto-arena.site/chars/shinobi-alliance-gaara-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Shinobi Alliance Hinata (S)",
+    "slug": "shinobi-alliance-hinata-(s)",
+    "file": "characters_json/shinobi-alliance-hinata-(s).json",
+    "url": "https://www.naruto-arena.site/chars/shinobi-alliance-hinata-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Shinobi Alliance Ino (S)",
+    "slug": "shinobi-alliance-ino-(s)",
+    "file": "characters_json/shinobi-alliance-ino-(s).json",
+    "url": "https://www.naruto-arena.site/chars/shinobi-alliance-ino-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Shinobi Alliance Kakashi (S)",
+    "slug": "shinobi-alliance-kakashi-(s)",
+    "file": "characters_json/shinobi-alliance-kakashi-(s).json",
+    "url": "https://www.naruto-arena.site/chars/shinobi-alliance-kakashi-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Shinobi Alliance Kankuro (S)",
+    "slug": "shinobi-alliance-kankuro-(s)",
+    "file": "characters_json/shinobi-alliance-kankuro-(s).json",
+    "url": "https://www.naruto-arena.site/chars/shinobi-alliance-kankuro-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Shinobi Alliance Kiba (S)",
+    "slug": "shinobi-alliance-kiba-(s)",
+    "file": "characters_json/shinobi-alliance-kiba-(s).json",
+    "url": "https://www.naruto-arena.site/chars/shinobi-alliance-kiba-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Shinobi Alliance Naruto (S)",
+    "slug": "shinobi-alliance-naruto-(s)",
+    "file": "characters_json/shinobi-alliance-naruto-(s).json",
+    "url": "https://www.naruto-arena.site/chars/shinobi-alliance-naruto-(s)",
+    "skills": 7
+  },
+  {
+    "name": "Shinobi Alliance Sai (S)",
+    "slug": "shinobi-alliance-sai-(s)",
+    "file": "characters_json/shinobi-alliance-sai-(s).json",
+    "url": "https://www.naruto-arena.site/chars/shinobi-alliance-sai-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Shinobi Alliance Sakura (S)",
+    "slug": "shinobi-alliance-sakura-(s)",
+    "file": "characters_json/shinobi-alliance-sakura-(s).json",
+    "url": "https://www.naruto-arena.site/chars/shinobi-alliance-sakura-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Shinobi Alliance Shikamaru (S)",
+    "slug": "shinobi-alliance-shikamaru-(s)",
+    "file": "characters_json/shinobi-alliance-shikamaru-(s).json",
+    "url": "https://www.naruto-arena.site/chars/shinobi-alliance-shikamaru-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Shinobi Alliance Shino (S)",
+    "slug": "shinobi-alliance-shino-(s)",
+    "file": "characters_json/shinobi-alliance-shino-(s).json",
+    "url": "https://www.naruto-arena.site/chars/shinobi-alliance-shino-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Shinobi Alliance Temari (S)",
+    "slug": "shinobi-alliance-temari-(s)",
+    "file": "characters_json/shinobi-alliance-temari-(s).json",
+    "url": "https://www.naruto-arena.site/chars/shinobi-alliance-temari-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Shiore Orochimaru",
+    "slug": "shiore-orochimaru",
+    "file": "characters_json/shiore-orochimaru.json",
+    "url": "https://www.naruto-arena.site/chars/shiore-orochimaru",
+    "skills": 4
+  },
+  {
+    "name": "Shizune",
+    "slug": "shizune",
+    "file": "characters_json/shizune.json",
+    "url": "https://www.naruto-arena.site/chars/shizune",
+    "skills": 4
+  },
+  {
+    "name": "Shodai Hokage",
+    "slug": "shodai-hokage",
+    "file": "characters_json/shodai-hokage.json",
+    "url": "https://www.naruto-arena.site/chars/shodai-hokage",
+    "skills": 4
+  },
+  {
+    "name": "Shukaku Gaara",
+    "slug": "shukaku-gaara",
+    "file": "characters_json/shukaku-gaara.json",
+    "url": "https://www.naruto-arena.site/chars/shukaku-gaara",
+    "skills": 6
+  },
+  {
+    "name": "Susanoo Itachi (S)",
+    "slug": "susanoo-itachi-(s)",
+    "file": "characters_json/susanoo-itachi-(s).json",
+    "url": "https://www.naruto-arena.site/chars/susanoo-itachi-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Susanoo Sasuke (S)",
+    "slug": "susanoo-sasuke-(s)",
+    "file": "characters_json/susanoo-sasuke-(s).json",
+    "url": "https://www.naruto-arena.site/chars/susanoo-sasuke-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Tayuya",
+    "slug": "tayuya",
+    "file": "characters_json/tayuya.json",
+    "url": "https://www.naruto-arena.site/chars/tayuya",
+    "skills": 4
+  },
+  {
+    "name": "Temari (S)",
+    "slug": "temari-(s)",
+    "file": "characters_json/temari-(s).json",
+    "url": "https://www.naruto-arena.site/chars/temari-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Temari",
+    "slug": "temari",
+    "file": "characters_json/temari.json",
+    "url": "https://www.naruto-arena.site/chars/temari",
+    "skills": 4
+  },
+  {
+    "name": "Tenten (S)",
+    "slug": "tenten-(s)",
+    "file": "characters_json/tenten-(s).json",
+    "url": "https://www.naruto-arena.site/chars/tenten-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Tenten",
+    "slug": "tenten",
+    "file": "characters_json/tenten.json",
+    "url": "https://www.naruto-arena.site/chars/tenten",
+    "skills": 4
+  },
+  {
+    "name": "Tobi (S)",
+    "slug": "tobi-(s)",
+    "file": "characters_json/tobi-(s).json",
+    "url": "https://www.naruto-arena.site/chars/tobi-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Touji Mizuki",
+    "slug": "touji-mizuki",
+    "file": "characters_json/touji-mizuki.json",
+    "url": "https://www.naruto-arena.site/chars/touji-mizuki",
+    "skills": 4
+  },
+  {
+    "name": "True Form Sasori",
+    "slug": "true-form-sasori",
+    "file": "characters_json/true-form-sasori.json",
+    "url": "https://www.naruto-arena.site/chars/true-form-sasori",
+    "skills": 4
+  },
+  {
+    "name": "Tsuchi Kin",
+    "slug": "tsuchi-kin",
+    "file": "characters_json/tsuchi-kin.json",
+    "url": "https://www.naruto-arena.site/chars/tsuchi-kin",
+    "skills": 4
+  },
+  {
+    "name": "Tsuchikage (S)",
+    "slug": "tsuchikage-(s)",
+    "file": "characters_json/tsuchikage-(s).json",
+    "url": "https://www.naruto-arena.site/chars/tsuchikage-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Tsunade (S)",
+    "slug": "tsunade-(s)",
+    "file": "characters_json/tsunade-(s).json",
+    "url": "https://www.naruto-arena.site/chars/tsunade-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Tsunade",
+    "slug": "tsunade",
+    "file": "characters_json/tsunade.json",
+    "url": "https://www.naruto-arena.site/chars/tsunade",
+    "skills": 4
+  },
+  {
+    "name": "Tsurugi Misumi",
+    "slug": "tsurugi-misumi",
+    "file": "characters_json/tsurugi-misumi.json",
+    "url": "https://www.naruto-arena.site/chars/tsurugi-misumi",
+    "skills": 4
+  },
+  {
+    "name": "Uchiha Itachi (S)",
+    "slug": "uchiha-itachi-(s)",
+    "file": "characters_json/uchiha-itachi-(s).json",
+    "url": "https://www.naruto-arena.site/chars/uchiha-itachi-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Uchiha Itachi",
+    "slug": "uchiha-itachi",
+    "file": "characters_json/uchiha-itachi.json",
+    "url": "https://www.naruto-arena.site/chars/uchiha-itachi",
+    "skills": 4
+  },
+  {
+    "name": "Uchiha Madara",
+    "slug": "uchiha-madara",
+    "file": "characters_json/uchiha-madara.json",
+    "url": "https://www.naruto-arena.site/chars/uchiha-madara",
+    "skills": 5
+  },
+  {
+    "name": "Uchiha Obito",
+    "slug": "uchiha-obito",
+    "file": "characters_json/uchiha-obito.json",
+    "url": "https://www.naruto-arena.site/chars/uchiha-obito",
+    "skills": 4
+  },
+  {
+    "name": "Uchiha Sasuke (S)",
+    "slug": "uchiha-sasuke-(s)",
+    "file": "characters_json/uchiha-sasuke-(s).json",
+    "url": "https://www.naruto-arena.site/chars/uchiha-sasuke-(s)",
+    "skills": 7
+  },
+  {
+    "name": "Uchiha Sasuke",
+    "slug": "uchiha-sasuke",
+    "file": "characters_json/uchiha-sasuke.json",
+    "url": "https://www.naruto-arena.site/chars/uchiha-sasuke",
+    "skills": 5
+  },
+  {
+    "name": "Uchiha Shisui (S)",
+    "slug": "uchiha-shisui-(s)",
+    "file": "characters_json/uchiha-shisui-(s).json",
+    "url": "https://www.naruto-arena.site/chars/uchiha-shisui-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Umino Iruka",
+    "slug": "umino-iruka",
+    "file": "characters_json/umino-iruka.json",
+    "url": "https://www.naruto-arena.site/chars/umino-iruka",
+    "skills": 4
+  },
+  {
+    "name": "Utakata (S)",
+    "slug": "utakata-(s)",
+    "file": "characters_json/utakata-(s).json",
+    "url": "https://www.naruto-arena.site/chars/utakata-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Uzuki Yugao",
+    "slug": "uzuki-yugao",
+    "file": "characters_json/uzuki-yugao.json",
+    "url": "https://www.naruto-arena.site/chars/uzuki-yugao",
+    "skills": 4
+  },
+  {
+    "name": "Uzumaki Kushina",
+    "slug": "uzumaki-kushina",
+    "file": "characters_json/uzumaki-kushina.json",
+    "url": "https://www.naruto-arena.site/chars/uzumaki-kushina",
+    "skills": 5
+  },
+  {
+    "name": "Uzumaki Naruto (S)",
+    "slug": "uzumaki-naruto-(s)",
+    "file": "characters_json/uzumaki-naruto-(s).json",
+    "url": "https://www.naruto-arena.site/chars/uzumaki-naruto-(s)",
+    "skills": 8
+  },
+  {
+    "name": "Uzumaki Naruto",
+    "slug": "uzumaki-naruto",
+    "file": "characters_json/uzumaki-naruto.json",
+    "url": "https://www.naruto-arena.site/chars/uzumaki-naruto",
+    "skills": 5
+  },
+  {
+    "name": "White Snake Kabuto (S)",
+    "slug": "white-snake-kabuto-(s)",
+    "file": "characters_json/white-snake-kabuto-(s).json",
+    "url": "https://www.naruto-arena.site/chars/white-snake-kabuto-(s)",
+    "skills": 8
+  },
+  {
+    "name": "White Zetsu (S)",
+    "slug": "white-zetsu-(s)",
+    "file": "characters_json/white-zetsu-(s).json",
+    "url": "https://www.naruto-arena.site/chars/white-zetsu-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Yakushi Kabuto (S)",
+    "slug": "yakushi-kabuto-(s)",
+    "file": "characters_json/yakushi-kabuto-(s).json",
+    "url": "https://www.naruto-arena.site/chars/yakushi-kabuto-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Yakushi Kabuto",
+    "slug": "yakushi-kabuto",
+    "file": "characters_json/yakushi-kabuto.json",
+    "url": "https://www.naruto-arena.site/chars/yakushi-kabuto",
+    "skills": 4
+  },
+  {
+    "name": "Yamanaka Fu (S)",
+    "slug": "yamanaka-fu-(s)",
+    "file": "characters_json/yamanaka-fu-(s).json",
+    "url": "https://www.naruto-arena.site/chars/yamanaka-fu-(s)",
+    "skills": 5
+  },
+  {
+    "name": "Yamanaka Ino (S)",
+    "slug": "yamanaka-ino-(s)",
+    "file": "characters_json/yamanaka-ino-(s).json",
+    "url": "https://www.naruto-arena.site/chars/yamanaka-ino-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Yamanaka Ino",
+    "slug": "yamanaka-ino",
+    "file": "characters_json/yamanaka-ino.json",
+    "url": "https://www.naruto-arena.site/chars/yamanaka-ino",
+    "skills": 5
+  },
+  {
+    "name": "Yamanaka Inoichi (S)",
+    "slug": "yamanaka-inoichi-(s)",
+    "file": "characters_json/yamanaka-inoichi-(s).json",
+    "url": "https://www.naruto-arena.site/chars/yamanaka-inoichi-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Yamashiro Aoba (S)",
+    "slug": "yamashiro-aoba-(s)",
+    "file": "characters_json/yamashiro-aoba-(s).json",
+    "url": "https://www.naruto-arena.site/chars/yamashiro-aoba-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Yamato (S)",
+    "slug": "yamato-(s)",
+    "file": "characters_json/yamato-(s).json",
+    "url": "https://www.naruto-arena.site/chars/yamato-(s)",
+    "skills": 4
+  },
+  {
+    "name": "Yondaime Hokage",
+    "slug": "yondaime-hokage",
+    "file": "characters_json/yondaime-hokage.json",
+    "url": "https://www.naruto-arena.site/chars/yondaime-hokage",
+    "skills": 4
+  },
+  {
+    "name": "Young Kakashi",
+    "slug": "young-kakashi",
+    "file": "characters_json/young-kakashi.json",
+    "url": "https://www.naruto-arena.site/chars/young-kakashi",
+    "skills": 4
+  },
+  {
+    "name": "Young Kushina",
+    "slug": "young-kushina",
+    "file": "characters_json/young-kushina.json",
+    "url": "https://www.naruto-arena.site/chars/young-kushina",
+    "skills": 4
+  },
+  {
+    "name": "Yuhi Kurenai",
+    "slug": "yuhi-kurenai",
+    "file": "characters_json/yuhi-kurenai.json",
+    "url": "https://www.naruto-arena.site/chars/yuhi-kurenai",
+    "skills": 4
+  },
+  {
+    "name": "Zetsu (S)",
+    "slug": "zetsu-(s)",
+    "file": "characters_json/zetsu-(s).json",
+    "url": "https://www.naruto-arena.site/chars/zetsu-(s)",
+    "skills": 4
+  }
+]

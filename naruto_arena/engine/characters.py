@@ -17,4 +17,3 @@ class CharacterDefinition:
             if skill.id == skill_id:
                 return skill
         raise KeyError(skill_id)
-

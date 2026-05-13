@@ -1,0 +1,94 @@
+{
+  "name": "Kyuubi Naruto",
+  "slug": "kyuubi-naruto",
+  "url": "https://www.naruto-arena.site/chars/kyuubi-naruto",
+  "pageTitle": "Kyuubi Naruto - Naruto Arena Classic",
+  "description": "Drawing upon the strength of the Kyuubi demon sealed inside him, the power of Naruto explodes, and he becomes a virtual army onto himself.",
+  "requirement": "Mission: The Rise of a Jinchuuriki",
+  "image": "https://i.imgur.com/g8Hgdw3.png",
+  "skills": [
+    {
+      "name": "Kyuubi Rasengan",
+      "description": "Kyuubi Naruto deals 40 damage to one enemy and stuns their non-mental skills. Kyuubi Naruto takes 10 affliction damage*. During 'Kyuubi Rage', this skill will deal 50 damage. During 'Kyuubi Chakra', this skill will deal 30 damage.",
+      "cooldown": 1,
+      "chakra": [
+        "ninjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "blue",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Instant",
+        "Unique",
+        "Affliction*"
+      ],
+      "image": "https://i.imgur.com/ZVw7pHA.png"
+    },
+    {
+      "name": "Kyuubi Rage",
+      "description": "Using the vile Kyuubi chakra surrounding him, Kyuubi Naruto deals 10 damage to all enemies for 3 turns. During this time, 'Kyuubi Rasengan' will be improved*. This skill will cancel 'Kyuubi Chakra' when used.",
+      "cooldown": 3,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Action",
+        "Instant*",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/WexhqIW.png"
+    },
+    {
+      "name": "Kyuubi Chakra",
+      "description": "Unknowingly using the Kyuubi Chakra, Naruto gains 50% damage reduction* and heals 15 health each turn for 3 turns. During this time, 'Kyuubi Rasengan' will be worsened.* This skill will cancel 'Kyuubi Rage' when used.",
+      "cooldown": 3,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Chakra",
+        "Action",
+        "Instant*",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/rnk8wVi.png"
+    },
+    {
+      "name": "Chakra Howl",
+      "description": "This skill makes Kyuubi Naruto invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/tFrnFax.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:29:58.239Z"
+}

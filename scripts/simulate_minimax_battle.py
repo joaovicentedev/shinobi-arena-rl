@@ -50,10 +50,11 @@ def main() -> None:
         f"turn={state.turn_number} actions={actions_taken} stop_reason={stop_reason}"
     )
     for player in state.players:
-        hp = ", ".join(f"{character.definition.name}:{character.hp}" for character in player.characters)
+        hp = ", ".join(
+            f"{character.definition.name}:{character.hp}" for character in player.characters
+        )
         print(f"player {player.player_id}: {hp}")
 
 
 if __name__ == "__main__":
     main()
-

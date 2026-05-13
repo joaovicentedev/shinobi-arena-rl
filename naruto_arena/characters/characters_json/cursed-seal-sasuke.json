@@ -1,0 +1,112 @@
+{
+  "name": "Cursed Seal Sasuke",
+  "slug": "cursed-seal-sasuke",
+  "url": "https://www.naruto-arena.site/chars/cursed-seal-sasuke",
+  "pageTitle": "Cursed Seal Sasuke - Naruto Arena Classic",
+  "description": "When Sasuke releases the full power of his cursed seal his body and chakra become a twisted vision of his inner self and his strength is amplified greatly.",
+  "requirement": "Mission: Descent into Darkness",
+  "image": "https://i.imgur.com/r4RPyUj.png",
+  "skills": [
+    {
+      "name": "Corrupt Chidori",
+      "description": "Using a cursed seal chakra corrupted Chidori Sasuke does 45 piercing damage to one enemy and for 2 turns, will reduce their non-affliction damage by 20.",
+      "cooldown": 1,
+      "chakra": [
+        "ninjutsu",
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue",
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Melee",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/2eNeRIl.png"
+    },
+    {
+      "name": "Katon: Goukakyuu no Jutsu",
+      "description": "Sasuke launches a giant fireball, dealing 20 affliction damage to one enemy. For 1 turn, If that enemy uses a skill they will take 10 affliction damage. During 'Cursed Seal', this skill will be improved and will also deal an additional 10 damage.",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Ranged",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/YZZPJg7.png"
+    },
+    {
+      "name": "Cursed Seal",
+      "description": "Sasuke taps into the Cursed Seal, growing claw wings from his back. Sasuke takes 20 affliction damage* and becomes invulnerable for 1 turn. The following turn, 'Corrupt Chidori' will cost 1 random chakra and 'Katon: Goukakyuu no Jutsu' will have no cost. This skill will be replaced by 'Dark Void' for 1 turn.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique",
+        "Affliction*"
+      ],
+      "image": "https://i.imgur.com/zdEp3Mv.png"
+    },
+    {
+      "name": "Sharingan Evasion",
+      "description": "This skill makes Cursed Seal Sasuke invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/gcRgFEG.png"
+    },
+    {
+      "name": "Dark Void",
+      "description": "Expunging the corrupt chakra, Sasuke engulfs one enemy, stunning them for 2 turns, and making them invulnerable to all skills. When this skill ends, that enemy will receive 55 damage. This skill will end if Sasuke dies.",
+      "cooldown": 4,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/Gi982SB.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:30:01.455Z"
+}

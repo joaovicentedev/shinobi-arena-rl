@@ -1,0 +1,92 @@
+{
+  "name": "Hyuuga Hinata",
+  "slug": "hyuuga-hinata",
+  "url": "https://www.naruto-arena.site/chars/hyuuga-hinata",
+  "pageTitle": "Hyuuga Hinata - Naruto Arena Classic",
+  "description": "A Genin from Team 8, Hinata is the next in line in the Hyuuga clan, but she is shy and very withdrawn. Using the trademark Byakugan of the Hyuuga, Hinata is able to delicately target an enemy's Chakra Points while defending the team.",
+  "requirement": "No requirements",
+  "image": "https://i.imgur.com/e5935Kz.png",
+  "skills": [
+    {
+      "name": "Hinata Gentle Fist",
+      "description": "Using the Hyuuga Clan's style of taijutsu, Hinata deals 20 damage to one enemy. During 'Byakugan', this skill will remove 1 taijutsu or ninjutsu chakra.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/hiQouXW.png",
+      "chakraColors": [
+        "green"
+      ]
+    },
+    {
+      "name": "Eight Trigrams 64 Palms Protection",
+      "description": "Hinata deals 10 piercing damage to all enemies for 2 turns. For 1 turn, if Hinata or her allies is affected by a new damage skill, they will become invulnerable for 1 turn*. During 'Byakugan', this skill will deal 5 additional damage.",
+      "cooldown": 2,
+      "chakra": [
+        "ninjutsu",
+        "random"
+      ],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Action",
+        "Unique",
+        "Instant*"
+      ],
+      "image": "https://i.imgur.com/nyci2QP.png",
+      "chakraColors": [
+        "blue",
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Byakugan",
+      "description": "Hinata activates her Byakugan and gains 50% damage reduction for 4 turns. During this time, 'Hinata Gentle Fist' and 'Eight Trigrams 64 Palms Protection' will be improved and 'Byakugan' will reveal any invisible skills used by the enemy team. This skill cannot be countered and it ends if Hinata dies.",
+      "cooldown": 3,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/T4KZRDT.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Hinata Block",
+      "description": "This skill makes Hyuuga Hinata invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/GLXR6wv.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    }
+  ],
+  "scrapedAt": "2026-05-13T01:26:17.055Z",
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  }
+}

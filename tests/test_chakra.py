@@ -30,4 +30,3 @@ def test_fixed_and_random_costs_are_paid_after_fixed_costs() -> None:
     pool.pay(cost, {ChakraType.TAIJUTSU: 1})
 
     assert pool.total() == 0
-

@@ -1,0 +1,87 @@
+{
+  "name": "Yamanaka Ino (S)",
+  "slug": "yamanaka-ino-(s)",
+  "url": "https://www.naruto-arena.site/chars/yamanaka-ino-(s)",
+  "pageTitle": "Yamanaka Ino (S) - Naruto Arena Classic",
+  "description": "In the past couple years Ino(s) has become a chuunin and improved her ability with her family's mind control techniques. During this time she also began learning rudimentary medical techniques.",
+  "requirement": "Mission: Blondes Have All the Fun",
+  "image": "https://i.imgur.com/zA72t3a.png",
+  "skills": [
+    {
+      "name": "Mind Body Switch",
+      "description": "Ino forces her mind into one enemy, dealing 25 piercing damage to them and ending any delayed skill that enemy currently has. Afterwards, that enemy will be stunned for 1 turn.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/lSobTDI.pngs"
+    },
+    {
+      "name": "Proxy Surveillance",
+      "description": "Ino predicts one enemy's move. For 1 turn, if this character uses a new harmful skill, it will be delayed by 1 turn. This skill is invisible.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/y3bJlyB.png"
+    },
+    {
+      "name": "Rudimentary Healing",
+      "description": "Using her healing skills, Ino heals an ally for 20 health. If Ino has used any of her other skills on the previous turn, this skill will heal 10 additional health instead.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/eTrzRC4.png"
+    },
+    {
+      "name": "Hide",
+      "description": "This skill makes Yamanaka Ino (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/GYxhrYp.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:30:51.490Z"
+}

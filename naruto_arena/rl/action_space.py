@@ -10,7 +10,7 @@ from naruto_arena.engine.skills import TargetRule
 from naruto_arena.engine.state import GameState
 
 MAX_TEAM_SIZE = 3
-MAX_SKILLS_PER_CHARACTER = 5
+MAX_SKILLS_PER_CHARACTER = 9
 
 TARGET_NONE = 0
 TARGET_SELF = 1
@@ -58,8 +58,7 @@ RANDOM_CHAKRA_CODE_COUNT = RANDOM_CHAKRA_OFFSET + len(ChakraType)
 
 
 def build_action_catalog() -> list[ActionSpec]:
-    """Build a stable action catalog for a fixed-size policy head.
-    """
+    """Build a stable action catalog for a fixed-size policy head."""
 
     catalog = [ActionSpec(ActionKind.END_TURN)]
     for actor_slot in range(MAX_TEAM_SIZE):

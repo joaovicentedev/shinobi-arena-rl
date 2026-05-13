@@ -1,0 +1,116 @@
+{
+  "name": "Masked Man",
+  "slug": "masked-man",
+  "url": "https://www.naruto-arena.site/chars/masked-man",
+  "pageTitle": "Masked Man - Naruto Arena Classic",
+  "description": "Not much is known about the Masked Man, other than his uncontrollable hatred for the Leaf Village. After extracting the Kyuubi from Kushina, Masked Man is able to summon the Nine Tails Beast into the battlefield, while also being able to use his other unknown techniques.",
+  "requirement": "Mission: Masked Man vs Yondaime Minato",
+  "image": "https://i.imgur.com/zp0TERK.png",
+  "skills": [
+    {
+      "name": "Strange Jutsu",
+      "description": "Masked Man isolates himself and one enemy from the battlefield, *making them both invulnerable to every characters except each other for 3 turns; This effect cannot be ignored. During this time, that enemy will take 15 piercing damage each turn.",
+      "cooldown": 3,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Action",
+        "Unique",
+        "*Instant"
+      ],
+      "image": "https://i.imgur.com/pTLohi4.png"
+    },
+    {
+      "name": "Chain Assault",
+      "description": "Producing chains from his wrists, Masked Man gains 10 destructible defense for 1 turn and deals 25 damage to one enemy, reducing their non-affliction damage by 10 for 1 turn. This skill deals 35 damage and reduces 15 points of damage to the enemy affected by 'Strange Jutsu'.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "green",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/5N1uOWp.png"
+    },
+    {
+      "name": "Summoning: Kyuubi",
+      "description": "Masked Man may summons Kyuubi if he has 50 health or less, granting himself 55 points of destructible defense permanent. While he has this destructible defense, all of his skills will be replaced by 'Summoned Kyuubi: Bijuudama'.",
+      "cooldown": 9,
+      "chakra": [
+        "random",
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/lfO8e0S.png"
+    },
+    {
+      "name": "Masked Man Block",
+      "description": "This skill makes Masked Man invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/BLdXQ3T.png"
+    },
+    {
+      "name": "Summoned Kyuubi: Bijuudama",
+      "description": "Kyuubi gathers a massive sphere of chakra and fires it at all enemies dealing 35 piercing damage to them.",
+      "cooldown": null,
+      "chakra": [
+        "bloodline",
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/G5lZyNP.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:36:20.986Z"
+}

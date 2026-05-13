@@ -1,0 +1,87 @@
+{
+  "name": "Yuhi Kurenai",
+  "slug": "yuhi-kurenai",
+  "url": "https://www.naruto-arena.site/chars/yuhi-kurenai",
+  "pageTitle": "Yuhi Kurenai - Naruto Arena Classic",
+  "description": "Yuhi Kurenai is a jounin and team leader of Hinata, Shino and Kiba. She is a genjutsu master who is able to both disable and attack her enemies with illusions.",
+  "requirement": "Mission: Team 8 Scouting at its Best",
+  "image": "https://i.imgur.com/L1IWoqb.png",
+  "skills": [
+    {
+      "name": "Cherry Blossom Suffocation",
+      "description": "Kurenai suffocates all enemies with illusionary cherry blossoms, dealing 10 damage to them for 3 turns. During this time, if 'Plant-Form Attack' is used on an enemy affected by this skill, they will be stunned for 1 turn.",
+      "cooldown": 2,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Action",
+        "Ranged"
+      ],
+      "image": "https://i.imgur.com/IKQQZHC.png"
+    },
+    {
+      "name": "Plant Form Attack",
+      "description": "Kurenai deals 20 damage to one enemy. For 2 turns, that enemy will be unable to reduce damage or become invulnerable; This effect is applied before the damage. If used on an enemy affected by 'Cherry Blossom Suffocation', their physical and ranged skills will be stunned for 1 turn.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Mental",
+        "Instant",
+        "Melee"
+      ],
+      "image": "https://i.imgur.com/p4ruZfg.png"
+    },
+    {
+      "name": "Tree Bind Death",
+      "description": "Kurenai protects herself or an ally for 1 turn. The first non-affliction damaging skill used on that ally will be countered. The countered enemy will have their chakra and melee skills stunned and will receive double damage from mental skills for 3 turns. This skill is Invisible. Ends when Kurenai dies.",
+      "cooldown": 2,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/t08cNjA.png"
+    },
+    {
+      "name": "Vanishing Illusion",
+      "description": "This skill makes Yuhi Kurenai invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/j22EpUB.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:28:45.146Z"
+}

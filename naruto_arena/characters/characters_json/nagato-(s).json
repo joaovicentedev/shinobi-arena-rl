@@ -1,0 +1,93 @@
+{
+  "name": "Nagato (S)",
+  "slug": "nagato-(s)",
+  "url": "https://www.naruto-arena.site/chars/nagato-(s)",
+  "pageTitle": "Nagato (S) - Naruto Arena Classic",
+  "description": "Nagato is the leader of Akatsuki and is also known as Pein. He is in control of the six paths of Pein and was a former student of Jiraiya. Nagato possess the rinnegan and may be the strongest ninja in the shinobi world.",
+  "requirement": "Mission: Eye of the Rinnegan",
+  "image": "https://i.imgur.com/PEZ7ucJ.jpg",
+  "skills": [
+    {
+      "name": "Demonic Statue Summoning",
+      "description": "Nagato (S) targets all enemies and deals 20 damage to them. Nagato will gain 10 permanent destructible defense. The following turn, 'Etheral Dragon' will deal an additional 10 damage to enemies affected by this skill.",
+      "cooldown": 1,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Unique",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/x9FTMms.jpg"
+    },
+    {
+      "name": "Etheral Dragon",
+      "description": "Using Etheral Dragon, Nagato deals 25 damage to one enemy. The following turn, 'Demonic Statue Summoning' will be improved and will cost 2 random chakra instead.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Unique",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/frO4zbf.jpg"
+    },
+    {
+      "name": "Samsara of Heavenly Life",
+      "description": "Nagato (S) uses Samsara of Heavenly Life to heal all allies for 30 health. Any dead ally on Nagato's team will be revived back to 30 health and will become invulnerable for 1 turn. Nagato will lose 50 health* for each ally revived by this skill.",
+      "cooldown": 9,
+      "chakra": [
+        "bloodline",
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "red",
+        "white"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique",
+        "Affliction*"
+      ],
+      "image": "https://i.imgur.com/WRssnUP.jpg"
+    },
+    {
+      "name": "Bansho Block",
+      "description": "This skill makes Nagato (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/ZvysjIj.jpg"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:35:37.367Z"
+}

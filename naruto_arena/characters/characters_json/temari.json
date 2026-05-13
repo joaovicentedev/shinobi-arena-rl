@@ -1,0 +1,93 @@
+{
+  "name": "Temari",
+  "slug": "temari",
+  "url": "https://www.naruto-arena.site/chars/temari",
+  "pageTitle": "Temari - Naruto Arena Classic",
+  "description": "The elder sister of Gaara and Kankuro, Temari is a somewhat cruel and blunt ninja that fights using the wind at her side. With her fan, Temari can create powerful gusts of wind that she can manipulate at her desire.",
+  "requirement": "No requirements",
+  "image": "https://i.imgur.com/kTLEaMP.png",
+  "skills": [
+    {
+      "name": "Cutting Whirlwind",
+      "description": "Temari creates a razor sharp wind, dealing 20 piercing damage to one enemy and 10 piercing damage to all others enemies. For 1 turn, Temari becomes invulnerable to non-mental skills. This skill cannot be countered.",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/XA5pGTk.png",
+      "chakraColors": [
+        "blue"
+      ]
+    },
+    {
+      "name": "Summoning Quick Beheading Dance",
+      "description": "Temari summons the wind weasel Kamatari in the battlefield, dealing 35 damage to all enemies. If used one turn after 'Cutting Whirlwind', this skill will cost 1 less random chakra.",
+      "cooldown": 2,
+      "chakra": [
+        "ninjutsu",
+        "random",
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/z6DZR9Q.png",
+      "chakraColors": [
+        "blue",
+        "black/gray",
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Dust Wind",
+      "description": "Temari kicks up dust, making her team invulnerable for 1 turn. If targatable, all enemies will deal 20 less non-affliction damage for 1 turn. If used one turn after 'Cutting Whirlwind', this skill will decrease damage for 2 turns instead.",
+      "cooldown": 4,
+      "chakra": [
+        "ninjutsu",
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/JbSunqZ.png",
+      "chakraColors": [
+        "blue",
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Fan Defence Technique",
+      "description": "This skill makes Temari invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/UBBy2S7.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    }
+  ],
+  "scrapedAt": "2026-05-13T01:26:49.294Z",
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  }
+}

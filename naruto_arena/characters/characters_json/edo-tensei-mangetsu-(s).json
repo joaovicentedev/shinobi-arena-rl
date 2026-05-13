@@ -1,0 +1,80 @@
+{
+  "name": "Edo Tensei Mangetsu (S)",
+  "slug": "edo-tensei-mangetsu-(s)",
+  "url": "https://www.naruto-arena.site/chars/edo-tensei-mangetsu-(s)",
+  "pageTitle": "Edo Tensei Mangetsu (S) - Naruto Arena Classic",
+  "description": "Reanimated by Kabuto during the Fourth Shinobi World War as one of the Seven Swordsmen of the Mist, Mangetsu was widely feared as the 'Second Coming of the Demon'. The older brother of Suigetsu, Mangetsu primarily used the Twin Sword, Hiramekarei, though he was famously a master of all seven blades.",
+  "requirement": "Mission: The Second Coming of the Demon",
+  "image": "https://i.imgur.com/4QcN9uF.png",
+  "skills": [
+    {
+      "name": "Hydrification Technique",
+      "description": "ET Mangetsu steals 20 health points from one enemy. For 1 turn, a random skill class will be chosen, and ET Mangetsu will ignore all enemy skills of that class, or none if no class is chosen.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/71NAFSG.png"
+    },
+    {
+      "name": "Impure World Regeneration",
+      "description": "When this skill is used, ET Mangetsu will heal 2 health every turn for the rest of the game. This skill stacks and may only be used 5 times.",
+      "cooldown": null,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Mental",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/TqVLDTW.png"
+    },
+    {
+      "name": "Mist Sword Summoning",
+      "description": "Mangetsu randomly summons one of the Seven Swords, granting 'Hydrification Technique' a random unique effect every turn. Hiramekarei: Steals 10 additional health. / Kubikiribocho: Grants 10 permanent destructible defense. / Sameheada: Steals 1 random chakra from the target. / Nuibari: Stuns non-mental skills for 1 turn. / Shibuki: Deals 5 permanent affliction damage. / Kabutowari: Destroys destructible defense and deals 15 piercing damage. / Kiba: Deals 20 affliction damage to all other enemies.",
+      "cooldown": null,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/vU96NVd.png"
+    },
+    {
+      "name": "Mangetsu Block",
+      "description": "This skill makes Edo Tensei Mangetsu (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/8CTkW7A.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:37:37.289Z"
+}

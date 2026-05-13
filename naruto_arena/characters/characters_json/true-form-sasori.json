@@ -1,0 +1,91 @@
+{
+  "name": "True Form Sasori",
+  "slug": "true-form-sasori",
+  "url": "https://www.naruto-arena.site/chars/true-form-sasori",
+  "pageTitle": "True Form Sasori - Naruto Arena Classic",
+  "description": "Pushed to his limit, Sasori reveals the secret of his eternally young body: he has turned himself into a puppet with a living \"core\" that now makes up the entirety of his being. Using his own body as a weapon, Sasori also pulls out Chikamatsu's legendary Hundred Puppets, rumored to be able to bring down an entire nation.",
+  "requirement": "Mission: Perfection Achieved",
+  "image": "https://i.imgur.com/MohdeE7.png",
+  "skills": [
+    {
+      "name": "Puppet Flamethrower",
+      "description": "Sasori deals 10 affliction damage to one enemy. The following turn, that enemy will be dealt 5 affliction damage permanently. If used on an enemy affected by 'Water Stream Shooters', this skill will have a different effect, dealing 20 affliction damage and stunning harmful skills for 1 turn.",
+      "cooldown": null,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/CH3tTNq.png"
+    },
+    {
+      "name": "Water Stream Shooters",
+      "description": "Sasori deals 10 affliction damage to one enemy. The following turn, that enemy will be dealt 5 affliction damage permanently. If used on an enemy affected by 'Puppet Flamethrower', this skill will have a different effect, dealing 30 affliction damage and stunning helpful skills for 1 turn.",
+      "cooldown": null,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Affliction"
+      ],
+      "image": "https://i.ibb.co/t8VQn6p/cmCK08m.png"
+    },
+    {
+      "name": "Red Secret Technique: 100 Puppets",
+      "description": "Sasori uses the Red Secret Technique, summoning hundred puppets and gaining 50 points of destructible defense. Permanently, all enemies will be dealt 15 piercing damage each turn. This skill will end if Sasori successfully receives damage.",
+      "cooldown": 5,
+      "chakra": [
+        "bloodline",
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "red",
+        "blue"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/7xw6S3R.png"
+    },
+    {
+      "name": "Magnificent Pose",
+      "description": "This skill makes True Form Sasori invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/WXfmN2D.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:35:07.339Z"
+}

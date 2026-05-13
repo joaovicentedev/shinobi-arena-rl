@@ -1,0 +1,118 @@
+{
+  "name": "Konan of the Rain (S)",
+  "slug": "konan-of-the-rain-(s)",
+  "url": "https://www.naruto-arena.site/chars/konan-of-the-rain-(s)",
+  "pageTitle": "Konan of the Rain (S) - Naruto Arena Classic",
+  "description": "Konan of the Rain (S) has returned to the Hidden Rain village. Now that Uzumaki Nagato is dead she is aligned with Uzumaki Naruto and his quest for peace.",
+  "requirement": "Mission: The Rains Angel",
+  "image": "https://i.imgur.com/7rPLcCd.png",
+  "skills": [
+    {
+      "name": "Paper Chakram",
+      "description": "Konan forms and fires a paper chakram towards an enemy, dealing 35 piercing damage to them. For 1 turn, Konan's skills will cost 1 less random chakra.",
+      "cooldown": 1,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/moOl9NJ.png"
+    },
+    {
+      "name": "Paper Ocean: Chasm Trap",
+      "description": "Konan traps all enemies in a chasm of the ocean made of a million papers. For 3 turns, all non-affliction damage will be reduced to a maximum of 25. During this time, this skill will be replaced and each time it successfully reduces an enemy's non-affliction damage, Konan will gain 1 random charka.",
+      "cooldown": 5,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/o4eBv3L.png"
+    },
+    {
+      "name": "Explosive Papers Barrage",
+      "description": "Konan rushes toward an enemy and ambushes them with multiple explosive papers, stunning their skills for 3 turns and dealing 15 damage to them each turn.",
+      "cooldown": 3,
+      "chakra": [
+        "bloodline",
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Action",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/pD2zBl1.png"
+    },
+    {
+      "name": "The Bridge to the Peace",
+      "description": "This skill makes Konan of the Rain (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/fvd160N.jpg"
+    },
+    {
+      "name": "Paper Ocean: Explosive Papers Detonate",
+      "description": "Konan detonates all the millions of explosive papers, crushing all enemies trapped by 'Paper Ocean: Chasm Trap', and dealing 20 damage to them and stunning their skills for 2 turns.",
+      "cooldown": 3,
+      "chakra": [
+        "bloodline",
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Action",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/GKnsQUx.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:36:24.545Z"
+}

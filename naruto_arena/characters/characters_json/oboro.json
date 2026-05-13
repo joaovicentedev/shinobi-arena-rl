@@ -1,0 +1,87 @@
+{
+  "name": "Oboro",
+  "slug": "oboro",
+  "url": "https://www.naruto-arena.site/chars/oboro",
+  "pageTitle": "Oboro - Naruto Arena Classic",
+  "description": "A Rain Genin in the Chuunin exams, Oboro specializes in distracting his opponents with illusions and attacking when unexpected.",
+  "requirement": "Mission: A Downpour of Illusion",
+  "image": "https://i.imgur.com/XLe6m8K.png",
+  "skills": [
+    {
+      "name": "Underground Ambush",
+      "description": "Hiding in the ground, Oboro attacks one enemy from behind, dealing 20 damage and stunning their physical and mental skills for 1 turn. During 'Haze Clones', this skill is improved and targets all enemies instead.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/0mrTugT.png"
+    },
+    {
+      "name": "Exploding Kunai",
+      "description": "Oboro throws a kunai with an exploding tag on it dealing 15 damage to all enemies. During 'Haze Clones', this skill is improved and deals 20 damage.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/LRf4G2h.png"
+    },
+    {
+      "name": "Haze Clones",
+      "description": "Oboro creates illusionary duplicates of himself. The following 3 turns, 'Exploding Kunai' and 'Underground Ambush' will be improved. During this time, Oboro gains 30 points of destructible defense and becomes invulnerable to mental skills.",
+      "cooldown": 5,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/ByWGkAm.png"
+    },
+    {
+      "name": "Fleet of Foot",
+      "description": "This skill makes Oboro invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/A1qWXdJ.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:27:37.502Z"
+}

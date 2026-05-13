@@ -1,0 +1,85 @@
+{
+  "name": "Nara Shikamaru",
+  "slug": "nara-shikamaru",
+  "url": "https://www.naruto-arena.site/chars/nara-shikamaru",
+  "pageTitle": "Nara Shikamaru - Naruto Arena Classic",
+  "description": "A Genin from Team 10, a member of the Nara clan, Shikamaru is considered to be the smartest Genin of all the Konoha 11. Using his bloodline, Shikamaru can manipulate the shadows in the battlefield to disable and attack his enemies.",
+  "requirement": "No requirements",
+  "image": "https://i.imgur.com/K2zZmN5.png",
+  "skills": [
+    {
+      "name": "Meditate",
+      "description": "Shikamaru begins thinking up a strategy against one enemy, marking them for 5 turns. During this time, the initial use of 'Shadow-Neck Bind' and 'Shadow Imitation' will last 1 additional turn on them. This skill cannot be countered or reflected and may not used on an enemy already affected by it.",
+      "cooldown": null,
+      "chakra": [],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/a7S5C5w.png",
+      "chakraColors": []
+    },
+    {
+      "name": "Shadow-Neck Bind",
+      "description": "Shikamaru chokes all enemies, making them unable to reduce damage and becoming invulnerable* while dealing 15 damage to them for 1 turn. The following turn, this skill can be used again to deal 15 damage to all enemies for 1 turn.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Action",
+        "Instant*"
+      ],
+      "image": "https://i.imgur.com/CmEudLR.png",
+      "chakraColors": [
+        "white"
+      ]
+    },
+    {
+      "name": "Shadow Imitation",
+      "description": "Shikamaru captures all enemies in shadows, stunning their non-mental skills for 1 turn.",
+      "cooldown": 3,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Control"
+      ],
+      "image": "https://i.imgur.com/eC9GWCD.png",
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Shikamaru Hide",
+      "description": "This skill makes Nara Shikamaru invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/GhEHgrl.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    }
+  ],
+  "scrapedAt": "2026-05-13T01:26:20.699Z",
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "name": "Juugo (S)",
+  "slug": "juugo-(s)",
+  "url": "https://www.naruto-arena.site/chars/juugo-(s)",
+  "pageTitle": "Juugo (S) - Naruto Arena Classic",
+  "description": "Juugo (S) is the origin of the cursed seal and now follows Sasuke. He can either be a calm natured person or a psychotic lunatic.",
+  "requirement": "Mission: Gentle Lunatic",
+  "image": "https://i.imgur.com/6ZUMNbR.jpg",
+  "skills": [
+    {
+      "name": "Compression Blast",
+      "description": "Juugo (S) deals 30 piercing damage to 1 enemy and stuns their physical and chakra skills for 1 turn. During Killer Impulse this skill will be improved and will cost 2 random chakra.",
+      "cooldown": null,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/QefoNP1.jpg"
+    },
+    {
+      "name": "Killer Impulse",
+      "description": "Juugo (S) enters a killing rage. He gains 75% damage reduction for 3 turns. Three random enemies will take 25 piercing damage each turn once the following 3 turns and 'Compression Blast' will be improved during this time. The selected enemies are invisible. This skill ignores invulnerability.",
+      "cooldown": 4,
+      "chakra": [
+        "bloodline",
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red",
+        "red"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Action",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/Ys6y9Ie.jpg"
+    },
+    {
+      "name": "Fusion",
+      "description": "Juugo (S) heals 1 ally for 25 health and that ally gains 20 destructible defense permanently. Each time this skill is used Juugo (S)'s cooldowns will increase by 1 turn for 4 turns.",
+      "cooldown": 1,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/Ipa5vkc.jpg"
+    },
+    {
+      "name": "Isolation",
+      "description": "This skill makes Juugo (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/VGPEiRn.jpg"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:33:53.253Z"
+}

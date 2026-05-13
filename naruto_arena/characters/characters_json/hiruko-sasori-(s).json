@@ -1,0 +1,132 @@
+{
+  "name": "Hiruko Sasori (S)",
+  "slug": "hiruko-sasori-(s)",
+  "url": "https://www.naruto-arena.site/chars/hiruko-sasori-(s)",
+  "pageTitle": "Hiruko Sasori (S) - Naruto Arena Classic",
+  "description": "Hiruko is a puppet used by the Akatsuki shinobi, Sasori. Serving as a 'puppet armor', it allowed Sasori to hide inside of it. Hiruko is a human puppet made from the corpse of a renowned shinobi - this puppet is also Sasori's favorite.",
+  "requirement": "Mission: Puppet Within a Puppet",
+  "image": "https://i.imgur.com/T1Da57N.png",
+  "skills": [
+    {
+      "name": "Poisonous Tail Stab",
+      "description": "Deal 15 Affliction damage to one enemy and apply 'Venom Stack'. This skill will cost 1 random chakra for 1 turn after being used. If the target already has a 'Venom Stack', deal an additional 5 damage per stack and place a 'Venom Stack' on all other enemies.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Affliction",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/vgia8DM.png"
+    },
+    {
+      "name": "Sand Clone Trap",
+      "description": "For 1 turn, Hiruko or an ally ignores all damage dealt. During this turn, each enemy that uses a new skill on them takes 10 affliction damage* and gains 1 'Venom Stack'. This skill is Invisible. This skill ends if Hiruko Dies.",
+      "cooldown": 2,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Affliction*",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/yPSTj0V.png"
+    },
+    {
+      "name": "Puppet Reveal",
+      "description": "Sasori activates 'Puppet Reveal'. The next time his health reaches 50 or less, he will gain 20 points of destructible defense for 3 turns. During this time, 'Sand Close Trap' and 'Puppet Reveal' will be replaced. This skill is invisible and can only be used once.",
+      "cooldown": null,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Physical",
+        "Unique",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/KbDm1wc.png"
+    },
+    {
+      "name": "Tail Deflection",
+      "description": "This skill makes Hiruko Sasori (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/RJ3tOJE.png"
+    },
+    {
+      "name": "Eight Waves of Needles",
+      "description": "Apply 2 'Needle Marks' to all enemies for 2 turns. When an enemy with 'Needle Marks' receive damage from Hiruko or his allies, remove 1 Mark to deal 10 Affliction damage.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Affliction",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/8XJIxiX.png"
+    },
+    {
+      "name": "Prosthetic Arm Senbon",
+      "description": "Consume all Needle Marks on all enemies: for each Mark removed, that enemy takes 15 Affliction damage and If at-least 5 Marks are consumed in total, Sasori becomes Invulnerable for 1 turn.",
+      "cooldown": null,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Affliction",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/6OODdlz.png"
+    },
+    {
+      "name": "Poison Stack",
+      "description": "Venom Stack: The following turn, this enemy receives 5 Affliction damage for 2 turns.",
+      "cooldown": null,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Chakra",
+        "Affliction",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/tYO3SDh.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:34:52.717Z"
+}

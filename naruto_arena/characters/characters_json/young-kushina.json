@@ -1,0 +1,81 @@
+{
+  "name": "Young Kushina",
+  "slug": "young-kushina",
+  "url": "https://www.naruto-arena.site/chars/young-kushina",
+  "pageTitle": "Young Kushina - Naruto Arena Classic",
+  "description": "Kushina is a survivor of the Hidden Whirlpool Village's famed Uzumaki clan, and an immigrant into the Hidden Leaf Village after her own village's downfall. Due to her tomboyish and violent nature, and her bright red colored hair, Kushina is known as the \"Red-Hot Habanero\" as she constantly gets into trouble.",
+  "requirement": "Mission: Red-Hot Habanero",
+  "image": "https://i.imgur.com/OVQz2LC.png",
+  "skills": [
+    {
+      "name": "Red-Hot Habanero",
+      "description": "Kushina uses her strength to protect an ally. The following 4 turns, if Kushina uses 'Fierce Punch' or 'Dropping Kick', the protected ally will heal 10 health and their new harmful skills will deal 5 additional damage for 1 turn. While active, when 'Dropping Kick' is used, Kushina will ignore stun effects for 1 turn.",
+      "cooldown": 4,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/VtqqsxP.png"
+    },
+    {
+      "name": "Fierce Punch",
+      "description": "Kushina deals 20 damage to one enemy. For this turn, if any of Kushina's allies uses a new harmful skill on that enemy, that ally will heal 15 health and that enemy will deal 10 less non-affliction damage for 1 turn.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/YzbP1gt.png"
+    },
+    {
+      "name": "Dropping Kick",
+      "description": "Kushina deals 10 piercing damage to one enemy. For this turn, if any of Kushina's allies uses a new harmful skill on that enemy, that ally will ignore stun effects and that enemy will be stunned for 1 turn.",
+      "cooldown": 1,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/PUppWRN.png"
+    },
+    {
+      "name": "Skilled Landing",
+      "description": "This skill makes Young Kushina invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/HBkwB2B.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:39:15.082Z"
+}

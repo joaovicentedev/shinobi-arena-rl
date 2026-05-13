@@ -1,0 +1,94 @@
+{
+  "name": "Hyuuga Hinata (S)",
+  "slug": "hyuuga-hinata-(s)",
+  "url": "https://www.naruto-arena.site/chars/hyuuga-hinata-(s)",
+  "pageTitle": "Hyuuga Hinata (S) - Naruto Arena Classic",
+  "description": "Hinata(s) has taken the lessons she learned during the chuunin exam, and Naruto's words of support to heart in the last couple years. She has matured greatly as a ninja, the heir to the Hyuuga clan, and as a woman.",
+  "requirement": "Mission: A Lovestruck Girl",
+  "image": "https://i.imgur.com/IvkdaCw.png",
+  "skills": [
+    {
+      "name": "Gentle Step Twin Lions Fist",
+      "description": "Hinata creates two chakra lions and attacks an enemy, dealing 30 piercing damage to them and removing 1 taijutsu or ninjutsu chakra from them. The following turn, 'Pressure Point Closure' will stun for 1 turn.",
+      "cooldown": 1,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/RDPoiGZ.png"
+    },
+    {
+      "name": "Eight Trigrams Thirty Two Palms",
+      "description": "Hinata uses a lesser form of eight trigram sixty four palms, dealing 30 piercing damage to one enemy and stunning their non-mental skills for 1 turn. The following turn, 'Pressure Point Closure' will remove 1 taijutsu or ninjutsu chakra.",
+      "cooldown": 1,
+      "chakra": [
+        "taijutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "green",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/3igdVzH.png"
+    },
+    {
+      "name": "Pressure Point Closure",
+      "description": "Hinata closes an enemy's pressure point, dealing 20 damage to them.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/rtAhdls.png"
+    },
+    {
+      "name": "Byakugan Sight",
+      "description": "This skill makes Hyuuga Hinata (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/JikfyqH.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:30:35.602Z"
+}

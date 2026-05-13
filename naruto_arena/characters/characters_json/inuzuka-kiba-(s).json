@@ -1,0 +1,106 @@
+{
+  "name": "Inuzuka Kiba (S)",
+  "slug": "inuzuka-kiba-(s)",
+  "url": "https://www.naruto-arena.site/chars/inuzuka-kiba-(s)",
+  "pageTitle": "Inuzuka Kiba (S) - Naruto Arena Classic",
+  "description": "After two years, Kiba finally becomes a chuunin. Now with Akamaru grown up, they become an unbeatable fighting unit, taking the Inuzuka clan's techniques to the next level. Now both have more precision for massive attacks, and an even sharper sense of smell.",
+  "requirement": "Mission: Boy and His Dog",
+  "image": "https://i.imgur.com/nHC0h7V.png",
+  "skills": [
+    {
+      "name": "Man Beast Clone",
+      "description": "Kiba grant himself and one ally 5 damage reduction. If Kiba use a new harmful skill, that ally gains 10 destructible defense for 1 turn. If that ally uses a new harmful skill , Kiba gains 5 additional damage for 1 turn; Doesn't stack. Becomes 'Enhanced Garouga', cannot be removed.",
+      "cooldown": null,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/LHuaKLs.png"
+    },
+    {
+      "name": "Piercing Fang",
+      "description": "Kiba deals 20 piercing damage to one enemy. For 1 turn, Kiba will ignore stun effects and his other skills will cost 1 random chakra less.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/6nrbRWf.png"
+    },
+    {
+      "name": "Fang Over Fang",
+      "description": "Kiba deals 20 damage to all enemies this turn. For 2 turns, Kiba will deal 5 more damage on them.",
+      "cooldown": 1,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/9OjpH9I.png"
+    },
+    {
+      "name": "Hide in the Shade",
+      "description": "This skill makes Inuzuka Kiba (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/FYMv2pb.png"
+    },
+    {
+      "name": "Enhanced Garouga",
+      "description": "Kiba deals 30 piercing damage to one enemy and stuns all other enemies Harmful for 1 turn.",
+      "cooldown": 2,
+      "chakra": [
+        "taijutsu",
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "green",
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://imgur.com/3tg3QXE.jpg"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:30:27.613Z"
+}

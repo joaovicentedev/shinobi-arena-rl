@@ -1,0 +1,88 @@
+{
+  "name": "Yamashiro Aoba (S)",
+  "slug": "yamashiro-aoba-(s)",
+  "url": "https://www.naruto-arena.site/chars/yamashiro-aoba-(s)",
+  "pageTitle": "Yamashiro Aoba (S) - Naruto Arena Classic",
+  "description": "Aoba is one of the special jounins of the Hidden Leaf Village. By summoning crows, he is able to distract enemies, protect allies, and all while disguising himself among them to create openings for stealth attacks. In addition, Aoba is also able to penetrate the minds of his enemies to obtain information.",
+  "requirement": "Mission: A Feast for Crows",
+  "image": "https://i.imgur.com/DSILjJ6.png",
+  "skills": [
+    {
+      "name": "Crow Assault",
+      "description": "Aoba deals 5 damage to all enemies for 4 turns. All Aoba team will also gain 5 damage reduction points for 4 turns.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Action"
+      ],
+      "image": "https://i.imgur.com/2VvTqS9.png"
+    },
+    {
+      "name": "Crow Convergence",
+      "description": "Aoba targets one enemy, making them unable to reduce damage or become invulnerable and dealing 30 damage to them for 1 turn. For 3 turns, that enemy will take 5 additional mental damage.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/N4Z04FG.png"
+    },
+    {
+      "name": "Chakra Imbued Kunai",
+      "description": "Aoba targets one enemy for 2 turns. If a new skill that has counter, reflect, or invulnerability is used on that enemy, they will ignore helpful effects for 1 turn. While active, that enemy will receive 10 additional damage from Aoba's skills. This skill is invisible and ends when triggered.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://imgur.com/p7dKbjA.jpg"
+    },
+    {
+      "name": "Crow Smoke Screen",
+      "description": "This skill makes Yamashiro Aoba (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://imgur.com/q5wXgcr.jpg"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:31:32.635Z"
+}

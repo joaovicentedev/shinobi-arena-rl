@@ -1,0 +1,92 @@
+{
+  "name": "Kidoumaru",
+  "slug": "kidoumaru",
+  "url": "https://www.naruto-arena.site/chars/kidoumaru",
+  "pageTitle": "Kidoumaru - Naruto Arena Classic",
+  "description": "Kidoumaru has spider-like skills. He has 6 arms and has the ability to create weapons and traps with a strange golden web-like liquid.",
+  "requirement": "Mission: The Search for Kidoumaru",
+  "image": "https://i.imgur.com/ZSWwJiY.png",
+  "skills": [
+    {
+      "name": "Golden Arrow",
+      "description": "Kidoumaru fires a special arrow made of enzymes from his mouth at one enemy dealing 50 piercing damage.",
+      "cooldown": 1,
+      "chakra": [
+        "bloodline",
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "red",
+        "blue"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/9FGWta9.png"
+    },
+    {
+      "name": "Summoning: Kyodaigumo",
+      "description": "Kidoumaru summons Kyodaigumo, dealing 10 damage to all enemies for 5 turns. The following 5 turns, Kidoumaru will gain 10 permanent destructible defense each turn and any new skill an enemy uses will have its cooldown increased by 1.",
+      "cooldown": 5,
+      "chakra": [
+        "bloodline",
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "red",
+        "blue"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Action",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/TyhkdYM.png"
+    },
+    {
+      "name": "Spider Web",
+      "description": "Kidoumaru uses spider web on himself or an ally. For 1 turn, the first enemy to use a new harmful damage skill on that ally will be countered, and will deal 10 less damage for 2 turns. If successful, 'Spider Web' current cooldown will be increased by 1.",
+      "cooldown": 1,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/Mcx7Ibu.png"
+    },
+    {
+      "name": "Golden Armor",
+      "description": "This skill makes Kidoumaru invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/5h0v2Qd.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:27:51.914Z"
+}

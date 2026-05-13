@@ -1,0 +1,91 @@
+{
+  "name": "Chojuro (S)",
+  "slug": "chojuro-(s)",
+  "url": "https://www.naruto-arena.site/chars/chojuro-(s)",
+  "pageTitle": "Chojuro (S) - Naruto Arena Classic",
+  "description": "Chojuro (S) confidence is building as the war rages one. The longer it lasts the stronger Chojuro (S) becomes.",
+  "requirement": "Mission: The Lone Swordsman",
+  "image": "https://i.imgur.com/WMSVj5I.jpg",
+  "skills": [
+    {
+      "name": "Hiramekarei Strider",
+      "description": "Using Hiramekarei Strider, Chojuro destroys all enemies' destructible defense and damage reduction and then deals 10 piercing damage to them. The following 2 turns, this skill will cost 1 ninjutsu chakra and may be used to deal 20 piercing damage to one enemy.",
+      "cooldown": null,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Unique",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/Nh30zKh.jpg"
+    },
+    {
+      "name": "Hiramekarei Hammer",
+      "description": "Chojuro (S) creates a hammer of chakra to attack one enemy, dealing 40 piercing damage to them. If that enemy has any destructible defense or damage reduction, this skill will apply 'Hiramekarei Strider' on them before dealing damage.",
+      "cooldown": 1,
+      "chakra": [
+        "taijutsu",
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "green",
+        "blue"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Unique",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/CSZCwGo.jpg"
+    },
+    {
+      "name": "Hiramekarei Kenjutsu",
+      "description": "For 1 turn, all enemy physical or mental skills used on Chojuro (S) will be countered. Any countered enemy will permanently take 10 additional damage from Chojuro (S)'s skills.",
+      "cooldown": 1,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Unique",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/Xei0Rhg.jpg"
+    },
+    {
+      "name": "Hiramekarei Defense",
+      "description": "This skill makes Chojuro (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/by7vCiX.jpg"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:33:12.076Z"
+}

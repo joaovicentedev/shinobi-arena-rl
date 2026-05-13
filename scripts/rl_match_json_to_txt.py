@@ -72,16 +72,12 @@ def _action_text(action: dict[str, Any]) -> str:
         return "END"
     if action_type == "reorder_skills":
         return (
-            f"REORDER {action['character_name']} {action['skill_id']} "
-            f"-> slot {action['new_index']}"
+            f"REORDER {action['character_name']} {action['skill_id']} -> slot {action['new_index']}"
         )
     if action_type == "use_skill":
         targets = ", ".join(action["target_names"]) if action["target_names"] else "-"
         payment = _payment_text(action.get("random_payment", {}))
-        return (
-            f"{action['actor_name']} uses {action['skill_name']} -> {targets}"
-            f"{payment}"
-        )
+        return f"{action['actor_name']} uses {action['skill_name']} -> {targets}{payment}"
     return action_type.upper()
 
 

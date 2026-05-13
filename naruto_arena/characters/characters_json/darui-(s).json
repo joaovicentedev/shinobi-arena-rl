@@ -1,0 +1,88 @@
+{
+  "name": "Darui (S)",
+  "slug": "darui-(s)",
+  "url": "https://www.naruto-arena.site/chars/darui-(s)",
+  "pageTitle": "Darui (S) - Naruto Arena Classic",
+  "description": "Darui (S) is a jounin of the Hidden Cloud Village and the right hand of the Yondaime Raikage. Despite his appearance Darui (S) is a formidable shinobi.",
+  "requirement": "Mission: The Dull Genius of the Cloud",
+  "image": "https://i.imgur.com/4zQxemJ.png",
+  "skills": [
+    {
+      "name": "Laser Circus",
+      "description": "Darui creates several beams and shoots his opponents, stunning one enemy's harmful skills for 1 turn. Afterwards, the main target takes 5 piercing damage and all other enemies take 15 piercing damage.",
+      "cooldown": 1,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/gnwtJrI.png"
+    },
+    {
+      "name": "Electric Water Encampment Wall",
+      "description": "Darui targets all enemies for 1 turn, any enemy that uses a new harmful skill will take 5 affliction damage. The following turn, all enemies affected by this skill will recelve 5 additional damage from 'Laser Circus' and 'Black Panther Lightning'. This skill cannot be countered.",
+      "cooldown": 1,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/arWmbIl.png"
+    },
+    {
+      "name": "Black Panther Lightning",
+      "description": "Darui generates a black panther lightning from his body and releases it at one enemy, dealing 35 piercing damage to them. For 1 turn, that enemy's skills will have 2 additional cooldown. This skill ignores invulnerability.",
+      "cooldown": 1,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/lbXhosJ.png"
+    },
+    {
+      "name": "Cleaver Sword Defense",
+      "description": "This skill makes Darui (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/GoWroAB.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:32:54.979Z"
+}

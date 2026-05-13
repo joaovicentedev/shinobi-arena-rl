@@ -1,0 +1,120 @@
+{
+  "name": "Rock Lee",
+  "slug": "rock-lee",
+  "url": "https://www.naruto-arena.site/chars/rock-lee",
+  "pageTitle": "Rock Lee - Naruto Arena Classic",
+  "description": "A member of team Gai; Lee is a genin with no talent at all in ninjutsu or genjutsu, so he has focused his life all on taijutsu. With his powerful hand to hand techniques, Lee can crush any defense with his immense power.",
+  "requirement": "No requirements",
+  "image": "https://i.imgur.com/MJVDU1d.png",
+  "skills": [
+    {
+      "name": "High Speed Taijutsu",
+      "description": "Lee attacks one enemy with amazing speed, dealing 25 piercing damage to them.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/QV0sr1f.png",
+      "chakraColors": [
+        "green"
+      ]
+    },
+    {
+      "name": "Front Lotus",
+      "description": "Lee launches an enemy into the air and slams them down with a great force, dealing 35 piercing damage to that enemy. This skill will be replaced by 'Final Lotus' for 1 turn.",
+      "cooldown": 1,
+      "chakra": [
+        "taijutsu",
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/AfJc8pr.png",
+      "chakraColors": [
+        "green",
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Fifth Gate Opening",
+      "description": "Lee opens five of his chakra gates. Permanently, 'High Speed Taijutsu' and 'Front Lotus' may be used. During this time, Lee will deal 5 additional damage each time he is damaged by a skill. This skill will be replaced by 'Fiery Spirit'.",
+      "cooldown": null,
+      "chakra": [],
+      "classes": [
+        "Mental",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/xT7u5Ik.png",
+      "chakraColors": []
+    },
+    {
+      "name": "Evasion",
+      "description": "This skill makes Rock Lee invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/FzuCWSf.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Fiery Spirit",
+      "description": "Lee hypes himself up, pushing himself to fight harder, gaining 1 taijutsu chakra and healing 10 health and an additional 10 health for each 25 health Lee has lost.",
+      "cooldown": 2,
+      "chakra": [
+        "random"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/ppEEGYm.png",
+      "chakraColors": [
+        "black/gray"
+      ]
+    },
+    {
+      "name": "Final Lotus",
+      "description": "Lee uses his strongets ability, expending all his chakra and dealing 50 piercing damage to one enemy. Afterwards, Lee takes 5 affliction damage*. This skill cannot be countered.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu",
+        "taijutsu"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant",
+        "*Affliction"
+      ],
+      "image": "https://i.imgur.com/TJ6PEz2.png",
+      "chakraColors": [
+        "green",
+        "green"
+      ]
+    }
+  ],
+  "scrapedAt": "2026-05-13T01:26:37.791Z",
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  }
+}

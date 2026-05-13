@@ -1,0 +1,101 @@
+{
+  "name": "Sandaime Hokage",
+  "slug": "sandaime-hokage",
+  "url": "https://www.naruto-arena.site/chars/sandaime-hokage",
+  "pageTitle": "Sandaime Hokage - Naruto Arena Classic",
+  "description": "Sandaime Hokage, known as the God of Shinobi, was the strongest Kage to ever live. He is able to concentrate on one opponent while his summon, Enma, confronts others. When all else fails he can summon the death god.",
+  "requirement": "Mission: The God of the Shinobi",
+  "image": "https://i.imgur.com/OUgT0V5.jpg",
+  "skills": [
+    {
+      "name": "Fire Dragon Flame Missile",
+      "description": "Sandaime Hokage deals 25 damage to one enemy. This enemy also takes 15 affliction damage the following turn.*",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "blue",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Ranged",
+        "Affliction*"
+      ],
+      "image": "https://i.imgur.com/2DC5GaI.png"
+    },
+    {
+      "name": "Major Summoning Enma",
+      "description": "By summoning Enma, Sandaime and all allies gain 25% damage reduction and cannot be killed by enemies for 2 turns*. If targetable, Sandaime will do 15 damage to all enemies for 2 turns.",
+      "cooldown": 5,
+      "chakra": [
+        "taijutsu",
+        "ninjutsu",
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "green",
+        "blue",
+        "white"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Action",
+        "*Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/pBFI2qO.png"
+    },
+    {
+      "name": "Shiki Fuujin",
+      "description": "The death god sucks the life out of one enemy who takes 35 affliction damage, is stunned and cannot reduce damage or become invulnerable every turn.* Sandaime himself takes 20 affliction damage and is stunned every turn. This skill cannot be removed or ignored, may only target one enemy and is cancelled when Sandaime dies.",
+      "cooldown": null,
+      "chakra": [
+        "random",
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Affliction",
+        "Melee",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/Sh5V2xt.png"
+    },
+    {
+      "name": "Earth Release Wall",
+      "description": "This skill makes Sandaime Hokage invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/FCO9qTm.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:29:30.228Z"
+}

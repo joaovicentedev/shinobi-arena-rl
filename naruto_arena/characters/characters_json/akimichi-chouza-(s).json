@@ -1,0 +1,88 @@
+{
+  "name": "Akimichi Chouza (S)",
+  "slug": "akimichi-chouza-(s)",
+  "url": "https://www.naruto-arena.site/chars/akimichi-chouza-(s)",
+  "pageTitle": "Akimichi Chouza (S) - Naruto Arena Classic",
+  "description": "Akimichi Chouza (S) is the leader of the Akimichi clan and the father of Chouji. He is a jounin and he is skilled in all of his clan's secret techniques.",
+  "requirement": "Mission: A Proud Father",
+  "image": "https://i.imgur.com/y0UOx6i.png",
+  "skills": [
+    {
+      "name": "Chain Bind",
+      "description": "Chouza slows down an enemy, dealing 10 damage to them and lowering all physical and chakra non-affliction damage they deal by 10 for 1 turn. Chouza's team will also gain 10 destructible defense.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/V5Ker5n.png"
+    },
+    {
+      "name": "Jounin Meat Tank",
+      "description": "Chouza begins rolling, dealing 15 damage to all enemies for 2 turns. During this time, his team will gain 15 destructible defense each turn.",
+      "cooldown": 3,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Action"
+      ],
+      "image": "https://i.imgur.com/NCr5YOX.png"
+    },
+    {
+      "name": "Expansion Smash",
+      "description": "If used on an enemy, for 1 turn, the next non-mental harmful skill they use will be countered. If used on an ally, for 1 turn, the next non-mental harmful skill used on them will be countered. The countered enemy will receive 20 damage. This skill is invisible and ignores invulnerability.",
+      "cooldown": 2,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/WdjJjx5.png"
+    },
+    {
+      "name": "Chouza Block",
+      "description": "This skill makes Akimichi Chouza (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/1Kzk8rc.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:31:49.711Z"
+}

@@ -1,0 +1,106 @@
+{
+  "name": "Sai (S)",
+  "slug": "sai-(s)",
+  "url": "https://www.naruto-arena.site/chars/sai-(s)",
+  "pageTitle": "Sai (S) - Naruto Arena Classic",
+  "description": "A current member of the elite ANBU Root, Sai(s) is an unparalleled artist who uses chakra to bring his images to life.",
+  "requirement": "Mission: A Blank Slate",
+  "image": "https://i.imgur.com/A7rJdmI.png",
+  "skills": [
+    {
+      "name": "Great Beast Painting: Lions",
+      "description": "Sai creates a number of ink lions to attack one enemy dealing 30 damage to them, and for 1 turn, Sai will gain 15 points of destructible defense.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Ranged"
+      ],
+      "image": "https://i.imgur.com/d1ic0UR.png"
+    },
+    {
+      "name": "Great Beast Painting: Snake",
+      "description": "Sai creates a snake made of ink to trap one enemy. stunning their physical and chakra skills for 1 turn. During this time, that enemy will be unable to reduce damage or become invulnerable. This skill ignores invulnerability.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Ranged"
+      ],
+      "image": "https://i.imgur.com/fGlKQw8.png"
+    },
+    {
+      "name": "Adaptive Painting",
+      "description": "For 3 turns, any ally that is stunned will become invulnerable for 1 turn; Any ally that has chakra removed/stolen will gain 1 random ; For each enemy skill that damages Sai or his allies will increase Sai's damage by 10 for 1 turn; Max of 3 stacks. The following 3 turns, 'Great Beast Painting: Snake' will be replaced.",
+      "cooldown": 3,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/nB8cFU3.png"
+    },
+    {
+      "name": "Ink Clone",
+      "description": "This skill makes Sai (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/AoZJ9Vr.png"
+    },
+    {
+      "name": "Great Beast Painting: Bird",
+      "description": "Sai creates a giant ink bird that crashes into one enemy, dealing 25 damage to them and stunning their physical and chakra skills for 1 turn.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Ranged"
+      ],
+      "image": "https://i.imgur.com/QKM5SKP.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:30:24.229Z"
+}

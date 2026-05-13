@@ -1,11 +1,9 @@
-import pytest
-
 from naruto_arena.data.characters import (
     SAKURA_HARUNO,
     SASUKE_UCHIHA,
     UZUMAKI_NARUTO,
 )
-from naruto_arena.engine.actions import EndTurnAction, UseSkillAction
+from naruto_arena.engine.actions import UseSkillAction
 from naruto_arena.engine.chakra import ChakraPool, ChakraType
 from naruto_arena.engine.rules import create_initial_state, start_turn
 from naruto_arena.engine.simulator import apply_action, can_use_skill, resolved_skill

@@ -1,0 +1,104 @@
+{
+  "name": "Nara Shikaku (S)",
+  "slug": "nara-shikaku-(s)",
+  "url": "https://www.naruto-arena.site/chars/nara-shikaku-(s)",
+  "pageTitle": "Nara Shikaku (S) - Naruto Arena Classic",
+  "description": "The father of Nara Shikamaru, and the head of the Nara clan, Shikaku is a cool-headed Jounin of Konoha who will go to any lengths to protect his friends and family. In battle, Shikaku is merciless, combining his impressive shadow imitation skills with his unparalleled intellect to grab victory for his team.",
+  "requirement": "Mission: Intellect and Shadows",
+  "image": "https://i.imgur.com/zk8rpMS.png",
+  "skills": [
+    {
+      "name": "Master Shadow Imitation",
+      "description": "Shikaku grabs an enemy with his shadow, forcing his body to do as he pleases. That enemy will receive 20 damage and then will have their physical and chakra skills stunned for 2 turns. The following turn, this skill will be replaced by 'Shadow Dispersion'.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Control"
+      ],
+      "image": "https://i.imgur.com/daGBuKS.png"
+    },
+    {
+      "name": "Black Spider Lily",
+      "description": "Shikaku extends his shadows out to his enemies. For 3 turns, Shikaku's skills will deal an additional 10 damage to them, and each time they use a new stun skill, then for 3 turns the next time Shikaku stuns that enemy, they will be stunned for 1 additional turn.",
+      "cooldown": 3,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/OTNQw5N.png"
+    },
+    {
+      "name": "Problem Analysis",
+      "description": "Shikaku targets himself or one ally for 1 turn, and the first new harmful non-affliction damage skill that is used on them will deal no damage and that ally will gain destructible defense equal to the original damage of that skill. This skill is invisible.",
+      "cooldown": 3,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/SrDeUzW.png"
+    },
+    {
+      "name": "Human Barricade",
+      "description": "This skill makes Nara Shikaku (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/Nyx7LfT.png"
+    },
+    {
+      "name": "Shadow Dispersion",
+      "description": "Nara Shikaku targets all enemies not affected by 'Master Shadow Imitation', stunning their physical and chakra skills for 1 turn and dealing 20 damage to them.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/474zyLo.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:31:57.400Z"
+}

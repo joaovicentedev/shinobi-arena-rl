@@ -1,0 +1,92 @@
+{
+  "name": "Yamato (S)",
+  "slug": "yamato-(s)",
+  "url": "https://www.naruto-arena.site/chars/yamato-(s)",
+  "pageTitle": "Yamato (S) - Naruto Arena Classic",
+  "description": "Yamato(s) is a member of ANBU whose real name is unknown. Given the code name Yamato(s) by Tsunade for this mission, he is tasked to lead Team 7 while Kakashi recovers.",
+  "requirement": "Mission: A New Team Leader",
+  "image": "https://i.imgur.com/9H3giit.png",
+  "skills": [
+    {
+      "name": "Sanctuary Enlightenment Enclosing Palm",
+      "description": "Yamato uses an ancient technique that seals one enemy's power, dealing 30 piercing damage to them. For 1 turn, that enemy will ignore all effects that improve their skills and will be unable to become invulnerable by enemies's skills.",
+      "cooldown": null,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Melee",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/DXZh3w1.png"
+    },
+    {
+      "name": "Four Column Prison",
+      "description": "Yamato creates a barrier of wood around one enemy or ally. If used on an enemy, that enemy will have their non-mental skills stunned and will become invulnerable to helpful skills for 2 turns. If used on an ally, that ally will gain 40 destructible defense. This skill ignores invulnerability.",
+      "cooldown": 4,
+      "chakra": [
+        "bloodline",
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "red",
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/B8QtS9K.png"
+    },
+    {
+      "name": "Wood Clone",
+      "description": "Yamato protects one ally or himself with a clone of wood for 1 turn, countering the first physical or chakra skill used against them. The countered enemy will take 20 damage* and the protected ally will gain 20 destructible defense. This skill is invisible.",
+      "cooldown": 2,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Melee*"
+      ],
+      "image": "https://i.imgur.com/Cy9zjvr.png"
+    },
+    {
+      "name": "Wood Locking Wall",
+      "description": "This skill makes Yamato (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/m9SiZkn.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:31:21.898Z"
+}

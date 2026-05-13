@@ -1,0 +1,90 @@
+{
+  "name": "Uchiha Itachi",
+  "slug": "uchiha-itachi",
+  "url": "https://www.naruto-arena.site/chars/uchiha-itachi",
+  "pageTitle": "Uchiha Itachi - Naruto Arena Classic",
+  "description": "The only other surviving Uchiha, Itachi is a master of doujutsu, an S-Rank missing nin, and a member of Akatsuki, having been partnered with Hoshigaki Kisame. Despite being powerful, Itachi is slowly going blind, making his abilities weaker, but when Itachi activates his Sharingan he becomes an unstoppable force of pure power.",
+  "requirement": "Mission: S-Rank Criminal Itachi!",
+  "image": "https://i.imgur.com/DXGV0Uz.png",
+  "skills": [
+    {
+      "name": "Mangekyo Sharingan",
+      "description": "Itachi becomes invulnerable, enhancing 'Amaterasu' and 'Tsukuyomi', increasing their cooldowns by 2, and doubling their costs. During this time, Itachi will receive 15 affliction damage a turn, that cannot be ignored, and ignores healing effects. This skill can be used again for free to cancel it.",
+      "cooldown": null,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Mental",
+        "Unique",
+        "Affliction*",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/4o5RMUj.png"
+    },
+    {
+      "name": "Amaterasu",
+      "description": "Itachi burns one enemy with his flames, dealing 15 affliction damage to them and each following turn, they will receive 10 affliction damage a turn. This skill does not stack. During 'Mangekyou Sharingan', this skill will deal 30 initial affliction damage and target all enemies. Ends if Itachi dies.",
+      "cooldown": 1,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Affliction",
+        "Ranged",
+        "Unique",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/Ta3ymyS.png"
+    },
+    {
+      "name": "Tsukuyomi",
+      "description": "Itachi mentally tortures one enemy for 3 days and nights in a matter of seconds, dealing 20 damage to them and stunning them for 1 turn. If used during 'Mangekyou Sharingan', this skill will last 3 turns.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Unique",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/Nmdk6oj.png"
+    },
+    {
+      "name": "Sharingan Insight",
+      "description": "This skill makes Uchiha Itachi invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/YxNILAJ.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:30:12.168Z"
+}

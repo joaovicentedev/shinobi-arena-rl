@@ -1,0 +1,107 @@
+{
+  "name": "Killer Bee (S)",
+  "slug": "killer-bee-(s)",
+  "url": "https://www.naruto-arena.site/chars/killer-bee-(s)",
+  "pageTitle": "Killer Bee (S) - Naruto Arena Classic",
+  "description": "Killer Bee (S) is the jinchuriki from Kumogakure. Bee (S) is referred to as the hero of Kumogakure and possess immense physical strength as well as being an expert swordsmen.",
+  "requirement": "Mission: The Mysterious Swordsman",
+  "image": "https://i.imgur.com/w7d55NW.png",
+  "skills": [
+    {
+      "name": "Kenjutsu",
+      "description": "Bee creates an offensive defense using his seven swords. For 4 turns, if an enemy uses a new harmful non-mental damaging skill on Bee, they will take 10 piercing damage. During this time, 'Buzz Saw' will deal 20 additional damage, and this skill is replaced by 'Final Kenjutsu'.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/rRqiVre.png"
+    },
+    {
+      "name": "Buzz Saw",
+      "description": "Using his seven swords, Bee deals 20 piercing damage to one enemy. During 'Kenjutsu', this skill will deal an additional 10 damage.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/TJrai76.png"
+    },
+    {
+      "name": "Chakra Stream",
+      "description": "Bee protects himself or an ally. For 1 turn, the first enemy that uses a new skill on the protected ally will be countered and will take 15 piercing damage. This skill is invisible.",
+      "cooldown": 2,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/xW7QlkR.png"
+    },
+    {
+      "name": "Strong Defense",
+      "description": "This skill makes Killer Bee (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/JkuN3d1.png"
+    },
+    {
+      "name": "Final Kenjutsu",
+      "description": "Bee executes an enemy with a final attack, dealing 35 piercing damage to them. If that enemy's health drops to 5 or less, they will be instantly killed. This skill ignores invulnerability and can only be used on an enemy that took damage from Killer Bee's other skills on the last turn.",
+      "cooldown": null,
+      "chakra": [
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/5cPNd9Q.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:32:43.686Z"
+}

@@ -1,4 +1,4 @@
-.PHONY: setup setup-rl test simulate simulate-minimax tournament-minimax
+.PHONY: setup setup-rl lint format check test test-cov simulate simulate-minimax tournament-minimax
 .PHONY: train-rl simulate-rl tournament-rl compare-rl clean
 
 setup:
@@ -7,8 +7,22 @@ setup:
 setup-rl:
 	uv sync --extra dev --extra rl
 
+lint:
+	uv run --extra dev ruff check naruto_arena scripts tests
+
+format:
+	uv run --extra dev ruff format naruto_arena scripts tests
+
+check:
+	uv run --extra dev ruff check naruto_arena scripts tests
+	uv run --extra dev ruff format --check naruto_arena scripts tests
+	uv run --extra dev pytest
+
 test:
-	uv run pytest
+	uv run --extra dev pytest
+
+test-cov:
+	uv run --extra dev pytest --cov
 
 simulate:
 	uv run python scripts/simulate_random_battle.py $(ARGS)

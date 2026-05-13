@@ -1,0 +1,84 @@
+{
+  "name": "Hatake Kakashi",
+  "slug": "hatake-kakashi",
+  "url": "https://www.naruto-arena.site/chars/hatake-kakashi",
+  "pageTitle": "Hatake Kakashi - Naruto Arena Classic",
+  "description": "Kakashi is the sensei of Naruto, Sakura, and Sasuke. With his Sharingan he is able to turn his foes skills back upon themselves and can cause severe damage with his Raikiri and Nin-Dogs skills.",
+  "requirement": "Mission: Team 7 Fights as a Team",
+  "image": "https://i.imgur.com/EiPfRpg.png",
+  "skills": [
+    {
+      "name": "Raikiri",
+      "description": "An attack so strong it is said to cut lightning. This skill does 45 piercing damage to one enemy. This skill cannot be countered or reflected.",
+      "cooldown": 1,
+      "chakra": [
+        "ninjutsu",
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue",
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Melee"
+      ],
+      "image": "https://i.imgur.com/IO6GaRr.png"
+    },
+    {
+      "name": "Summoning: Ninja Dogs",
+      "description": "Kakashi summons ninja dogs which bite an enemy. That enemy will have their non-mental skills stunned for 1 turn. For 1 turn, that enemy will be receive 5 additional damage from chakra skills.",
+      "cooldown": 2,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Ranged"
+      ],
+      "image": "https://i.imgur.com/qenftRL.png"
+    },
+    {
+      "name": "Kakashi Sharingan",
+      "description": "Kakashi activates his copying sharingan. For 5 turns, Kakashi will every turn imitate a jutsu from a random enemy, copying a random harmful skill from that enemy, while changing the cost of the copied skill to random chakras.",
+      "cooldown": 5,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/nqbmD13.png"
+    },
+    {
+      "name": "Clever Hiding",
+      "description": "This skill makes Hatake Kakashi invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/8ICr6G8.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:28:36.223Z"
+}

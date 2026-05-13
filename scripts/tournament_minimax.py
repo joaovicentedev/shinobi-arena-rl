@@ -132,10 +132,7 @@ def write_report(
             "max_actions": max_actions,
             "search_actions": search_actions,
         },
-        "characters": [
-            {"id": character.id, "name": character.name}
-            for character in characters
-        ],
+        "characters": [{"id": character.id, "name": character.name} for character in characters],
         "teams": [
             {
                 "rank": rank,

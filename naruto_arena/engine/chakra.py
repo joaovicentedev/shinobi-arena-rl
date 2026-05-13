@@ -110,9 +110,7 @@ class ChakraPool:
             remaining -= take
         return removed
 
-    def _validate_payment(
-        self, cost: ChakraCost, random_payment: Mapping[ChakraType, int]
-    ) -> None:
+    def _validate_payment(self, cost: ChakraCost, random_payment: Mapping[ChakraType, int]) -> None:
         if cost.random < 0 or any(amount < 0 for amount in cost.fixed.values()):
             raise ValueError("Chakra cost cannot be negative.")
         if any(amount < 0 for amount in random_payment.values()):

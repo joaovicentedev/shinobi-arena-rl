@@ -1,0 +1,90 @@
+{
+  "name": "Akimichi Chouji (S)",
+  "slug": "akimichi-chouji-(s)",
+  "url": "https://www.naruto-arena.site/chars/akimichi-chouji-(s)",
+  "pageTitle": "Akimichi Chouji (S) - Naruto Arena Classic",
+  "description": "After nearly three years, Chouji has grown into a reliable ninja and is now a chuunin. His appetite has grown and so has his body, but now he is truly mastering the Akimichi clan techniques.",
+  "requirement": "Mission: A Portly but Steadfast Ninja",
+  "image": "https://i.imgur.com/yOkMa5x.png",
+  "skills": [
+    {
+      "name": "Mega Palm Thrusts",
+      "description": "Expanding his arms for more inertia, Chouji deals 30 damage to one enemy and increase the cost of their harmful skills by 1 random chakra for 1 turn.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "green",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/Pc3SHDn.png"
+    },
+    {
+      "name": "Spiked Meat Tank",
+      "description": "If used on an enemy: That enemy will be dealt 25 damage and Chouji becomes invulnerable for 1 turn. If used on himself or an ally: For 1 turn, all non-mental skills used on that ally will be countered and any countered enemy will be dealt 10 piercing damage*; Invisible. (Cooldown: 2).",
+      "cooldown": 1,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/EwDVEsS.png"
+    },
+    {
+      "name": "Expansion Technique",
+      "description": "Chouji grows gigantic, gaining 45 destructible defense for 3 turns. The following 3 turns, 'Mega Palm Thrusts' will target all enemies and 'Spiked Meat Tank' will target all enemies or will target all allies if used on an ally.",
+      "cooldown": 5,
+      "chakra": [
+        "bloodline",
+        "random"
+      ],
+      "chakraColors": [
+        "red",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/dstCSmJ.png"
+    },
+    {
+      "name": "Chouji Leap",
+      "description": "This skill makes Akimichi Chouji (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/7df1cOL.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:30:42.835Z"
+}

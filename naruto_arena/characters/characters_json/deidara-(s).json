@@ -1,0 +1,88 @@
+{
+  "name": "Deidara (S)",
+  "slug": "deidara-(s)",
+  "url": "https://www.naruto-arena.site/chars/deidara-(s)",
+  "pageTitle": "Deidara (S) - Naruto Arena Classic",
+  "description": "An akatsuki former rock ninja partner and apprentice of Sasori. Deidara is quite eccentric when it comes to art. His skill with clay allows him to create explosive sculptures, whether large, medium or small.",
+  "requirement": "Mission: A True Artist",
+  "image": "https://i.imgur.com/iAgnmxk.png",
+  "skills": [
+    {
+      "name": "Clay Molds",
+      "description": "For 3 turns, Deidara gains 5 permanent destructible defense and activates \"C2\" first turn. Second turn he activates \"C3\". Third turn he activates \"C4\". Afterwards, this skill is restarted and Deidara gains 1 random chakra.",
+      "cooldown": null,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/16zRKq5.png"
+    },
+    {
+      "name": "C3 - Giant Doll",
+      "description": "Deidara deals 15 piercing damage to all enemies. During \"C2\", this skill deals 5 additional damage. During \"C3\", this skill deals 10 additional damage and stuns one random enemy's harmful skills for 1 turn. During \"C4\", this skill stuns all enemies' harmful skills for 1 turn. Requires 'Clay Mold'.",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/3KPFyYt.png"
+    },
+    {
+      "name": "C2 - Clay Centipede",
+      "description": "Deidara deals 10 damage to one enemy for 2 turns. The target's draining chakra effects will not be applied. If used during \"C2\", this skill lasts 3 turns. If used during \"C3\", Deidara becomes invulnerable to non-mental skills for 1 turn. During \"C4\", this skill lasts 1 turn and deals 30 piercing damage. Requires 'Clay Mold'.",
+      "cooldown": 1,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/QSRpbul.png"
+    },
+    {
+      "name": "Aerial Retreat",
+      "description": "This skill makes Deidara (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://imgur.com/Hno70ML.jpg"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:34:48.622Z"
+}

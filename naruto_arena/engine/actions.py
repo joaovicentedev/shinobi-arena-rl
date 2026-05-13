@@ -29,4 +29,3 @@ class ReorderSkillsAction(Action):
     character_id: str
     skill_id: str
     new_index: int
-

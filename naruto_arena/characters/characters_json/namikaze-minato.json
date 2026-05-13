@@ -1,0 +1,87 @@
+{
+  "name": "Namikaze Minato",
+  "slug": "namikaze-minato",
+  "url": "https://www.naruto-arena.site/chars/namikaze-minato",
+  "pageTitle": "Namikaze Minato - Naruto Arena Classic",
+  "description": "Known as Konoha's Yellow Flash, Minato is the leader of Team Minato. His style of combat is unique and he is a highly analytical and caring person.",
+  "requirement": "Mission: The Yellow Flash",
+  "image": "https://i.imgur.com/PSc47fS.png",
+  "skills": [
+    {
+      "name": "Hiraishin no Jutsu",
+      "description": "Minato deals 25 piercing damage to one enemy and gains 75% unpierceable damage reduction for 1 turn. All enemies marked by 'Hiraishin Marking' will take 15 piercing damage. All allies marked by 'Hiraishin Marking'' will become invulnerable for 1 turn.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "white",
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/gWT6r09.png"
+    },
+    {
+      "name": "Hiraishin Marking",
+      "description": "If used on an enemy, that enemy will be unable to become invulnerable. If used on an ally, that ally gains 5 points of damage reduction. This skill lasts 3 turns, ignores invulnerability and cannot be used on the same target the following turn.",
+      "cooldown": null,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Chakra",
+        "Affliction",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/xuWHZFo.png"
+    },
+    {
+      "name": "Hiraishin Kunai Scatter",
+      "description": "By scattering hiraishin kunais, Minato applies 'Hiraishin Marking' on all enemies and all allies for 1 turn. Afterwards, Minato gains 1 random chakra. This skill is invisible and ignores invulnerability.",
+      "cooldown": 3,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Control",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/BreOhEB.png"
+    },
+    {
+      "name": "Seal Sensing",
+      "description": "This skill makes Namikaze Minato invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Mental",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/GjTFYPH.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:28:58.779Z"
+}

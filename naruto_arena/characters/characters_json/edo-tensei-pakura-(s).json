@@ -1,0 +1,93 @@
+{
+  "name": "Edo Tensei Pakura (S)",
+  "slug": "edo-tensei-pakura-(s)",
+  "url": "https://www.naruto-arena.site/chars/edo-tensei-pakura-(s)",
+  "pageTitle": "Edo Tensei Pakura (S) - Naruto Arena Classic",
+  "description": "Edo Tensei Pakura (S) was a revered shinobi of the Hidden Sand in the past. So much so that she was revived against her will to participate in the fourth shinobi world war.",
+  "requirement": "Mission: The Kind Kunoichi of the Past",
+  "image": "https://i.imgur.com/Zj6R1e2.png",
+  "skills": [
+    {
+      "name": "Scorch Release",
+      "description": "Pakura deals 20 affliction damage to one enemy and makes them unable to be healed for 1 turn.",
+      "cooldown": null,
+      "chakra": [
+        "bloodline"
+      ],
+      "chakraColors": [
+        "red"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/9Zxln8E.png"
+    },
+    {
+      "name": "Searing Combat",
+      "description": "Pakura deals 5 affliction damage to all enemies for 3 turns. During this time, all enemies that use a new harmful skill will take 5 affliction damage and 'Scorch Release' will deal 10 additional damage on them.",
+      "cooldown": 1,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Physical",
+        "Melee",
+        "Action",
+        "Affliction",
+        "*Instant"
+      ],
+      "image": "https://i.imgur.com/EN0ePFo.png"
+    },
+    {
+      "name": "Steaming Murder",
+      "description": "Pakura deals 35 affliction damage to one enemy and stuns their helpful skills. The following turn, all other Pakura's harmful skills will cost random chakras instead.",
+      "cooldown": 2,
+      "chakra": [
+        "bloodline",
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "red",
+        "white"
+      ],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Affliction",
+        "Unique",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/wNevSbP.png"
+    },
+    {
+      "name": "Experienced Defense",
+      "description": "This skill makes Edo Tensei Pakura (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/MJxeXU7.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:37:21.433Z"
+}

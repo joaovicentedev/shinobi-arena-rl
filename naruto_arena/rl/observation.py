@@ -2,16 +2,19 @@ from __future__ import annotations
 
 from naruto_arena.data.characters import (
     ABURAME_SHINO,
+    AKIMICHI_CHOUJI,
     HYUUGA_HINATA,
     INUZUKA_KIBA,
+    NARA_SHIKAMARU,
     SAKURA_HARUNO,
     SASUKE_UCHIHA,
     UZUMAKI_NARUTO,
+    YAMANAKA_INO,
 )
 from naruto_arena.engine.chakra import ChakraType
 from naruto_arena.engine.effects import (
-    ChakraRemoval,
     ChakraGainSteal,
+    ChakraRemoval,
     ChakraSteal,
     DamageOverTime,
     DamageReduction,
@@ -32,6 +35,9 @@ ROSTER = (
     INUZUKA_KIBA,
     ABURAME_SHINO,
     HYUUGA_HINATA,
+    NARA_SHIKAMARU,
+    AKIMICHI_CHOUJI,
+    YAMANAKA_INO,
 )
 ROSTER_INDEX = {character.id: index for index, character in enumerate(ROSTER)}
 MAX_TURN = 100
@@ -40,10 +46,10 @@ MAX_DURATION = 5
 MAX_CHAKRA = 12
 MAX_SKILL_COST = 4
 CHARACTER_SLOTS = 6
-BASE_CHARACTER_FEATURE_SIZE = 36
+BASE_CHARACTER_FEATURE_SIZE = 40
 BASE_OBSERVATION_VERSION = "base_v1"
-MAX_SKILLS_PER_CHARACTER = 5
-SKILL_FEATURE_SIZE = 50
+MAX_SKILLS_PER_CHARACTER = 9
+SKILL_FEATURE_SIZE = 51
 CHARACTER_FEATURE_SIZE = BASE_CHARACTER_FEATURE_SIZE + (
     MAX_SKILLS_PER_CHARACTER * SKILL_FEATURE_SIZE
 )
@@ -152,8 +158,7 @@ def _character_features(
         features.append(0.0)
     for skill_class in SkillClass:
         features.append(
-            min(character.status.class_stuns.get(skill_class.value, 0), MAX_DURATION)
-            / MAX_DURATION
+            min(character.status.class_stuns.get(skill_class.value, 0), MAX_DURATION) / MAX_DURATION
         )
     if include_skill_features:
         for skill_id in character.skill_order[:MAX_SKILLS_PER_CHARACTER]:
@@ -175,14 +180,10 @@ def _skill_features(
     effects = skill.all_effects(state, character.instance_id)
     direct_damage = sum(effect.amount for effect in effects if isinstance(effect, DirectDamage))
     piercing_direct_damage = sum(
-        effect.amount
-        for effect in effects
-        if isinstance(effect, DirectDamage) and effect.piercing
+        effect.amount for effect in effects if isinstance(effect, DirectDamage) and effect.piercing
     )
     conditional_damage_bonus = sum(
-        effect.conditional_bonus
-        for effect in effects
-        if isinstance(effect, DirectDamage)
+        effect.conditional_bonus for effect in effects if isinstance(effect, DirectDamage)
     )
     healing = sum(effect.amount for effect in effects if isinstance(effect, Healing))
     stuns = [effect for effect in effects if isinstance(effect, Stun)]
@@ -201,9 +202,7 @@ def _skill_features(
     dot_piercing = any(effect.piercing for effect in dots)
     chakra_removal = sum(effect.amount for effect in effects if isinstance(effect, ChakraRemoval))
     chakra_steal = sum(
-        effect.amount
-        for effect in effects
-        if isinstance(effect, (ChakraGainSteal, ChakraSteal))
+        effect.amount for effect in effects if isinstance(effect, (ChakraGainSteal, ChakraSteal))
     )
     status_marker_count = sum(1 for effect in effects if isinstance(effect, StatusMarker))
     passive_effect = any(isinstance(effect, PassiveEffect) for effect in effects)
@@ -261,8 +260,7 @@ def _skill_features(
 def _chakra_features(state: GameState, player_id: int) -> list[float]:
     chakra = state.players[player_id].chakra
     values = [
-        min(chakra.amounts[chakra_type], MAX_CHAKRA) / MAX_CHAKRA
-        for chakra_type in ChakraType
+        min(chakra.amounts[chakra_type], MAX_CHAKRA) / MAX_CHAKRA for chakra_type in ChakraType
     ]
     values.append(min(chakra.total(), MAX_CHAKRA) / MAX_CHAKRA)
     return values

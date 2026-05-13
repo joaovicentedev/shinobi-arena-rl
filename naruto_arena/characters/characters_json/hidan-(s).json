@@ -1,0 +1,88 @@
+{
+  "name": "Hidan (S)",
+  "slug": "hidan-(s)",
+  "url": "https://www.naruto-arena.site/chars/hidan-(s)",
+  "pageTitle": "Hidan (S) - Naruto Arena Classic",
+  "description": "Hidan(s) is a member of Akatsuki and a worshiper of the obscure god Jashin. He is apparently immortal and has perhaps the foulest mouth of the entire criminal organization.",
+  "requirement": "Mission: Another Sacrifice",
+  "image": "https://i.imgur.com/BsRLXW8.jpg",
+  "skills": [
+    {
+      "name": "Reaping Scythe",
+      "description": "Hidan (S) attacks one enemy with his scythe dealing 15 damage to them and he gains 10 permanent destructible defense. 'Curse of Jashin' may be used on the targeted enemy the following turn. This skill cannot be used on an enemy affected by 'Curse of Jashin'.",
+      "cooldown": null,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/MjUnVzm.jpg"
+    },
+    {
+      "name": "Curse of Jashin",
+      "description": "Hidan curses an enemy. For 2 turns, all harmful skills used on Hidan will be reflected upon the cursed enemy. During this time, 'Impale' may be used. This skill ignores invulnerability and cannot be countered or reflected.",
+      "cooldown": null,
+      "chakra": [
+        "genjutsu"
+      ],
+      "chakraColors": [
+        "white"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Action",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/xXLYmTW.jpg"
+    },
+    {
+      "name": "Impale",
+      "description": "Hidan (S) impales himself with a large metal spike dealing 40 piercing damage to one enemy currently the target of 'Curse of Jashin' and removes 1 bloodline or ninjutsu chakra from them. This skill ignores invulnerability.",
+      "cooldown": null,
+      "chakra": [
+        "taijutsu"
+      ],
+      "chakraColors": [
+        "green"
+      ],
+      "classes": [
+        "Mental",
+        "Ranged",
+        "Instant",
+        "Unique"
+      ],
+      "image": "https://i.imgur.com/k9okawc.jpg"
+    },
+    {
+      "name": "Immortality",
+      "description": "This skill makes Hidan (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Physical",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/t2PRUAx.jpg"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:35:10.856Z"
+}

@@ -1,0 +1,143 @@
+{
+  "name": "Uchiha Sasuke (S)",
+  "slug": "uchiha-sasuke-(s)",
+  "url": "https://www.naruto-arena.site/chars/uchiha-sasuke-(s)",
+  "pageTitle": "Uchiha Sasuke (S) - Naruto Arena Classic",
+  "description": "Uchiha Sasuke (S) has spent the last 2 years training under Orochimaru. He is now an expert swordsman and has immensely developed his lightning element techniques. His demeanor has also grown very cold and he is one of the most dangerous individuals in the ninja world.",
+  "requirement": "Mission: Beginning a Path of Vengeance",
+  "image": "https://i.imgur.com/bQ57WbY.png",
+  "skills": [
+    {
+      "name": "Chidori Nagashi",
+      "description": "Sasuke activates Chidori Nagashi, starting with 0 Lightning stacks. He will gain 1 Lightning stack each turn on the following turns. Sasuke may use his skills to consume all Lightning stacks, dealing 10 piercing damage per stack. Any enemy that uses a new skill on Sasuke will take 10 piercing damage; Cannot be triggered if Sasuke has no Lightning stack; If triggered, Sasuke will lose 1 Lightning stack once that turn.",
+      "cooldown": null,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Affliction",
+        "Melee",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/xB2eYQs.png"
+    },
+    {
+      "name": "Lightning Shockwave",
+      "description": "Sasuke deals 15 piercing damage to one enemy and 5 piercing damage to all others. For 1 turn, Sasuke will ignore affliction damage.",
+      "cooldown": 1,
+      "chakra": [
+        "ninjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "blue",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/rhEeID9.png"
+    },
+    {
+      "name": "Lightning Blade",
+      "description": "Sasuke deals 20 piercing damage to one enemy. For 1 turn, that enemy will deal 10 less non-affliction damage and their active cooldowns will be paralyzed.",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu"
+      ],
+      "chakraColors": [
+        "blue"
+      ],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Unique",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/ZmP3GaM.png"
+    },
+    {
+      "name": "Protective Summoning",
+      "description": "This skill makes Uchiha Sasuke (S) invulnerable for 1 turn.",
+      "cooldown": 4,
+      "chakra": [
+        "random"
+      ],
+      "chakraColors": [
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/BGGf705.png"
+    },
+    {
+      "name": "Passive: Cursed Seal Protection",
+      "description": "When Sasuke reaches 50 health or less, all harmful affliction skills will be removed from him and Sasuke will gain 30 points of destructible defense for 3 turns. The following 3 turns, 'Lightning Shockwave' and 'Lightning Blade' will be replaced by their alternative version.",
+      "cooldown": null,
+      "chakra": [],
+      "chakraColors": [],
+      "classes": [
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/KnfrzVt.png"
+    },
+    {
+      "name": "Great Dragon Flame Jutsu",
+      "description": "Sasuke deals 25 affliction damage to one enemy and 15 affliction damage to all others. For 1 turn, Sasuke will ignore affliction damage.",
+      "cooldown": 1,
+      "chakra": [
+        "ninjutsu",
+        "random",
+        "random"
+      ],
+      "chakraColors": [
+        "blue",
+        "black/gray",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Ranged",
+        "Instant",
+        "Affliction"
+      ],
+      "image": "https://i.imgur.com/XPFh76O.png"
+    },
+    {
+      "name": "Flying Corrupt Chidori",
+      "description": "Sasuke deals 35 piercing damage to one enemy. For 1 turn, that enemy will deal 20 less non-affliction damage and their active cooldowns will be paralyzed.",
+      "cooldown": null,
+      "chakra": [
+        "ninjutsu",
+        "random"
+      ],
+      "chakraColors": [
+        "blue",
+        "black/gray"
+      ],
+      "classes": [
+        "Chakra",
+        "Melee",
+        "Unique",
+        "Instant"
+      ],
+      "image": "https://i.imgur.com/E8pioPB.png"
+    }
+  ],
+  "chakraLegend": {
+    "ninjutsu": "blue",
+    "taijutsu": "green",
+    "bloodline": "red",
+    "genjutsu": "white",
+    "random": "black/gray"
+  },
+  "scrapedAt": "2026-05-13T01:33:38.790Z"
+}
