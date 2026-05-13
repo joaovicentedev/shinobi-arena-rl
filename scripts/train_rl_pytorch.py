@@ -4,7 +4,9 @@ import argparse
 import random
 import sys
 import time
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
+from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -12,17 +14,26 @@ import torch
 import torch.nn.functional as F
 from torch.distributions import Categorical
 
-from naruto_arena.rl.action_space import ACTION_KIND_ORDER, ActionKind, FactoredAction
+from naruto_arena.rl.action_space import (
+    ACTION_KIND_ORDER,
+    ACTION_KIND_TO_INDEX,
+    ActionKind,
+    FactoredAction,
+)
 from naruto_arena.rl.env import NarutoArenaLearningEnv
 from naruto_arena.rl.model import (
     MODEL_ARCH_MLP,
     MODEL_ARCHITECTURES,
     PolicyOutput,
     create_actor_critic,
+    load_actor_critic_state_dict,
     model_arch_from_checkpoint,
     policy_type_for_model_arch,
 )
 from naruto_arena.rl.observation import OBSERVATION_VERSION, observation_size
+
+MaskTrace = dict[str, list[bool]]
+Trajectory = dict[str, list[Any] | list[float] | int | None]
 
 
 def parse_args() -> argparse.Namespace:
@@ -32,6 +43,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-actions", type=int, default=300)
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--opponent", choices=("random", "heuristic", "rl"), default="heuristic")
+    parser.add_argument(
+        "--team-sampling",
+        choices=("fixed", "random-roster", "random-mirror"),
+        default="fixed",
+        help="How to choose learner and opponent teams at episode reset.",
+    )
     parser.add_argument(
         "--opponent-model-path",
         type=Path,
@@ -44,6 +61,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--value-coef", type=float, default=0.5)
     parser.add_argument("--log-interval", type=int, default=25)
     parser.add_argument("--save-path", default="models/naruto_actor_critic.pt")
+    parser.add_argument(
+        "--num-envs",
+        type=int,
+        default=1,
+        help="Number of worker processes used to collect rollout episodes.",
+    )
     parser.add_argument(
         "--model-arch",
         choices=MODEL_ARCHITECTURES,
@@ -71,6 +94,8 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    if args.num_envs < 1:
+        raise ValueError("--num-envs must be at least 1.")
     torch.manual_seed(args.seed)
     device = resolve_device(args.device)
     env = NarutoArenaLearningEnv(
@@ -79,6 +104,7 @@ def main() -> None:
         max_actions=args.max_actions,
         perfect_info=args.perfect_info,
         opponent_model_path=args.opponent_model_path,
+        team_sampling=args.team_sampling,
     )
     model = create_actor_critic(
         observation_size(perfect_info=args.perfect_info),
@@ -93,32 +119,91 @@ def main() -> None:
             perfect_info=args.perfect_info,
             model_arch=args.model_arch,
         )
+    model.eval()
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
-    pending: list[dict[str, list[torch.Tensor] | list[float] | int | None]] = []
+    pending: list[Trajectory] = []
     recent_returns: list[float] = []
     recent_wins: list[float] = []
     episode_seed_rng = random.Random(args.seed)
     start = time.monotonic()
+    loss: float | None = None
 
-    for episode in range(1, args.episodes + 1):
-        trajectory = collect_episode(
-            env,
-            model,
-            args.gamma,
-            seed=episode_seed_rng.randrange(2**32),
-        )
-        pending.append(trajectory)
-        recent_returns.append(float(sum(trajectory["rewards"])))  # type: ignore[arg-type]
-        recent_wins.append(1.0 if trajectory["winner"] == env.learning_player else 0.0)
-        if len(pending) >= args.batch_episodes:
-            loss = update_model(model, optimizer, pending, args.value_coef, args.entropy_coef)
-            pending.clear()
-        else:
-            loss = None
-        if episode == 1 or episode % args.log_interval == 0 or episode == args.episodes:
-            log_progress(episode, args.episodes, recent_returns, recent_wins, start, loss)
-            recent_returns.clear()
-            recent_wins.clear()
+    if args.num_envs == 1:
+        for episode in range(1, args.episodes + 1):
+            trajectory = collect_episode(
+                env,
+                model,
+                args.gamma,
+                seed=episode_seed_rng.randrange(2**32),
+            )
+            pending.append(trajectory)
+            recent_returns.append(float(sum(trajectory["rewards"])))
+            recent_wins.append(1.0 if trajectory["winner"] == env.learning_player else 0.0)
+            if len(pending) >= args.batch_episodes:
+                loss = update_model(model, optimizer, pending, args.value_coef, args.entropy_coef)
+                pending.clear()
+            if episode == 1 or episode % args.log_interval == 0 or episode == args.episodes:
+                log_progress(episode, args.episodes, recent_returns, recent_wins, start, loss)
+                recent_returns.clear()
+                recent_wins.clear()
+    else:
+        worker_config = {
+            "opponent": args.opponent,
+            "max_actions": args.max_actions,
+            "perfect_info": args.perfect_info,
+            "opponent_model_path": (
+                None if args.opponent_model_path is None else str(args.opponent_model_path)
+            ),
+            "team_sampling": args.team_sampling,
+            "model_arch": args.model_arch,
+            "gamma": args.gamma,
+        }
+        completed_episodes = 0
+        with ProcessPoolExecutor(max_workers=args.num_envs) as executor:
+            while completed_episodes < args.episodes:
+                batch_size = min(args.batch_episodes, args.episodes - completed_episodes)
+                seeds = [episode_seed_rng.randrange(2**32) for _ in range(batch_size)]
+                worker_seed_groups = _split_round_robin(seeds, args.num_envs)
+                state_dict = _cpu_state_dict(model)
+                futures = [
+                    executor.submit(
+                        collect_episode_worker_batch,
+                        worker_config,
+                        state_dict,
+                        worker_seeds,
+                    )
+                    for worker_seeds in worker_seed_groups
+                    if worker_seeds
+                ]
+                batch = [
+                    trajectory
+                    for future in futures
+                    for trajectory in future.result()
+                ]
+                pending.extend(batch)
+                loss = update_model(model, optimizer, pending, args.value_coef, args.entropy_coef)
+                pending.clear()
+                for trajectory in batch:
+                    completed_episodes += 1
+                    recent_returns.append(float(sum(trajectory["rewards"])))
+                    recent_wins.append(
+                        1.0 if trajectory["winner"] == env.learning_player else 0.0
+                    )
+                    if (
+                        completed_episodes == 1
+                        or completed_episodes % args.log_interval == 0
+                        or completed_episodes == args.episodes
+                    ):
+                        log_progress(
+                            completed_episodes,
+                            args.episodes,
+                            recent_returns,
+                            recent_wins,
+                            start,
+                            loss,
+                        )
+                        recent_returns.clear()
+                        recent_wins.clear()
 
     if pending:
         update_model(model, optimizer, pending, args.value_coef, args.entropy_coef)
@@ -137,6 +222,7 @@ def main() -> None:
             "opponent_model_path": (
                 None if args.opponent_model_path is None else str(args.opponent_model_path)
             ),
+            "team_sampling": args.team_sampling,
             "init_model_path": None if args.init_model_path is None else str(args.init_model_path),
         },
         save_path,
@@ -183,7 +269,7 @@ def load_initial_model(
     checkpoint_perfect_info = bool(checkpoint.get("perfect_info", False))
     if checkpoint_perfect_info != perfect_info:
         raise ValueError("Initial checkpoint perfect_info setting does not match current training.")
-    model.load_state_dict(checkpoint["model_state_dict"])
+    load_actor_critic_state_dict(model, checkpoint["model_state_dict"])
 
 
 def collect_episode(
@@ -192,30 +278,31 @@ def collect_episode(
     gamma: float,
     *,
     seed: int,
-) -> dict[str, list[torch.Tensor] | list[float] | int | None]:
+) -> Trajectory:
     observations = env.reset(seed=seed)
-    log_probs: list[torch.Tensor] = []
-    values: list[torch.Tensor] = []
-    entropies: list[torch.Tensor] = []
+    trajectory_observations: list[list[float]] = []
+    actions: list[FactoredAction] = []
+    action_masks: list[MaskTrace] = []
     rewards: list[float] = []
     done = False
     winner = None
     while not done:
         device = next(model.parameters()).device
-        obs = torch.tensor(observations, dtype=torch.float32, device=device).unsqueeze(0)
-        policy, value = model(obs)
-        action, log_prob, entropy = sample_factored_action(env, policy)
+        trajectory_observations.append(observations)
+        with torch.no_grad():
+            obs = torch.tensor(observations, dtype=torch.float32, device=device).unsqueeze(0)
+            policy, _ = model(obs)
+            action, mask_trace = sample_factored_action(env, policy)
         observations, reward, done, info = env.step(factored_action=action)
-        log_probs.append(log_prob)
-        values.append(value.squeeze(0))
-        entropies.append(entropy)
+        actions.append(action)
+        action_masks.append(mask_trace)
         rewards.append(reward)
         winner = info["winner"]
     returns = discounted_returns(rewards, gamma)
     return {
-        "log_probs": log_probs,
-        "values": values,
-        "entropies": entropies,
+        "observations": trajectory_observations,
+        "actions": actions,
+        "action_masks": action_masks,
         "returns": returns,
         "rewards": rewards,
         "winner": winner,
@@ -225,42 +312,45 @@ def collect_episode(
 def sample_factored_action(
     env: NarutoArenaLearningEnv,
     policy: PolicyOutput,
-) -> tuple[FactoredAction, torch.Tensor, torch.Tensor]:
-    kind, kind_log_prob, kind_entropy = _sample_masked(
+) -> tuple[FactoredAction, MaskTrace]:
+    mask_trace: MaskTrace = {}
+    kind_mask = env.factored_action_masks()["kind"]
+    mask_trace["kind"] = kind_mask
+    kind, _, _ = _sample_masked(
         policy.kind,
-        env.factored_action_masks()["kind"],
+        kind_mask,
     )
     action_kind = ACTION_KIND_ORDER[int(kind.item())]
-    log_prob = kind_log_prob
-    entropy = kind_entropy
     if action_kind == ActionKind.END_TURN:
-        return FactoredAction(action_kind), log_prob, entropy
+        return FactoredAction(action_kind), mask_trace
 
     partial = FactoredAction(action_kind)
-    actor, actor_log_prob, actor_entropy = _sample_masked(
+    actor_mask = env.factored_action_masks(partial)["actor"]
+    mask_trace["actor"] = actor_mask
+    actor, _, _ = _sample_masked(
         policy.actor,
-        env.factored_action_masks(partial)["actor"],
+        actor_mask,
     )
     partial = FactoredAction(action_kind, actor_slot=int(actor.item()))
-    log_prob = log_prob + actor_log_prob
-    entropy = entropy + actor_entropy
 
-    skill, skill_log_prob, skill_entropy = _sample_masked(
+    skill_mask = env.factored_action_masks(partial)["skill"]
+    mask_trace["skill"] = skill_mask
+    skill, _, _ = _sample_masked(
         policy.skill,
-        env.factored_action_masks(partial)["skill"],
+        skill_mask,
     )
     partial = FactoredAction(
         action_kind,
         actor_slot=partial.actor_slot,
         skill_slot=int(skill.item()),
     )
-    log_prob = log_prob + skill_log_prob
-    entropy = entropy + skill_entropy
 
     if action_kind == ActionKind.REORDER_SKILL:
-        destination, destination_log_prob, destination_entropy = _sample_masked(
+        reorder_mask = env.factored_action_masks(partial)["reorder_destination"]
+        mask_trace["reorder_destination"] = reorder_mask
+        destination, _, _ = _sample_masked(
             policy.reorder_destination,
-            env.factored_action_masks(partial)["reorder_destination"],
+            reorder_mask,
         )
         return (
             FactoredAction(
@@ -269,13 +359,14 @@ def sample_factored_action(
                 skill_slot=partial.skill_slot,
                 reorder_to_end=bool(destination.item()),
             ),
-            log_prob + destination_log_prob,
-            entropy + destination_entropy,
+            mask_trace,
         )
 
-    target, target_log_prob, target_entropy = _sample_masked(
+    target_mask = env.factored_action_masks(partial)["target"]
+    mask_trace["target"] = target_mask
+    target, _, _ = _sample_masked(
         policy.target,
-        env.factored_action_masks(partial)["target"],
+        target_mask,
     )
     partial = FactoredAction(
         action_kind,
@@ -283,9 +374,11 @@ def sample_factored_action(
         skill_slot=partial.skill_slot,
         target_code=int(target.item()),
     )
-    chakra, chakra_log_prob, chakra_entropy = _sample_masked(
+    chakra_mask = env.factored_action_masks(partial)["random_chakra"]
+    mask_trace["random_chakra"] = chakra_mask
+    chakra, _, _ = _sample_masked(
         policy.random_chakra,
-        env.factored_action_masks(partial)["random_chakra"],
+        chakra_mask,
     )
     return (
         FactoredAction(
@@ -295,8 +388,7 @@ def sample_factored_action(
             target_code=partial.target_code,
             random_chakra_code=int(chakra.item()),
         ),
-        log_prob + target_log_prob + chakra_log_prob,
-        entropy + target_entropy + chakra_entropy,
+        mask_trace,
     )
 
 
@@ -315,24 +407,108 @@ def _sample_masked(
     )
 
 
+def _factored_action_log_prob_and_entropy(
+    policy: PolicyOutput,
+    index: int,
+    action: FactoredAction,
+    mask_trace: MaskTrace,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    kind_index = ACTION_KIND_TO_INDEX[action.kind]
+    log_prob, entropy = _selected_log_prob_and_entropy(
+        policy.kind[index],
+        mask_trace["kind"],
+        kind_index,
+    )
+    if action.kind == ActionKind.END_TURN:
+        return log_prob, entropy
+
+    actor_log_prob, actor_entropy = _selected_log_prob_and_entropy(
+        policy.actor[index],
+        mask_trace["actor"],
+        action.actor_slot,
+    )
+    skill_log_prob, skill_entropy = _selected_log_prob_and_entropy(
+        policy.skill[index],
+        mask_trace["skill"],
+        action.skill_slot,
+    )
+    log_prob = log_prob + actor_log_prob + skill_log_prob
+    entropy = entropy + actor_entropy + skill_entropy
+
+    if action.kind == ActionKind.REORDER_SKILL:
+        destination_log_prob, destination_entropy = _selected_log_prob_and_entropy(
+            policy.reorder_destination[index],
+            mask_trace["reorder_destination"],
+            int(action.reorder_to_end),
+        )
+        return log_prob + destination_log_prob, entropy + destination_entropy
+
+    target_log_prob, target_entropy = _selected_log_prob_and_entropy(
+        policy.target[index],
+        mask_trace["target"],
+        action.target_code,
+    )
+    chakra_log_prob, chakra_entropy = _selected_log_prob_and_entropy(
+        policy.random_chakra[index],
+        mask_trace["random_chakra"],
+        action.random_chakra_code,
+    )
+    return log_prob + target_log_prob + chakra_log_prob, entropy + target_entropy + chakra_entropy
+
+
+def _selected_log_prob_and_entropy(
+    logits: torch.Tensor,
+    mask_values: list[bool],
+    selected_index: int,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    mask = torch.tensor(mask_values, dtype=torch.bool, device=logits.device)
+    masked_logits = logits.masked_fill(~mask, torch.finfo(logits.dtype).min)
+    distribution = Categorical(logits=masked_logits)
+    selected = torch.tensor(selected_index, dtype=torch.long, device=logits.device)
+    return distribution.log_prob(selected), distribution.entropy()
+
+
 def update_model(
     model: torch.nn.Module,
     optimizer: torch.optim.Optimizer,
-    batch: list[dict[str, list[torch.Tensor] | list[float] | int | None]],
+    batch: list[Trajectory],
     value_coef: float,
     entropy_coef: float,
 ) -> float:
-    del model
-    log_probs = torch.cat(
-        [torch.stack(item["log_probs"]) for item in batch]  # type: ignore[arg-type]
+    model.eval()
+    device = next(model.parameters()).device
+    observations = torch.tensor(
+        [
+            observation
+            for item in batch
+            for observation in item["observations"]
+        ],
+        dtype=torch.float32,
+        device=device,
     )
-    values = torch.cat([torch.stack(item["values"]) for item in batch])  # type: ignore[arg-type]
-    entropies = torch.cat(
-        [torch.stack(item["entropies"]) for item in batch]  # type: ignore[arg-type]
-    )
-    device = values.device
+    actions = [
+        action
+        for item in batch
+        for action in item["actions"]
+    ]
+    action_masks = [
+        mask_trace
+        for item in batch
+        for mask_trace in item["action_masks"]
+    ]
+    policy, values = model(observations)
+    log_probs_and_entropies = [
+        _factored_action_log_prob_and_entropy(policy, index, action, mask_trace)
+        for index, (action, mask_trace) in enumerate(zip(actions, action_masks, strict=True))
+    ]
+    log_probs = torch.stack([item[0] for item in log_probs_and_entropies])
+    entropies = torch.stack([item[1] for item in log_probs_and_entropies])
     returns = torch.tensor(
-        [value for item in batch for value in item["returns"]],  # type: ignore[union-attr]
+        [
+            value
+            for item in batch
+            for value in item["returns"]
+        ],
         dtype=torch.float32,
         device=device,
     )
@@ -359,6 +535,48 @@ def discounted_returns(rewards: list[float], gamma: float) -> list[float]:
         returns.append(running)
     returns.reverse()
     return returns
+
+
+def collect_episode_worker_batch(
+    config: dict[str, Any],
+    state_dict: dict[str, torch.Tensor],
+    seeds: list[int],
+) -> list[Trajectory]:
+    env = NarutoArenaLearningEnv(
+        opponent=str(config["opponent"]),
+        seed=0,
+        max_actions=int(config["max_actions"]),
+        perfect_info=bool(config["perfect_info"]),
+        opponent_model_path=(
+            None
+            if config["opponent_model_path"] is None
+            else Path(str(config["opponent_model_path"]))
+        ),
+        team_sampling=str(config["team_sampling"]),
+    )
+    model = create_actor_critic(
+        observation_size(perfect_info=bool(config["perfect_info"])),
+        str(config["model_arch"]),
+        OBSERVATION_VERSION,
+    )
+    load_actor_critic_state_dict(model, state_dict)
+    model.eval()
+    gamma = float(config["gamma"])
+    return [collect_episode(env, model, gamma, seed=seed) for seed in seeds]
+
+
+def _cpu_state_dict(model: torch.nn.Module) -> dict[str, torch.Tensor]:
+    return {
+        key: value.detach().cpu()
+        for key, value in model.state_dict().items()
+    }
+
+
+def _split_round_robin(values: list[int], groups: int) -> list[list[int]]:
+    split = [[] for _ in range(groups)]
+    for index, value in enumerate(values):
+        split[index % groups].append(value)
+    return split
 
 
 def log_progress(

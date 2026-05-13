@@ -17,7 +17,12 @@ from naruto_arena.rl.action_space import (
     factored_action_to_engine_action,
     legal_factored_action_masks,
 )
-from naruto_arena.rl.model import PolicyOutput, create_actor_critic, model_arch_from_checkpoint
+from naruto_arena.rl.model import (
+    PolicyOutput,
+    create_actor_critic,
+    load_actor_critic_state_dict,
+    model_arch_from_checkpoint,
+)
 from naruto_arena.rl.observation import (
     BASE_OBSERVATION_VERSION,
     OBSERVATION_VERSION,
@@ -43,7 +48,7 @@ class RlAgent:
             self.model_arch,
             self.observation_version,
         )
-        self.model.load_state_dict(checkpoint["model_state_dict"])
+        load_actor_critic_state_dict(self.model, checkpoint["model_state_dict"])
         self.model.eval()
         self.perfect_info = bool(checkpoint.get("perfect_info", False))
         current_obs_dim = observation_size(

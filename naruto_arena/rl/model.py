@@ -287,6 +287,30 @@ def create_actor_critic(
     raise ValueError(f"Unknown model architecture: {model_arch}")
 
 
+def load_actor_critic_state_dict(
+    model: nn.Module,
+    state_dict: dict[str, torch.Tensor],
+) -> None:
+    try:
+        model.load_state_dict(state_dict)
+        return
+    except RuntimeError:
+        model_state = model.state_dict()
+        embedding_key = "character_id_embedding.weight"
+        if embedding_key not in state_dict or embedding_key not in model_state:
+            raise
+        checkpoint_embedding = state_dict[embedding_key]
+        model_embedding = model_state[embedding_key]
+        if checkpoint_embedding.shape[1:] != model_embedding.shape[1:]:
+            raise
+        compatible_state_dict = dict(state_dict)
+        resized_embedding = model_embedding.clone()
+        rows = min(checkpoint_embedding.shape[0], resized_embedding.shape[0])
+        resized_embedding[:rows] = checkpoint_embedding[:rows]
+        compatible_state_dict[embedding_key] = resized_embedding
+        model.load_state_dict(compatible_state_dict)
+
+
 def character_feature_size_for_observation_version(observation_version: str) -> int:
     if observation_version == BASE_OBSERVATION_VERSION:
         return BASE_CHARACTER_FEATURE_SIZE

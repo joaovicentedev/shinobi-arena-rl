@@ -1,16 +1,6 @@
 from __future__ import annotations
 
-from naruto_arena.data.characters import (
-    ABURAME_SHINO,
-    AKIMICHI_CHOUJI,
-    HYUUGA_HINATA,
-    INUZUKA_KIBA,
-    NARA_SHIKAMARU,
-    SAKURA_HARUNO,
-    SASUKE_UCHIHA,
-    UZUMAKI_NARUTO,
-    YAMANAKA_INO,
-)
+from naruto_arena.data.characters import ALL_CHARACTERS
 from naruto_arena.engine.chakra import ChakraType
 from naruto_arena.engine.effects import (
     ChakraGainSteal,
@@ -28,27 +18,17 @@ from naruto_arena.engine.effects import (
 from naruto_arena.engine.skills import SkillClass, TargetRule
 from naruto_arena.engine.state import CharacterState, GameState
 
-ROSTER = (
-    UZUMAKI_NARUTO,
-    SAKURA_HARUNO,
-    SASUKE_UCHIHA,
-    INUZUKA_KIBA,
-    ABURAME_SHINO,
-    HYUUGA_HINATA,
-    NARA_SHIKAMARU,
-    AKIMICHI_CHOUJI,
-    YAMANAKA_INO,
-)
+ROSTER = tuple(sorted(ALL_CHARACTERS.values(), key=lambda character: character.id))
 UNKNOWN_CHARACTER_INDEX = 0
 ROSTER_INDEX = {character.id: index + 1 for index, character in enumerate(ROSTER)}
-CHARACTER_ID_CODE_COUNT = len(ROSTER) + 1
+CHARACTER_ID_CODE_COUNT = 256
 MAX_TURN = 100
 MAX_COOLDOWN = 5
 MAX_DURATION = 5
 MAX_CHAKRA = 12
 MAX_SKILL_COST = 4
 CHARACTER_SLOTS = 6
-BASE_CHARACTER_FEATURE_SIZE = 40
+BASE_CHARACTER_FEATURE_SIZE = 13 + len(ROSTER) + 5 + len(tuple(SkillClass))
 BASE_OBSERVATION_VERSION = "base_v1"
 MAX_SKILLS_PER_CHARACTER = 9
 SKILL_FEATURE_SIZE = 51
@@ -57,7 +37,7 @@ SKILL_FEATURES_CHARACTER_FEATURE_SIZE = BASE_CHARACTER_FEATURE_SIZE + (
     MAX_SKILLS_PER_CHARACTER * SKILL_FEATURE_SIZE
 )
 CHARACTER_ID_FEATURE_INDEX = 13
-COMPACT_BASE_CHARACTER_FEATURE_SIZE = BASE_CHARACTER_FEATURE_SIZE - len(ROSTER) + 1
+COMPACT_BASE_CHARACTER_FEATURE_SIZE = 13 + 1 + 5 + len(tuple(SkillClass))
 COMPACT_CHARACTER_FEATURE_SIZE = COMPACT_BASE_CHARACTER_FEATURE_SIZE + (
     MAX_SKILLS_PER_CHARACTER * SKILL_FEATURE_SIZE
 )
@@ -76,7 +56,11 @@ def observation_size(
     perfect_info: bool = False,
     observation_version: str = OBSERVATION_VERSION,
 ) -> int:
-    team = [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA]
+    team = [
+        ALL_CHARACTERS["uzumaki_naruto"],
+        ALL_CHARACTERS["sakura_haruno"],
+        ALL_CHARACTERS["sasuke_uchiha"],
+    ]
     from naruto_arena.engine.rules import create_initial_state
 
     state = create_initial_state(team, team, rng_seed=0)

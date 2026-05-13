@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from naruto_arena.data.json_characters import load_extra_characters
 from naruto_arena.engine.chakra import ChakraCost, ChakraType
 from naruto_arena.engine.characters import CharacterDefinition
 from naruto_arena.engine.effects import (
@@ -1054,7 +1055,7 @@ YAMANAKA_INO = CharacterDefinition(
     ),
 )
 
-ALL_CHARACTERS = {
+HAND_AUTHORED_CHARACTERS = {
     character.id: character
     for character in (
         UZUMAKI_NARUTO,
@@ -1067,4 +1068,10 @@ ALL_CHARACTERS = {
         AKIMICHI_CHOUJI,
         YAMANAKA_INO,
     )
+}
+
+EXTRA_CHARACTERS = load_extra_characters(set(HAND_AUTHORED_CHARACTERS))
+ALL_CHARACTERS = {
+    **HAND_AUTHORED_CHARACTERS,
+    **EXTRA_CHARACTERS,
 }

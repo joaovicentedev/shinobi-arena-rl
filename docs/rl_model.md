@@ -62,6 +62,31 @@ make train-rl ARGS="\
   --save-path models/naruto_actor_critic_transformer.pt"
 ```
 
+Train the Transformer on random 3v3 teams sampled from the expanded training
+roster:
+
+```bash
+uv run --extra rl python scripts/train_rl_pytorch.py \
+  --model-arch transformer \
+  --episodes 5000 \
+  --batch-episodes 128 \
+  --num-envs 8 \
+  --team-sampling random-roster \
+  --opponent heuristic \
+  --device cpu \
+  --log-interval 250 \
+  --save-path models/local/naruto_actor_critic_transformer_random_roster.pt
+```
+
+Run the fixed benchmark team set:
+
+```bash
+uv run --extra rl python scripts/evaluate_rl_benchmarks.py \
+  --model-path models/local/naruto_actor_critic_transformer_random_roster.pt \
+  --matches-per-benchmark 10 \
+  --output reports/rl_benchmarks.json
+```
+
 Transformer checkpoints use `policy_type: factored_transformer`. Existing
 `policy_type: factored` checkpoints continue to load as the current MLP model.
 
@@ -115,9 +140,11 @@ Tournament progress is also logged as a percentage:
 progress= 50.00% games=200/400 elapsed=0.3s
 ```
 
-Important limitation: the current training command trains on Naruto, Sakura,
-and Sasuke mirrors. The tournament can evaluate all teams because the action
-and observation encoders support all current characters, but the policy may be
+Important limitation: the default fixed-team training command trains on Naruto,
+Sakura, and Sasuke mirrors. Use `--team-sampling random-roster` to sample random
+learner and opponent teams from the expanded roster. The tournament can evaluate
+all teams because the action and observation encoders support all current
+characters, but the policy may be
 weak on characters it did not see during training.
 
 ## Model Comparison

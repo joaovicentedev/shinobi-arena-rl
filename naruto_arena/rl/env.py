@@ -6,7 +6,6 @@ from pathlib import Path
 from naruto_arena.agents.heuristic_agent import SimpleHeuristicAgent
 from naruto_arena.agents.random_agent import RandomAgent
 from naruto_arena.agents.rl_agent import RlAgent
-from naruto_arena.data.characters import SAKURA_HARUNO, SASUKE_UCHIHA, UZUMAKI_NARUTO
 from naruto_arena.engine.actions import Action, EndTurnAction
 from naruto_arena.engine.rules import RulesError, create_initial_state
 from naruto_arena.engine.simulator import apply_action, legal_actions
@@ -19,6 +18,7 @@ from naruto_arena.rl.action_space import (
     legal_factored_action_masks,
 )
 from naruto_arena.rl.observation import encode_observation
+from naruto_arena.rl.teams import default_team, random_mirror_teams, random_teams
 
 
 class NarutoArenaLearningEnv:
@@ -37,6 +37,7 @@ class NarutoArenaLearningEnv:
         max_actions: int = 300,
         perfect_info: bool = False,
         opponent_model_path: Path | None = None,
+        team_sampling: str = "fixed",
     ) -> None:
         self.seed = seed
         self.max_actions = max_actions
@@ -45,6 +46,7 @@ class NarutoArenaLearningEnv:
         self.rng = random.Random(seed)
         self.opponent_name = opponent
         self.opponent_model_path = opponent_model_path
+        self.team_sampling = team_sampling
         self.opponent = self._make_opponent(opponent, seed + 10_000)
         self.state: GameState | None = None
         self.actions_taken = 0
@@ -56,8 +58,8 @@ class NarutoArenaLearningEnv:
             self.seed = seed
             self.rng.seed(seed)
         self.opponent = self._make_opponent(self.opponent_name, self.seed + 10_000)
-        team = [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA]
-        self.state = create_initial_state(team, team, rng_seed=self.seed)
+        team_a, team_b = self._episode_teams()
+        self.state = create_initial_state(team_a, team_b, rng_seed=self.seed)
         self.actions_taken = 0
         self._clear_legal_actions_cache()
         return self.observation()
@@ -155,6 +157,16 @@ class NarutoArenaLearningEnv:
                 raise ValueError("--opponent-model-path is required when --opponent rl.")
             return RlAgent(self.opponent_model_path, deterministic=True, seed=seed)
         raise ValueError(f"Unknown opponent: {name}")
+
+    def _episode_teams(self):
+        if self.team_sampling == "fixed":
+            team = default_team()
+            return team, list(team)
+        if self.team_sampling == "random-roster":
+            return random_teams(self.rng)
+        if self.team_sampling == "random-mirror":
+            return random_mirror_teams(self.rng)
+        raise ValueError(f"Unknown team sampling mode: {self.team_sampling}")
 
     def _legal_actions_for_current_state(self) -> list[Action]:
         assert self.state is not None
