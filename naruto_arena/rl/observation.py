@@ -39,7 +39,9 @@ ROSTER = (
     AKIMICHI_CHOUJI,
     YAMANAKA_INO,
 )
-ROSTER_INDEX = {character.id: index for index, character in enumerate(ROSTER)}
+UNKNOWN_CHARACTER_INDEX = 0
+ROSTER_INDEX = {character.id: index + 1 for index, character in enumerate(ROSTER)}
+CHARACTER_ID_CODE_COUNT = len(ROSTER) + 1
 MAX_TURN = 100
 MAX_COOLDOWN = 5
 MAX_DURATION = 5
@@ -50,10 +52,23 @@ BASE_CHARACTER_FEATURE_SIZE = 40
 BASE_OBSERVATION_VERSION = "base_v1"
 MAX_SKILLS_PER_CHARACTER = 9
 SKILL_FEATURE_SIZE = 51
-CHARACTER_FEATURE_SIZE = BASE_CHARACTER_FEATURE_SIZE + (
+SKILL_FEATURES_OBSERVATION_VERSION = "skill_features_v1"
+SKILL_FEATURES_CHARACTER_FEATURE_SIZE = BASE_CHARACTER_FEATURE_SIZE + (
     MAX_SKILLS_PER_CHARACTER * SKILL_FEATURE_SIZE
 )
-OBSERVATION_VERSION = "skill_features_v1"
+CHARACTER_ID_FEATURE_INDEX = 13
+COMPACT_BASE_CHARACTER_FEATURE_SIZE = BASE_CHARACTER_FEATURE_SIZE - len(ROSTER) + 1
+COMPACT_CHARACTER_FEATURE_SIZE = COMPACT_BASE_CHARACTER_FEATURE_SIZE + (
+    MAX_SKILLS_PER_CHARACTER * SKILL_FEATURE_SIZE
+)
+COMPACT_OBSERVATION_VERSION = "skill_features_compact_id_v1"
+CHARACTER_FEATURE_SIZE = COMPACT_CHARACTER_FEATURE_SIZE
+OBSERVATION_VERSION = COMPACT_OBSERVATION_VERSION
+OBSERVATION_VERSIONS = (
+    BASE_OBSERVATION_VERSION,
+    SKILL_FEATURES_OBSERVATION_VERSION,
+    COMPACT_OBSERVATION_VERSION,
+)
 
 
 def observation_size(
@@ -88,9 +103,10 @@ def encode_observation(
     a debug option for experiments and regression checks.
     """
 
-    if observation_version not in {BASE_OBSERVATION_VERSION, OBSERVATION_VERSION}:
+    if observation_version not in OBSERVATION_VERSIONS:
         raise ValueError(f"Unknown observation version: {observation_version}")
-    include_skill_features = observation_version == OBSERVATION_VERSION
+    include_skill_features = observation_version != BASE_OBSERVATION_VERSION
+    compact_character_id = observation_version == COMPACT_OBSERVATION_VERSION
     enemy_id = 1 - player_id
     features: list[float] = [
         min(state.turn_number, MAX_TURN) / MAX_TURN,
@@ -100,11 +116,21 @@ def encode_observation(
     ]
     for character in state.players[player_id].characters:
         features.extend(
-            _character_features(state, character, include_skill_features=include_skill_features)
+            _character_features(
+                state,
+                character,
+                include_skill_features=include_skill_features,
+                compact_character_id=compact_character_id,
+            )
         )
     for character in state.players[enemy_id].characters:
         features.extend(
-            _character_features(state, character, include_skill_features=include_skill_features)
+            _character_features(
+                state,
+                character,
+                include_skill_features=include_skill_features,
+                compact_character_id=compact_character_id,
+            )
         )
     features.extend(_chakra_features(state, player_id))
     if perfect_info:
@@ -123,6 +149,7 @@ def _character_features(
     character: CharacterState,
     *,
     include_skill_features: bool,
+    compact_character_id: bool = False,
 ) -> list[float]:
     reduction_amount = sum(reduction.amount for reduction in character.status.damage_reductions)
     unpierceable_amount = sum(
@@ -151,19 +178,34 @@ def _character_features(
         min(sum(character.passive_triggered.values()), 5) / 5,
         float(character.used_skill_this_turn),
     ]
-    features.extend(_one_hot(ROSTER_INDEX.get(character.definition.id, -1), len(ROSTER)))
+    character_index = ROSTER_INDEX.get(character.definition.id, UNKNOWN_CHARACTER_INDEX)
+    if compact_character_id:
+        features.append(float(character_index))
+    else:
+        features.extend(_one_hot(character_index - 1, len(ROSTER)))
     for skill_id in character.skill_order[:5]:
         features.append(min(character.cooldowns.get(skill_id, 0), MAX_COOLDOWN) / MAX_COOLDOWN)
-    while len(features) < 13 + len(ROSTER) + 5:
+    identity_size = 1 if compact_character_id else len(ROSTER)
+    expected_base_size = (
+        COMPACT_BASE_CHARACTER_FEATURE_SIZE if compact_character_id else BASE_CHARACTER_FEATURE_SIZE
+    )
+    while len(features) < 13 + identity_size + 5:
         features.append(0.0)
     for skill_class in SkillClass:
         features.append(
             min(character.status.class_stuns.get(skill_class.value, 0), MAX_DURATION) / MAX_DURATION
         )
+    if len(features) != expected_base_size:
+        raise AssertionError(f"Character base feature size changed: {len(features)}")
     if include_skill_features:
         for skill_id in character.skill_order[:MAX_SKILLS_PER_CHARACTER]:
             features.extend(_skill_features(state, character, skill_id))
-        while len(features) < CHARACTER_FEATURE_SIZE:
+        expected_feature_size = (
+            COMPACT_CHARACTER_FEATURE_SIZE
+            if compact_character_id
+            else SKILL_FEATURES_CHARACTER_FEATURE_SIZE
+        )
+        while len(features) < expected_feature_size:
             features.append(0.0)
     return features
 

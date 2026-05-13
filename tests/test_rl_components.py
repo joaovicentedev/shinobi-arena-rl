@@ -31,6 +31,8 @@ from naruto_arena.rl.observation import (
     BASE_OBSERVATION_VERSION,
     CHARACTER_FEATURE_SIZE,
     CHARACTER_SLOTS,
+    COMPACT_BASE_CHARACTER_FEATURE_SIZE,
+    COMPACT_OBSERVATION_VERSION,
     SKILL_FEATURE_SIZE,
     encode_observation,
     observation_size,
@@ -75,9 +77,12 @@ def test_rl_observation_includes_skill_feature_map() -> None:
 
     observation = encode_observation(state, 0)
     sasuke_block = 4 + (2 * CHARACTER_FEATURE_SIZE)
-    lion_combo_features = sasuke_block + BASE_CHARACTER_FEATURE_SIZE
+    lion_combo_features = sasuke_block + COMPACT_BASE_CHARACTER_FEATURE_SIZE
 
     assert observation_size() == 4 + CHARACTER_SLOTS * CHARACTER_FEATURE_SIZE + 10
+    assert CHARACTER_FEATURE_SIZE < BASE_CHARACTER_FEATURE_SIZE + (
+        OBSERVATION_MAX_SKILLS_PER_CHARACTER * SKILL_FEATURE_SIZE
+    )
     assert observation[lion_combo_features] == 1.0
     assert observation[lion_combo_features + 6] == 0.25
     assert observation[lion_combo_features + 9] == 0.25
@@ -269,6 +274,7 @@ def test_rl_agent_can_load_transformer_checkpoint(tmp_path: Path) -> None:
             "obs_dim": observation_size(),
             "policy_type": "factored_transformer",
             "model_arch": "transformer",
+            "observation_version": COMPACT_OBSERVATION_VERSION,
             "perfect_info": False,
         },
         model_path,

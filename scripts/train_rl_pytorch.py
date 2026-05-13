@@ -61,12 +61,18 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Debug mode: include hidden enemy chakra in the observation.",
     )
+    parser.add_argument(
+        "--device",
+        default="auto",
+        help="Torch device for training: auto, cpu, cuda, cuda:0, etc.",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
     torch.manual_seed(args.seed)
+    device = resolve_device(args.device)
     env = NarutoArenaLearningEnv(
         opponent=args.opponent,
         seed=args.seed,
@@ -79,6 +85,7 @@ def main() -> None:
         args.model_arch,
         OBSERVATION_VERSION,
     )
+    model.to(device)
     if args.init_model_path is not None:
         load_initial_model(
             model,
@@ -117,6 +124,7 @@ def main() -> None:
         update_model(model, optimizer, pending, args.value_coef, args.entropy_coef)
     save_path = Path(args.save_path)
     save_path.parent.mkdir(parents=True, exist_ok=True)
+    model.to("cpu")
     torch.save(
         {
             "model_state_dict": model.state_dict(),
@@ -134,6 +142,15 @@ def main() -> None:
         save_path,
     )
     print(f"saved_model={save_path}")
+
+
+def resolve_device(device: str) -> torch.device:
+    if device == "auto":
+        return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    resolved = torch.device(device)
+    if resolved.type == "cuda" and not torch.cuda.is_available():
+        raise ValueError("CUDA was requested, but torch.cuda.is_available() is false.")
+    return resolved
 
 
 def load_initial_model(
@@ -184,7 +201,8 @@ def collect_episode(
     done = False
     winner = None
     while not done:
-        obs = torch.tensor(observations, dtype=torch.float32).unsqueeze(0)
+        device = next(model.parameters()).device
+        obs = torch.tensor(observations, dtype=torch.float32, device=device).unsqueeze(0)
         policy, value = model(obs)
         action, log_prob, entropy = sample_factored_action(env, policy)
         observations, reward, done, info = env.step(factored_action=action)
@@ -286,7 +304,7 @@ def _sample_masked(
     logits: torch.Tensor,
     mask_values: list[bool],
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    mask = torch.tensor(mask_values, dtype=torch.bool).unsqueeze(0)
+    mask = torch.tensor(mask_values, dtype=torch.bool, device=logits.device).unsqueeze(0)
     masked_logits = logits.masked_fill(~mask, torch.finfo(logits.dtype).min)
     distribution = Categorical(logits=masked_logits)
     action = distribution.sample()
@@ -312,9 +330,11 @@ def update_model(
     entropies = torch.cat(
         [torch.stack(item["entropies"]) for item in batch]  # type: ignore[arg-type]
     )
+    device = values.device
     returns = torch.tensor(
         [value for item in batch for value in item["returns"]],  # type: ignore[union-attr]
         dtype=torch.float32,
+        device=device,
     )
     advantages = returns - values.detach()
     policy_loss = -(log_probs * advantages).mean()

@@ -21,8 +21,14 @@ from naruto_arena.rl.observation import (
     BASE_CHARACTER_FEATURE_SIZE,
     BASE_OBSERVATION_VERSION,
     CHARACTER_FEATURE_SIZE,
+    CHARACTER_ID_CODE_COUNT,
+    CHARACTER_ID_FEATURE_INDEX,
     CHARACTER_SLOTS,
+    COMPACT_CHARACTER_FEATURE_SIZE,
+    COMPACT_OBSERVATION_VERSION,
     OBSERVATION_VERSION,
+    SKILL_FEATURES_CHARACTER_FEATURE_SIZE,
+    SKILL_FEATURES_OBSERVATION_VERSION,
 )
 
 MODEL_ARCH_MLP = "mlp"
@@ -121,14 +127,29 @@ class TransformerActorCritic(nn.Module):
         dim_feedforward: int = 256,
         dropout: float = 0.1,
         character_feature_size: int = CHARACTER_FEATURE_SIZE,
+        character_id_code_count: int | None = CHARACTER_ID_CODE_COUNT,
+        character_id_embedding_dim: int = 32,
     ) -> None:
         super().__init__()
         del num_actions
         self.character_feature_size = character_feature_size
+        self.character_id_code_count = character_id_code_count
+        self.character_id_feature_index = CHARACTER_ID_FEATURE_INDEX
         self.global_dim = obs_dim - (CHARACTER_SLOTS * character_feature_size)
         if self.global_dim <= 0:
             raise ValueError("Observation size is too small for character feature layout.")
-        self.character_projection = nn.Linear(character_feature_size, d_model)
+        character_projection_input_size = character_feature_size
+        if character_id_code_count is not None:
+            character_projection_input_size = (
+                character_feature_size - 1 + character_id_embedding_dim
+            )
+            self.character_id_embedding = nn.Embedding(
+                character_id_code_count,
+                character_id_embedding_dim,
+            )
+        else:
+            self.character_id_embedding = None
+        self.character_projection = nn.Linear(character_projection_input_size, d_model)
         self.context_projection = nn.Linear(self.global_dim, d_model)
         self.side_embedding = nn.Embedding(2, d_model)
         self.slot_embedding = nn.Embedding(3, d_model)
@@ -201,7 +222,9 @@ class TransformerActorCritic(nn.Module):
         )
         context_token = context_token + self.token_type_embedding(context_type)
 
-        character_tokens = self.character_projection(character_features)
+        character_tokens = self.character_projection(
+            self._encode_character_identity(character_features)
+        )
         side_ids = self.character_sides.to(device=observations.device).unsqueeze(0)
         slot_ids = self.character_slots.to(device=observations.device).unsqueeze(0)
         character_type = torch.ones(
@@ -223,6 +246,25 @@ class TransformerActorCritic(nn.Module):
         character_embedding = encoded_tokens[:, 1:].mean(dim=1)
         return torch.cat([context_embedding, character_embedding], dim=-1)
 
+    def _encode_character_identity(self, character_features: torch.Tensor) -> torch.Tensor:
+        if self.character_id_embedding is None:
+            return character_features
+
+        character_ids = (
+            character_features[:, :, self.character_id_feature_index]
+            .round()
+            .long()
+            .clamp(0, self.character_id_code_count - 1)
+        )
+        numeric_features = torch.cat(
+            [
+                character_features[:, :, : self.character_id_feature_index],
+                character_features[:, :, self.character_id_feature_index + 1 :],
+            ],
+            dim=-1,
+        )
+        return torch.cat([numeric_features, self.character_id_embedding(character_ids)], dim=-1)
+
 
 def create_actor_critic(
     obs_dim: int,
@@ -235,15 +277,31 @@ def create_actor_critic(
     if model_arch == MODEL_ARCH_MLP:
         return ActorCritic(obs_dim, character_feature_size=character_feature_size)
     if model_arch == MODEL_ARCH_TRANSFORMER:
-        return TransformerActorCritic(obs_dim, character_feature_size=character_feature_size)
+        return TransformerActorCritic(
+            obs_dim,
+            character_feature_size=character_feature_size,
+            character_id_code_count=character_id_code_count_for_observation_version(
+                observation_version,
+            ),
+        )
     raise ValueError(f"Unknown model architecture: {model_arch}")
 
 
 def character_feature_size_for_observation_version(observation_version: str) -> int:
     if observation_version == BASE_OBSERVATION_VERSION:
         return BASE_CHARACTER_FEATURE_SIZE
+    if observation_version == SKILL_FEATURES_OBSERVATION_VERSION:
+        return SKILL_FEATURES_CHARACTER_FEATURE_SIZE
     if observation_version == OBSERVATION_VERSION:
-        return CHARACTER_FEATURE_SIZE
+        return COMPACT_CHARACTER_FEATURE_SIZE
+    raise ValueError(f"Unknown observation version: {observation_version}")
+
+
+def character_id_code_count_for_observation_version(observation_version: str) -> int | None:
+    if observation_version == COMPACT_OBSERVATION_VERSION:
+        return CHARACTER_ID_CODE_COUNT
+    if observation_version in {BASE_OBSERVATION_VERSION, SKILL_FEATURES_OBSERVATION_VERSION}:
+        return None
     raise ValueError(f"Unknown observation version: {observation_version}")
 
 
