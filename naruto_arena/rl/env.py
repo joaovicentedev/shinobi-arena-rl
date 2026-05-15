@@ -6,7 +6,7 @@ from pathlib import Path
 from naruto_arena.agents.heuristic_agent import SimpleHeuristicAgent
 from naruto_arena.agents.random_agent import RandomAgent
 from naruto_arena.agents.rl_agent import RlAgent
-from naruto_arena.engine.actions import Action, EndTurnAction
+from naruto_arena.engine.actions import Action, ReorderSkillsAction
 from naruto_arena.engine.rules import RulesError, create_initial_state
 from naruto_arena.engine.simulator import apply_action, legal_actions
 from naruto_arena.engine.state import GameState
@@ -122,8 +122,8 @@ class NarutoArenaLearningEnv:
         terminated = self.state.winner is not None
         truncated = self.actions_taken >= self.max_actions
         reward = _shaped_reward(before, after, terminated, self.state.winner, self.learning_player)
-        if isinstance(action, EndTurnAction):
-            reward -= _unused_chakra_penalty(self.state, self.learning_player)
+        if isinstance(action, ReorderSkillsAction):
+            reward -= 0.01
         return (
             self.observation(),
             reward,
@@ -223,8 +223,3 @@ def _shaped_reward(
         elif winner is not None:
             reward -= 1.0
     return reward
-
-
-def _unused_chakra_penalty(state: GameState, player_id: int) -> float:
-    total = state.players[player_id].chakra.total()
-    return min(total, 12) * 0.001

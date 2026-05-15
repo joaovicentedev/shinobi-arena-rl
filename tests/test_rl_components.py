@@ -25,7 +25,11 @@ from naruto_arena.rl.action_space import (
     legal_factored_action_masks,
 )
 from naruto_arena.rl.env import NarutoArenaLearningEnv
-from naruto_arena.rl.model import ActorCritic, TransformerActorCritic
+from naruto_arena.rl.model import (
+    ActorCritic,
+    RecurrentTransformerActorCritic,
+    TransformerActorCritic,
+)
 from naruto_arena.rl.observation import (
     BASE_CHARACTER_FEATURE_SIZE,
     BASE_OBSERVATION_VERSION,
@@ -145,22 +149,22 @@ def test_rl_use_skill_action_rejects_unavailable_random_chakra_payment() -> None
 
 def test_rl_reorder_action_can_move_skill_to_start_or_end() -> None:
     state = create_initial_state(
-        [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+        [UZUMAKI_NARUTO, SASUKE_UCHIHA, SAKURA_HARUNO],
         [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
     )
     naruto = state.players[0].characters[0]
-    first_skill_id = naruto.skill_order[0]
-    last_skill_id = naruto.skill_order[-1]
+    first_skill_id = "kyuubi_chakra_awakening"
+    sasuke_passive_id = "cursed_seal_awakening"
     move_first_to_end_id = _catalog_index(
         kind=ActionKind.REORDER_SKILL,
         actor_slot=0,
-        skill_slot=0,
+        skill_slot=naruto.skill_order.index(first_skill_id),
         reorder_to_end=True,
     )
     move_last_to_start_id = _catalog_index(
         kind=ActionKind.REORDER_SKILL,
-        actor_slot=0,
-        skill_slot=len(naruto.skill_order) - 1,
+        actor_slot=1,
+        skill_slot=state.players[0].characters[1].skill_order.index(sasuke_passive_id),
         reorder_to_end=False,
     )
 
@@ -169,10 +173,10 @@ def test_rl_reorder_action_can_move_skill_to_start_or_end() -> None:
 
     assert isinstance(move_first_to_end, ReorderSkillsAction)
     assert move_first_to_end.skill_id == first_skill_id
-    assert move_first_to_end.new_index == len(naruto.skill_order) - 1
+    assert move_first_to_end.new_index == len(state.players[0].skill_stack) - 1
     assert legal_action_mask(state, 0)[move_first_to_end_id]
     assert isinstance(move_last_to_start, ReorderSkillsAction)
-    assert move_last_to_start.skill_id == last_skill_id
+    assert move_last_to_start.skill_id == sasuke_passive_id
     assert move_last_to_start.new_index == 0
     assert legal_action_mask(state, 0)[move_last_to_start_id]
 
@@ -216,6 +220,32 @@ def test_transformer_actor_critic_outputs_factored_policy_shapes() -> None:
     assert policy.random_chakra.shape == (1, 5)
     assert policy.reorder_destination.shape == (1, REORDER_DESTINATION_COUNT)
     assert value.shape == (1,)
+
+
+def test_recurrent_transformer_actor_critic_outputs_factored_policy_shapes() -> None:
+    model = RecurrentTransformerActorCritic(observation_size())
+    observation = torch.tensor(
+        encode_observation(
+            create_initial_state(
+                [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+                [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+            ),
+            0,
+        ),
+        dtype=torch.float32,
+    ).unsqueeze(0)
+    hidden = model.initial_hidden(1, observation.device)
+
+    policy, value, next_hidden = model(observation, hidden)
+
+    assert policy.kind.shape == (1, ACTION_KIND_COUNT)
+    assert policy.actor.shape == (1, MAX_TEAM_SIZE)
+    assert policy.skill.shape == (1, MAX_SKILLS_PER_CHARACTER)
+    assert policy.target.shape == (1, 10)
+    assert policy.random_chakra.shape == (1, 5)
+    assert policy.reorder_destination.shape == (1, REORDER_DESTINATION_COUNT)
+    assert value.shape == (1,)
+    assert next_hidden.shape == hidden.shape
 
 
 def test_rl_factored_action_selects_random_chakra_payment() -> None:

@@ -142,9 +142,10 @@ class_stun_Unremovable / MAX_DURATION
 class_stun_Unique / MAX_DURATION
 ```
 
-Each skill slot then adds 51 floats. Slots follow the character's current
-`skill_order`, so skill reordering changes which skill appears in each slot.
-Replacement skills are resolved from the current state before encoding.
+Each skill slot then adds 51 floats. Slots follow the character's fixed
+`skill_order`. Skill reordering changes the player's used-skill stack, not the
+character's skill slots. Replacement skills are resolved from the current state
+before encoding.
 
 ```text
 is_present

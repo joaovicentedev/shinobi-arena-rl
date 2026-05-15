@@ -3,11 +3,13 @@ from __future__ import annotations
 import random
 from dataclasses import dataclass
 
-from naruto_arena.data.characters import ALL_CHARACTERS
+from naruto_arena.data.characters import ALL_CHARACTERS, HAND_AUTHORED_CHARACTERS
 from naruto_arena.engine.characters import CharacterDefinition
 
 DEFAULT_TEAM_IDS = ("uzumaki_naruto", "sakura_haruno", "sasuke_uchiha")
-TRAINING_ROSTER = tuple(sorted(ALL_CHARACTERS.values(), key=lambda character: character.id))
+TRAINING_ROSTER = tuple(
+    sorted(HAND_AUTHORED_CHARACTERS.values(), key=lambda character: character.id)
+)
 
 
 @dataclass(frozen=True)
@@ -32,16 +34,6 @@ BENCHMARK_MATCHUPS = (
         "team_8_vs_team_10",
         ("inuzuka_kiba", "aburame_shino", "hyuuga_hinata"),
         ("nara_shikamaru", "akimichi_chouji", "yamanaka_ino"),
-    ),
-    BenchmarkMatchup(
-        "expanded_roster_opening",
-        ("abumi_zaku", "aburame_shino_s", "akadou_yoroi"),
-        ("akatsuchi_s", "akimichi_chouji_s", "akimichi_chouza_s"),
-    ),
-    BenchmarkMatchup(
-        "expanded_roster_pressure",
-        ("animal_path_pein_s", "ao_s", "asura_path_pein_s"),
-        ("baki", "chiyo_s", "chojuro_s"),
     ),
 )
 

@@ -7,7 +7,7 @@ from naruto_arena.engine.actions import EndTurnAction, UseSkillAction
 from naruto_arena.engine.chakra import ChakraPool, ChakraType
 from naruto_arena.engine.effects import ActiveDamageReduction
 from naruto_arena.engine.rules import create_initial_state
-from naruto_arena.engine.simulator import apply_action, can_use_skill
+from naruto_arena.engine.simulator import apply_action, can_use_skill, resolve_pending_skill_stack
 
 
 def make_state():
@@ -63,6 +63,7 @@ def test_lion_combo_deals_bonus_damage_to_sharingan_target() -> None:
             {ChakraType.NINJUTSU: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert target.hp == 55
 
@@ -86,6 +87,7 @@ def test_chidori_pierces_normal_damage_reduction() -> None:
             {ChakraType.TAIJUTSU: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert target.hp == 45
 
@@ -107,6 +109,7 @@ def test_chidori_cannot_be_used_on_sasukes_next_turn() -> None:
             {ChakraType.TAIJUTSU: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 0)
     apply_action(state, EndTurnAction(0))
     apply_action(state, EndTurnAction(1))
     set_chakra(state, 0, ninjutsu=1, taijutsu=1)
@@ -135,6 +138,7 @@ def test_chidori_does_not_pierce_unpierceable_damage_reduction() -> None:
             {ChakraType.TAIJUTSU: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert target.hp == 65
 
@@ -154,6 +158,7 @@ def test_swift_block_makes_sasuke_invulnerable() -> None:
             {ChakraType.BLOODLINE: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert sasuke.status.invulnerable_turns == 1
 
@@ -176,6 +181,7 @@ def test_cursed_seal_awakens_once_and_grants_permanent_unpierceable_reduction() 
             {ChakraType.NINJUTSU: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 1)
 
     assert sasuke.passives["cursed_seal_awakening"] is True
     assert sasuke.passive_triggered["cursed_seal_awakening"] is True
@@ -205,5 +211,6 @@ def test_cursed_seal_sharingan_target_cannot_reduce_damage_or_use_invulnerabilit
             {ChakraType.NINJUTSU: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert target.hp == 55

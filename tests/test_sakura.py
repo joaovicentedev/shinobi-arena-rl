@@ -6,7 +6,7 @@ from naruto_arena.data.characters import (
 from naruto_arena.engine.actions import EndTurnAction, UseSkillAction
 from naruto_arena.engine.chakra import ChakraPool, ChakraType
 from naruto_arena.engine.rules import create_initial_state
-from naruto_arena.engine.simulator import apply_action, can_use_skill
+from naruto_arena.engine.simulator import apply_action, can_use_skill, resolve_pending_skill_stack
 
 
 def make_state():
@@ -56,6 +56,7 @@ def test_cure_heals_sakura_or_an_ally_for_25() -> None:
     set_chakra(state, 0, ninjutsu=1)
 
     apply_action(state, UseSkillAction(0, sakura.instance_id, "cure", (ally.instance_id,)))
+    resolve_pending_skill_stack(state, 0)
 
     assert ally.hp == 75
 
@@ -76,6 +77,7 @@ def test_inner_sakura_boosts_ko_punch_and_adds_damage_reduction() -> None:
             {ChakraType.GENJUTSU: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 0)
     assert sakura.status.has_marker("inner_sakura")
     assert sakura.status.damage_reductions[0].amount == 10
 
@@ -83,6 +85,7 @@ def test_inner_sakura_boosts_ko_punch_and_adds_damage_reduction() -> None:
     apply_action(state, EndTurnAction(1))
     set_chakra(state, 0, taijutsu=1)
     apply_action(state, UseSkillAction(0, sakura.instance_id, "ko_punch", (target.instance_id,)))
+    resolve_pending_skill_stack(state, 0)
 
     assert target.hp == 70
 
@@ -99,6 +102,7 @@ def test_inner_sakura_ignores_non_damage_effects_but_not_damage() -> None:
         state,
         UseSkillAction(1, enemy_sakura.instance_id, "ko_punch", (sakura.instance_id,)),
     )
+    resolve_pending_skill_stack(state, 1)
 
     assert sakura.hp == 80
     assert sakura.status.class_stuns == {}
@@ -119,5 +123,6 @@ def test_sakura_replacement_technique_makes_sakura_invulnerable() -> None:
             {ChakraType.BLOODLINE: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert sakura.status.invulnerable_turns == 1

@@ -62,8 +62,35 @@ make train-rl ARGS="\
   --save-path models/naruto_actor_critic_transformer.pt"
 ```
 
-Train the Transformer on random 3v3 teams sampled from the expanded training
-roster:
+Train the recurrent Transformer policy with PPO and simple checkpoint-league
+self-play:
+
+```bash
+uv run --extra rl python scripts/train_rl_pytorch.py \
+  --algorithm ppo \
+  --model-arch recurrent_transformer \
+  --episodes 50000 \
+  --batch-episodes 128 \
+  --num-envs 1 \
+  --team-sampling random-roster \
+  --opponent heuristic \
+  --self-play-league-dir models/local/league_recurrent_transformer \
+  --self-play-snapshot-interval 1000 \
+  --learning-rate 1e-4 \
+  --ppo-epochs 2 \
+  --ppo-minibatch-size 256 \
+  --ppo-clip 0.1 \
+  --gae-lambda 0.95 \
+  --gamma 0.99 \
+  --entropy-coef 0.005 \
+  --max-grad-norm 0.3 \
+  --device cpu \
+  --log-interval 250 \
+  --save-path models/local/naruto_actor_critic_recurrent_transformer_ppo.pt
+```
+
+Train the Transformer on random 3v3 teams sampled from the 9 hand-authored
+characters:
 
 ```bash
 uv run --extra rl python scripts/train_rl_pytorch.py \
@@ -89,6 +116,8 @@ uv run --extra rl python scripts/evaluate_rl_benchmarks.py \
 
 Transformer checkpoints use `policy_type: factored_transformer`. Existing
 `policy_type: factored` checkpoints continue to load as the current MLP model.
+Recurrent Transformer checkpoints use `policy_type:
+factored_recurrent_transformer`.
 
 The `skill_features_v1` observation changes `obs_dim` from the legacy 230-float
 layout to 1730 floats. New Transformer skill-feature models must be trained from
@@ -276,6 +305,21 @@ This is meant to help the policy model relationships between allied and enemy
 characters: threats, focus targets, pairs, and synergies. It does not change the
 engine rules, observation size, action masks, or factored action format.
 
+The recurrent Transformer architecture reuses that character/global Transformer
+encoder, then adds a GRU memory before the policy and value heads:
+
+```text
+observation -> Transformer battle embedding
+            -> GRU hidden state
+            -> policy heads
+            -> state value
+```
+
+The GRU state is reset at episode start and carried across decisions in the
+match. PPO stores the hidden state that existed before each sampled action and
+reuses it during updates, so the policy can condition on previous turns without
+requiring a full historical Transformer over every past state.
+
 The policy chooses a factored action by sampling only the heads relevant to the
 selected action kind. The value head estimates the expected future return from
 the current state.
@@ -375,12 +419,16 @@ skill_slot
 destination
 ```
 
-Destination is limited to start or end of the skill stack. This keeps the
-reorder surface small while still letting the policy alter timing-sensitive
-damage, buff, passive, and modifier ordering.
+Destination is limited to start or end of the player's used-skill stack. This
+keeps the reorder surface small while still letting the policy alter
+timing-sensitive damage, buff, passive, and modifier ordering without changing
+the character's fixed skill list.
 
-The engine limits each player to 3 reorder actions per turn. After that, reorder
-actions are masked until the next turn starts.
+The engine limits each player to 3 reorder actions per turn. The same character
+skill can be reordered only once per turn, which prevents the policy from
+bouncing one skill between the start and end of the stack. After the total limit
+or per-skill limit is reached, those reorder actions are masked until the next
+turn starts.
 
 The flat catalog is still available as a compatibility/debug adapter, but the
 trainer and RL agent use the factored policy heads. The policy emits 28 action
@@ -459,8 +507,34 @@ value_loss = mse(value, discounted_return)
 entropy_loss = -entropy
 ```
 
-This is a simple actor-critic update. It is intentionally smaller than PPO so it
-is easy to inspect and modify.
+`--algorithm actor_critic` keeps this simple update path available. The
+recommended trainer is `--algorithm ppo`, which collects the same factored
+actions and legal masks, computes GAE advantages, and updates with the clipped
+PPO objective.
+
+Recommended PPO command:
+
+```bash
+uv run --extra rl python scripts/train_rl_pytorch.py \
+  --algorithm ppo \
+  --model-arch transformer \
+  --episodes 50000 \
+  --batch-episodes 128 \
+  --num-envs 8 \
+  --team-sampling random-roster \
+  --opponent heuristic \
+  --learning-rate 1e-4 \
+  --ppo-epochs 2 \
+  --ppo-minibatch-size 256 \
+  --ppo-clip 0.1 \
+  --gae-lambda 0.95 \
+  --gamma 0.99 \
+  --entropy-coef 0.005 \
+  --max-grad-norm 0.3 \
+  --device cpu \
+  --log-interval 250 \
+  --save-path models/local/naruto_actor_critic_transformer_ppo.pt
+```
 
 ## Opponents
 
@@ -499,18 +573,18 @@ Small shaping rewards are added for:
 - Killing an enemy: `+0.15`.
 - Losing an ally: `-0.15`.
 
-There is also a very small penalty for ending a turn with unused chakra.
+`REORDER_SKILL` receives a small `-0.01` action penalty. There is no general
+penalty for ending a turn with unused chakra, because saving chakra can be
+correct when preparing stronger later-turn combos.
 
 The shaping values are intentionally small so the model cannot score better by
 farming damage or healing instead of winning.
 
 ## Current Limitations
 
-- No self-play league yet.
-- No PPO clipping yet.
-- No recurrent memory for hidden-information inference.
+- Self-play league support is simple: the trainer samples fixed checkpoint
+  snapshots from a directory and can periodically add new snapshots.
 - Random chakra payment only models the first chosen random chakra type.
-- Fixed team composition: Naruto, Sakura, Sasuke versus the same team.
 - Observation uses hand-built features instead of learned skill embeddings.
 - Checkpoints must be retrained when engine rules change the observation shape
   or legal action behavior.
@@ -519,10 +593,17 @@ farming damage or healing instead of winning.
 
 Recent changes made to the RL stack:
 
+- A recurrent Transformer policy was added. It uses the same character/global
+  Transformer encoder, then passes each decision through a GRU memory before the
+  factored policy heads and value head.
+- PPO can train recurrent checkpoints by storing the hidden state that existed
+  before each sampled action and reusing it during policy updates.
+- The trainer can maintain a simple checkpoint league with
+  `--self-play-league-dir` and `--self-play-snapshot-interval`.
 - Random chakra payment became an explicit policy decision.
 - Skill reordering was added to the RL policy.
-- Reorder was limited to 3 actions per player turn after early models looped on
-  reorder actions.
+- Reorder was limited to 3 actions per player turn, and each character skill can
+  only be reordered once per turn, after early models looped on reorder actions.
 - The flat 781-action policy was replaced by a factored policy:
 
 ```text
@@ -562,4 +643,4 @@ checkpoint with the current actor-critic loop.
 3. Support multi-chakra random payment vectors if future skills need them.
 4. Add self-play against previous checkpoints.
 5. Add recurrent state or belief features for enemy chakra estimation.
-6. Tune the reorder action frequency or add penalties if training overuses no-op setup.
+6. Continue tuning the reorder action frequency if training still overuses no-op setup.

@@ -132,6 +132,15 @@ def snapshot_state(state: GameState) -> dict[str, Any]:
                     for chakra_type, amount in player.chakra.amounts.items()
                 },
                 "total_chakra": player.chakra.total(),
+                "skill_stack": [
+                    {
+                        "actor_id": used_skill.actor_id,
+                        "actor_name": state.get_character(used_skill.actor_id).definition.name,
+                        "skill_id": used_skill.skill_id,
+                        "remaining_turns": used_skill.remaining_turns,
+                    }
+                    for used_skill in player.skill_stack
+                ],
                 "characters": [character_to_json(character) for character in player.characters],
             }
             for player in state.players

@@ -8,7 +8,7 @@ from naruto_arena.data.characters import (
 from naruto_arena.engine.actions import EndTurnAction, UseSkillAction
 from naruto_arena.engine.chakra import ChakraPool, ChakraType
 from naruto_arena.engine.rules import create_initial_state
-from naruto_arena.engine.simulator import apply_action, resolved_skill
+from naruto_arena.engine.simulator import apply_action, resolved_skill, resolve_pending_skill_stack
 
 
 def make_state():
@@ -34,7 +34,7 @@ def test_shino_definition_uses_requested_skills() -> None:
     ]
 
 
-def test_chakra_leach_marks_target_to_steal_next_chakra_gain() -> None:
+def test_chakra_leach_does_not_steal_when_target_has_no_chakra() -> None:
     state = make_state()
     shino = state.players[0].characters[0]
     target = state.players[1].characters[0]
@@ -42,26 +42,28 @@ def test_chakra_leach_marks_target_to_steal_next_chakra_gain() -> None:
     set_chakra(state, 1)
 
     apply_action(state, UseSkillAction(0, shino.instance_id, "chakra_leach", (target.instance_id,)))
+    resolve_pending_skill_stack(state, 0)
 
     assert target.hp == 80
-    assert target.status.has_marker(f"chakra_gain_steal:{shino.instance_id}")
     assert state.players[0].chakra.total() == 0
     assert state.players[1].chakra.total() == 0
+    assert not shino.status.has_marker("chakra_leach_stolen_chakra")
+    assert resolved_skill(state, shino.instance_id, "chakra_leach").chakra_cost.random == 0
 
 
-def test_chakra_leach_steals_one_chakra_during_opponent_gain() -> None:
+def test_chakra_leach_steals_one_chakra_immediately_on_shinos_turn() -> None:
     state = make_state()
     shino = state.players[0].characters[0]
     target = state.players[1].characters[0]
     set_chakra(state, 0, ninjutsu=1)
-    set_chakra(state, 1)
+    set_chakra(state, 1, taijutsu=1)
 
     apply_action(state, UseSkillAction(0, shino.instance_id, "chakra_leach", (target.instance_id,)))
-    apply_action(state, EndTurnAction(0))
+    resolve_pending_skill_stack(state, 0)
 
     assert state.players[0].chakra.total() == 1
-    assert state.players[1].chakra.total() == 2
-    assert not target.status.has_marker(f"chakra_gain_steal:{shino.instance_id}")
+    assert state.players[1].chakra.total() == 0
+    assert shino.status.has_marker("chakra_leach_stolen_chakra")
     assert resolved_skill(state, shino.instance_id, "chakra_leach").chakra_cost.random == 1
 
 
@@ -75,6 +77,7 @@ def test_female_bug_stacks_chakra_leach_bonus_damage() -> None:
     target.status.active_markers[marker_id] = 4
     target.status.active_marker_stacks[marker_id] = 2
     apply_action(state, UseSkillAction(0, shino.instance_id, "chakra_leach", (target.instance_id,)))
+    resolve_pending_skill_stack(state, 0)
 
     assert target.hp == 70
 
@@ -101,6 +104,7 @@ def test_female_bug_reduces_marked_enemy_non_affliction_damage() -> None:
             {ChakraType.GENJUTSU: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 1)
 
     assert shino.hp == 75
 
@@ -121,6 +125,7 @@ def test_bug_wall_grants_all_allies_permanent_destructible_defense() -> None:
             {ChakraType.BLOODLINE: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert [
         character.status.damage_reductions[-1].amount for character in state.players[0].characters
@@ -142,5 +147,6 @@ def test_bug_clone_makes_shino_invulnerable() -> None:
             {ChakraType.BLOODLINE: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert shino.status.invulnerable_turns == 1

@@ -104,7 +104,9 @@ def action_id_to_engine_action(state: GameState, player_id: int, action_id: int)
         return None
     if spec.kind == ActionKind.REORDER_SKILL:
         skill_id = actor.skill_order[spec.skill_slot]
-        new_index = len(actor.skill_order) - 1 if spec.reorder_to_end else 0
+        if not _used_skill_in_stack(state, player_id, actor.instance_id, skill_id):
+            return None
+        new_index = len(player.skill_stack) - 1 if spec.reorder_to_end else 0
         return ReorderSkillsAction(player_id, actor.instance_id, skill_id, new_index)
     if spec.kind != ActionKind.USE_SKILL:
         return None
@@ -148,7 +150,9 @@ def factored_action_to_engine_action(
         return None
     if action.kind == ActionKind.REORDER_SKILL:
         skill_id = actor.skill_order[action.skill_slot]
-        new_index = len(actor.skill_order) - 1 if action.reorder_to_end else 0
+        if not _used_skill_in_stack(state, player_id, actor.instance_id, skill_id):
+            return None
+        new_index = len(player.skill_stack) - 1 if action.reorder_to_end else 0
         return ReorderSkillsAction(player_id, actor.instance_id, skill_id, new_index)
     if action.kind != ActionKind.USE_SKILL:
         return None
@@ -530,3 +534,10 @@ def _matches_any_legal_action(action: Action, legal: list[Action]) -> bool:
             for candidate in legal
         )
     return False
+
+
+def _used_skill_in_stack(state: GameState, player_id: int, actor_id: str, skill_id: str) -> bool:
+    return any(
+        used_skill.actor_id == actor_id and used_skill.skill_id == skill_id
+        for used_skill in state.players[player_id].skill_stack
+    )

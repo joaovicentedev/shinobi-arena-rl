@@ -5,7 +5,7 @@ from dataclasses import replace
 from naruto_arena.engine.actions import Action, EndTurnAction, ReorderSkillsAction, UseSkillAction
 from naruto_arena.engine.rules import RulesError, end_turn
 from naruto_arena.engine.skills import SkillClass, TargetRule
-from naruto_arena.engine.state import GameState
+from naruto_arena.engine.state import GameState, UsedSkillState
 
 MAX_REORDERS_PER_TURN = 3
 
@@ -64,13 +64,20 @@ def legal_actions(state: GameState, player_id: int) -> list[Action]:
                 continue
             actions.append(UseSkillAction(player_id, character.instance_id, skill.id, targets))
     if state.reorders_this_turn < MAX_REORDERS_PER_TURN:
-        for character in player.living_characters():
-            for skill_id in character.skill_order:
-                for index in range(len(character.skill_order)):
-                    if character.skill_order[index] != skill_id:
-                        actions.append(
-                            ReorderSkillsAction(player_id, character.instance_id, skill_id, index)
+        for used_skill in player.skill_stack:
+            reorder_key = (used_skill.actor_id, used_skill.skill_id)
+            if reorder_key in state.reordered_skills_this_turn:
+                continue
+            for index in range(len(player.skill_stack)):
+                if player.skill_stack[index] != used_skill:
+                    actions.append(
+                        ReorderSkillsAction(
+                            player_id,
+                            used_skill.actor_id,
+                            used_skill.skill_id,
+                            index,
                         )
+                    )
     return actions
 
 
@@ -80,6 +87,7 @@ def apply_action(state: GameState, action: Action) -> GameState:
     if action.player_id != state.active_player:
         raise RulesError("It is not this player's turn.")
     if isinstance(action, EndTurnAction):
+        resolve_pending_skill_stack(state, action.player_id)
         end_turn(state)
         return state
     if isinstance(action, ReorderSkillsAction):
@@ -126,6 +134,34 @@ def apply_skill(state: GameState, action: UseSkillAction) -> None:
     if not targets_meet_requirements(state, action.actor_id, skill.id, action.target_ids):
         raise RulesError(f"Skill cannot target selected characters: {skill.name}")
     state.players[action.player_id].chakra.pay(skill.chakra_cost, action.random_payment)
+    if skill.cooldown > 0:
+        actor.cooldowns[skill.id] = skill.cooldown + 1
+    actor.used_skill_this_turn = True
+    state.players[action.player_id].skill_stack.append(
+        UsedSkillState(
+            action.actor_id,
+            skill.id,
+            used_skill_duration(state, action.actor_id, skill),
+            action.target_ids,
+            dict(action.random_payment),
+            pending=True,
+        )
+    )
+
+
+def resolve_pending_skill_stack(state: GameState, player_id: int) -> None:
+    for used_skill in list(state.players[player_id].skill_stack):
+        if not used_skill.pending:
+            continue
+        used_skill.pending = False
+        resolve_used_skill(state, player_id, used_skill)
+
+
+def resolve_used_skill(state: GameState, player_id: int, used_skill: UsedSkillState) -> None:
+    actor = state.get_character(used_skill.actor_id)
+    if actor.owner != player_id or not actor.is_alive:
+        return
+    skill = resolved_skill(state, used_skill.actor_id, used_skill.skill_id)
     if skill.duration > 0 and skill.status_marker is not None:
         actor.status.active_markers[skill.status_marker] = skill.duration
     previous = getattr(state, "_current_skill_id", None)
@@ -136,8 +172,8 @@ def apply_skill(state: GameState, action: UseSkillAction) -> None:
         skill,
     )
     try:
-        for effect in skill.all_effects(state, action.actor_id):
-            effect.apply(state, action.actor_id, action.target_ids)
+        for effect in skill.all_effects(state, used_skill.actor_id):
+            effect.apply(state, used_skill.actor_id, used_skill.target_ids)
     finally:
         if previous is None:
             delattr(state, "_current_skill_id")
@@ -150,9 +186,6 @@ def apply_skill(state: GameState, action: UseSkillAction) -> None:
     from naruto_arena.engine.rules import check_passive_triggers
 
     check_passive_triggers(state, actor)
-    if skill.cooldown > 0:
-        actor.cooldowns[skill.id] = skill.cooldown + 1
-    actor.used_skill_this_turn = True
 
 
 def apply_reorder(state: GameState, action: ReorderSkillsAction) -> None:
@@ -161,13 +194,37 @@ def apply_reorder(state: GameState, action: ReorderSkillsAction) -> None:
     character = state.get_character(action.character_id)
     if character.owner != action.player_id:
         raise RulesError("Character does not belong to player.")
-    if action.skill_id not in character.skill_order:
-        raise RulesError("Cannot reorder unknown skill.")
-    if not 0 <= action.new_index < len(character.skill_order):
+    reorder_key = (action.character_id, action.skill_id)
+    if reorder_key in state.reordered_skills_this_turn:
+        raise RulesError("Skill has already been reordered this turn.")
+    player = state.players[action.player_id]
+    stack_index = next(
+        (
+            index
+            for index, used_skill in enumerate(player.skill_stack)
+            if used_skill.actor_id == action.character_id and used_skill.skill_id == action.skill_id
+        ),
+        None,
+    )
+    if stack_index is None:
+        raise RulesError("Cannot reorder skill that is not in the used skill stack.")
+    if not 0 <= action.new_index < len(player.skill_stack):
         raise RulesError("Invalid skill index.")
-    character.skill_order.remove(action.skill_id)
-    character.skill_order.insert(action.new_index, action.skill_id)
+    used_skill = player.skill_stack.pop(stack_index)
+    player.skill_stack.insert(action.new_index, used_skill)
     state.reorders_this_turn += 1
+    state.reordered_skills_this_turn.add(reorder_key)
+
+
+def used_skill_duration(state: GameState, actor_id: str, skill) -> int:
+    durations = [1, skill.duration]
+    if skill.status_marker is not None:
+        durations.append(skill.duration)
+    for effect in skill.all_effects(state, actor_id):
+        duration = getattr(effect, "duration", 0)
+        if isinstance(duration, int):
+            durations.append(duration)
+    return max(durations)
 
 
 def resolved_skill(state: GameState, actor_id: str, skill_id: str):

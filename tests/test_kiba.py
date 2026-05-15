@@ -10,7 +10,13 @@ from naruto_arena.engine.actions import EndTurnAction, UseSkillAction
 from naruto_arena.engine.chakra import ChakraPool, ChakraType
 from naruto_arena.engine.effects import ActiveDamageReduction
 from naruto_arena.engine.rules import RulesError, create_initial_state
-from naruto_arena.engine.simulator import apply_action, can_use_skill, legal_actions, resolved_skill
+from naruto_arena.engine.simulator import (
+    apply_action,
+    can_use_skill,
+    legal_actions,
+    resolved_skill,
+    resolve_pending_skill_stack,
+)
 
 
 def make_state():
@@ -46,6 +52,7 @@ def test_double_headed_wolf_damages_all_enemies_over_time_and_reduces_damage() -
         state,
         UseSkillAction(0, kiba.instance_id, "double_headed_wolf", enemy_ids),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert kiba.status.has_marker("double_headed_wolf")
     assert any(
@@ -92,6 +99,7 @@ def test_dynamic_air_marking_improves_kiba_damage_and_ignores_defenses() -> None
             {ChakraType.NINJUTSU: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert target.hp == 60
 
@@ -105,6 +113,7 @@ def test_dynamic_air_marking_prevents_new_reduction_and_invulnerability() -> Non
         state,
         UseSkillAction(0, kiba.instance_id, "dynamic_air_marking", (target.instance_id,)),
     )
+    resolve_pending_skill_stack(state, 0)
 
     from naruto_arena.engine.effects import DamageReduction, Invulnerability
 
@@ -128,6 +137,7 @@ def test_dynamic_air_marking_cannot_target_enemy_already_marked_by_it() -> None:
         state,
         UseSkillAction(0, kiba.instance_id, "dynamic_air_marking", (target.instance_id,)),
     )
+    resolve_pending_skill_stack(state, 0)
     kiba.used_skill_this_turn = False
 
     with pytest.raises(RulesError):

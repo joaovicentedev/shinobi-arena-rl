@@ -3,9 +3,19 @@ from __future__ import annotations
 import random
 from dataclasses import dataclass, field
 
-from naruto_arena.engine.chakra import ChakraPool
+from naruto_arena.engine.chakra import ChakraPool, ChakraType
 from naruto_arena.engine.characters import CharacterDefinition
 from naruto_arena.engine.effects import CharacterStatus
+
+
+@dataclass
+class UsedSkillState:
+    actor_id: str
+    skill_id: str
+    remaining_turns: int
+    target_ids: tuple[str, ...] = ()
+    random_payment: dict[ChakraType, int] = field(default_factory=dict)
+    pending: bool = False
 
 
 @dataclass
@@ -45,6 +55,7 @@ class PlayerState:
     player_id: int
     characters: list[CharacterState]
     chakra: ChakraPool = field(default_factory=ChakraPool.empty)
+    skill_stack: list[UsedSkillState] = field(default_factory=list)
 
     def living_characters(self) -> list[CharacterState]:
         return [character for character in self.characters if character.is_alive]
@@ -57,6 +68,7 @@ class GameState:
     turn_number: int = 1
     winner: int | None = None
     reorders_this_turn: int = 0
+    reordered_skills_this_turn: set[tuple[str, str]] = field(default_factory=set)
     rng_seed: int = 0
     rng: random.Random = field(default_factory=random.Random, repr=False, compare=False)
 

@@ -4,8 +4,8 @@ from naruto_arena.data.json_characters import load_extra_characters
 from naruto_arena.engine.chakra import ChakraCost, ChakraType
 from naruto_arena.engine.characters import CharacterDefinition
 from naruto_arena.engine.effects import (
-    ChakraGainSteal,
     ChakraRemoval,
+    ChakraSteal,
     ConditionalDamageIncrease,
     DamageOverTime,
     DamageReduction,
@@ -114,7 +114,12 @@ def shino_chakra_leach_effects(state, actor_id: str, skill: SkillDefinition):
             conditional_bonus=5,
             conditional_bonus_per_stack=True,
         ),
-        ChakraGainSteal(1),
+        ChakraSteal(
+            1,
+            tuple(ChakraType),
+            success_marker="chakra_leach_stolen_chakra",
+            success_duration=1,
+        ),
     ]
 
 
@@ -235,6 +240,96 @@ def change_of_heart_effects(state, actor_id: str, skill: SkillDefinition):
 def art_of_valentine_effects(state, actor_id: str, skill: SkillDefinition):
     del state, actor_id, skill
     return [DirectDamage(25, conditional_marker_prefix="change_of_heart", conditional_bonus=5)]
+
+
+def has_marker(marker: str):
+    def requirement(state, actor_id: str) -> bool:
+        return state.get_character(actor_id).status.has_marker(marker)
+
+    return requirement
+
+
+def self_marker(marker: str, duration: int) -> StatusMarker:
+    return StatusMarker(marker, duration=duration, target_self=True)
+
+
+def source_marker(marker: str, duration: int, *, stackable: bool = False) -> StatusMarker:
+    return StatusMarker(marker, duration=duration, source_scoped=True, stackable=stackable)
+
+
+def tenten_twin_rising_dragons_effects(state, actor_id: str, skill: SkillDefinition):
+    duration = (
+        3 if state.get_character(actor_id).status.has_marker("twin_rising_full_release") else 2
+    )
+    return [
+        DamageOverTime(15, duration=duration),
+        StatusMarker("twin_rising_dragons_followup", duration=2, target_self=True),
+    ]
+
+
+def tenten_trap_effects(state, actor_id: str, skill: SkillDefinition):
+    del skill
+    amount = (
+        10 if state.get_character(actor_id).status.has_marker("twin_rising_full_release") else 0
+    )
+    return [
+        DirectDamage(
+            amount,
+            conditional_marker_prefix="twin_rising_dragons",
+            conditional_bonus=5,
+            conditional_bonus_per_stack=True,
+        ),
+        Stun(1, classes=frozenset({SkillClass.PHYSICAL, SkillClass.CHAKRA, SkillClass.AFFLICTION})),
+    ]
+
+
+def gaara_desert_graveyard_effects(state, actor_id: str, skill: SkillDefinition):
+    del state, actor_id, skill
+    return [
+        DirectDamage(
+            50,
+            piercing=True,
+            conditional_marker_prefix="desert_coffin",
+            conditional_bonus=25,
+            conditional_bonus_per_stack=True,
+        )
+    ]
+
+
+def kankuro_black_secret_effects(state, actor_id: str, skill: SkillDefinition):
+    del skill
+    amount = 35 if state.get_character(actor_id).status.has_marker("puppet_preparation") else 30
+    return [DirectDamage(amount, piercing=True)]
+
+
+def kankuro_poison_bomb_effects(state, actor_id: str, skill: SkillDefinition):
+    del skill
+    duration = 2 if state.get_character(actor_id).status.has_marker("puppet_preparation") else 1
+    return [DamageOverTime(10, duration=duration, piercing=True)]
+
+
+def rock_lee_fiery_spirit_effects(state, actor_id: str, skill: SkillDefinition):
+    del skill
+    character = state.get_character(actor_id)
+    lost_thresholds = max(0, (character.max_hp - character.hp) // 25)
+    return [Healing(10 + (10 * lost_thresholds), target_self=True)]
+
+
+def has_fifth_gate_or_front_lotus(state, actor_id: str) -> bool:
+    status = state.get_character(actor_id).status
+    return status.has_marker("fifth_gate_opening") or status.has_marker("front_lotus")
+
+
+def dosu_resonating_echo_drill_effects(state, actor_id: str, skill: SkillDefinition):
+    del skill
+    amount = 40 if state.get_character(actor_id).status.has_marker("melody_arm_tuning") else 20
+    return [DirectDamage(amount), StatusMarker("reduced_physical_chakra_damage", duration=1)]
+
+
+def dosu_sound_manipulation_effects(state, actor_id: str, skill: SkillDefinition):
+    del skill
+    amount = 20 if state.get_character(actor_id).status.has_marker("melody_arm_tuning") else 10
+    return [DirectDamage(amount), Stun(1)]
 
 
 UZUMAKI_NARUTO = CharacterDefinition(
@@ -603,8 +698,8 @@ ABURAME_SHINO = CharacterDefinition(
             name="Chakra Leach",
             description=(
                 "Shino directs his chakra draining bugs to one enemy, dealing 20 "
-                "affliction damage and stealing 1 chakra from their next chakra gain. "
-                "If this skill successfully steals a chakra from the opponent, this "
+                "affliction damage and stealing 1 chakra. If this skill successfully "
+                "steals a chakra from the opponent, this "
                 "skill will cost an extra random chakra for 1 turn."
             ),
             cooldown=0,
@@ -672,8 +767,8 @@ ABURAME_SHINO = CharacterDefinition(
             name="Chakra Leach",
             description=(
                 "Shino directs his chakra draining bugs to one enemy, dealing 20 "
-                "affliction damage and stealing 1 chakra from their next chakra gain. "
-                "If this skill successfully steals a chakra from the opponent, this "
+                "affliction damage and stealing 1 chakra. If this skill successfully "
+                "steals a chakra from the opponent, this "
                 "skill will cost an extra random chakra for 1 turn."
             ),
             cooldown=0,
@@ -1055,6 +1150,510 @@ YAMANAKA_INO = CharacterDefinition(
     ),
 )
 
+TENTEN = CharacterDefinition(
+    id="tenten",
+    name="Tenten",
+    description=(
+        "A member of Team Gai, Tenten is a tomboyish weapon specialist who believes a "
+        "kunoichi can be as strong as a male ninja."
+    ),
+    skills=(
+        SkillDefinition(
+            id="twin_rising_dragons",
+            name="Twin Rising Dragons",
+            description="Tenten deals 15 damage to all enemies for 2 turns.",
+            cooldown=0,
+            chakra_cost=ChakraCost({ChakraType.TAIJUTSU: 1}, random=1),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.RANGED, SkillClass.ACTION}),
+            target_rule=TargetRule.ALL_ENEMIES,
+            effect_factory=tenten_twin_rising_dragons_effects,
+        ),
+        SkillDefinition(
+            id="twin_rising_dragons_trap",
+            name="Twin Rising Dragons Trap",
+            description=(
+                "Tenten attacks all enemies and stuns harmful non-mental skills for 1 turn."
+            ),
+            cooldown=2,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.RANGED, SkillClass.INSTANT}),
+            target_rule=TargetRule.ALL_ENEMIES,
+            effect_factory=tenten_trap_effects,
+        ),
+        SkillDefinition(
+            id="twin_rising_dragons_full_release",
+            name="Twin Rising Dragons Full Release",
+            description="Tenten empowers Twin Rising Dragons and becomes protected for 1 turn.",
+            cooldown=4,
+            chakra_cost=ChakraCost.none(),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.INSTANT}),
+            target_rule=TargetRule.SELF,
+            effects=(Invulnerability(1), self_marker("twin_rising_full_release", 4)),
+        ),
+        SkillDefinition(
+            id="spiked_boulder_shield",
+            name="Spiked Boulder Shield",
+            description="This skill makes Tenten invulnerable for 1 turn.",
+            cooldown=4,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.INSTANT}),
+            target_rule=TargetRule.SELF,
+            effects=(Invulnerability(1),),
+        ),
+    ),
+)
+
+HYUUGA_NEJI = CharacterDefinition(
+    id="hyuuga_neji",
+    name="Hyuuga Neji",
+    description=(
+        "A member of Team Gai, Neji is the most talented member of the Hyuuga clan in "
+        "both mind and body."
+    ),
+    skills=(
+        SkillDefinition(
+            id="neji_gentle_fist",
+            name="Neji Gentle Fist",
+            description="Neji deals 25 damage to one enemy for 2 turns.",
+            cooldown=1,
+            chakra_cost=ChakraCost({ChakraType.TAIJUTSU: 1}, random=1),
+            classes=frozenset(
+                {SkillClass.PHYSICAL, SkillClass.MELEE, SkillClass.ACTION, SkillClass.UNIQUE}
+            ),
+            target_rule=TargetRule.ONE_ENEMY,
+            effects=(DamageOverTime(25, duration=2), self_marker("neji_gentle_fist", 1)),
+        ),
+        SkillDefinition(
+            id="eight_trigram_heavenly_spin",
+            name="Eight Trigram Heavenly Spin",
+            description=(
+                "Neji becomes invulnerable for 1 turn while dealing 15 damage to all enemies."
+            ),
+            cooldown=2,
+            chakra_cost=ChakraCost({ChakraType.BLOODLINE: 1}),
+            classes=frozenset(
+                {SkillClass.CHAKRA, SkillClass.MELEE, SkillClass.INSTANT, SkillClass.UNIQUE}
+            ),
+            target_rule=TargetRule.ALL_ENEMIES,
+            effects=(DirectDamage(15), Invulnerability(1), self_marker("heavenly_spin", 1)),
+        ),
+        SkillDefinition(
+            id="eight_trigram_sixty_four_palms",
+            name="Eight Trigram Sixty-Four Palms",
+            description="Neji deals 35 piercing damage and removes taijutsu or ninjutsu chakra.",
+            cooldown=1,
+            chakra_cost=ChakraCost({ChakraType.TAIJUTSU: 1, ChakraType.BLOODLINE: 1}),
+            classes=frozenset(
+                {SkillClass.PHYSICAL, SkillClass.MELEE, SkillClass.ACTION, SkillClass.UNIQUE}
+            ),
+            target_rule=TargetRule.ONE_ENEMY,
+            effects=(
+                DirectDamage(35, piercing=True),
+                ChakraRemoval(1, (ChakraType.TAIJUTSU, ChakraType.NINJUTSU)),
+            ),
+        ),
+        SkillDefinition(
+            id="neji_byakugan",
+            name="Neji Byakugan",
+            description="This skill makes Hyuuga Neji invulnerable for 1 turn.",
+            cooldown=4,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.MENTAL, SkillClass.UNIQUE, SkillClass.INSTANT}),
+            target_rule=TargetRule.SELF,
+            effects=(Invulnerability(1),),
+        ),
+    ),
+)
+
+ROCK_LEE = CharacterDefinition(
+    id="rock_lee",
+    name="Rock Lee",
+    description="A member of Team Gai, Lee has focused his life entirely on taijutsu.",
+    skills=(
+        SkillDefinition(
+            id="high_speed_taijutsu",
+            name="High Speed Taijutsu",
+            description="Lee deals 25 piercing damage to one enemy.",
+            cooldown=0,
+            chakra_cost=ChakraCost({ChakraType.TAIJUTSU: 1}),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.MELEE, SkillClass.INSTANT}),
+            target_rule=TargetRule.ONE_ENEMY,
+            effects=(DirectDamage(25, piercing=True),),
+        ),
+        SkillDefinition(
+            id="front_lotus",
+            name="Front Lotus",
+            description="Lee deals 35 piercing damage and enables Final Lotus for 1 turn.",
+            cooldown=1,
+            chakra_cost=ChakraCost({ChakraType.TAIJUTSU: 1}, random=1),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.MELEE, SkillClass.INSTANT}),
+            target_rule=TargetRule.ONE_ENEMY,
+            effects=(DirectDamage(35, piercing=True), self_marker("front_lotus", 1)),
+        ),
+        SkillDefinition(
+            id="fifth_gate_opening",
+            name="Fifth Gate Opening",
+            description="Lee opens five chakra gates and unlocks Fiery Spirit.",
+            cooldown=0,
+            chakra_cost=ChakraCost.none(),
+            classes=frozenset({SkillClass.MENTAL, SkillClass.INSTANT, SkillClass.UNIQUE}),
+            target_rule=TargetRule.SELF,
+            effects=(self_marker("fifth_gate_opening", 1_000_000),),
+        ),
+        SkillDefinition(
+            id="evasion",
+            name="Evasion",
+            description="This skill makes Rock Lee invulnerable for 1 turn.",
+            cooldown=4,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.INSTANT}),
+            target_rule=TargetRule.SELF,
+            effects=(Invulnerability(1),),
+        ),
+        SkillDefinition(
+            id="fiery_spirit",
+            name="Fiery Spirit",
+            description="Lee heals himself based on missing health.",
+            cooldown=2,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.MENTAL, SkillClass.INSTANT}),
+            target_rule=TargetRule.SELF,
+            requirements=(has_marker("fifth_gate_opening"),),
+            effect_factory=rock_lee_fiery_spirit_effects,
+            replacement_for="fifth_gate_opening",
+        ),
+        SkillDefinition(
+            id="final_lotus",
+            name="Final Lotus",
+            description="Lee deals 50 piercing damage to one enemy and takes 5 affliction damage.",
+            cooldown=0,
+            chakra_cost=ChakraCost({ChakraType.TAIJUTSU: 2}),
+            classes=frozenset(
+                {SkillClass.PHYSICAL, SkillClass.MELEE, SkillClass.INSTANT, SkillClass.AFFLICTION}
+            ),
+            target_rule=TargetRule.ONE_ENEMY,
+            requirements=(has_fifth_gate_or_front_lotus,),
+            effects=(DirectDamage(50, piercing=True), SelfDamage(5, piercing=True)),
+            replacement_for="front_lotus",
+        ),
+    ),
+)
+
+GAARA_OF_THE_DESERT = CharacterDefinition(
+    id="gaara_of_the_desert",
+    name="Gaara of the Desert",
+    description="A Sand Village jinchuuriki, Gaara manipulates sand to crush and defend.",
+    skills=(
+        SkillDefinition(
+            id="desert_graveyard",
+            name="Desert Graveyard",
+            description="Gaara deals 50 piercing damage, empowered by Desert Coffin stacks.",
+            cooldown=1,
+            chakra_cost=ChakraCost({ChakraType.BLOODLINE: 1, ChakraType.NINJUTSU: 1}),
+            classes=frozenset(
+                {SkillClass.PHYSICAL, SkillClass.RANGED, SkillClass.INSTANT, SkillClass.UNIQUE}
+            ),
+            target_rule=TargetRule.ONE_ENEMY,
+            effect_factory=gaara_desert_graveyard_effects,
+        ),
+        SkillDefinition(
+            id="desert_coffin",
+            name="Desert Coffin",
+            description="Gaara stuns non-mental skills and stacks Desert Graveyard damage.",
+            cooldown=1,
+            chakra_cost=ChakraCost({ChakraType.NINJUTSU: 1}),
+            classes=frozenset(
+                {SkillClass.PHYSICAL, SkillClass.RANGED, SkillClass.INSTANT, SkillClass.UNIQUE}
+            ),
+            target_rule=TargetRule.ONE_ENEMY,
+            effects=(
+                Stun(
+                    1,
+                    classes=frozenset(
+                        {SkillClass.PHYSICAL, SkillClass.CHAKRA, SkillClass.AFFLICTION}
+                    ),
+                ),
+                source_marker("desert_coffin", 1_000_000, stackable=True),
+            ),
+        ),
+        SkillDefinition(
+            id="third_eye",
+            name="Third Eye",
+            description="Gaara watches the enemy and prepares sand defenses.",
+            cooldown=3,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset(
+                {SkillClass.CHAKRA, SkillClass.RANGED, SkillClass.INSTANT, SkillClass.UNIQUE}
+            ),
+            target_rule=TargetRule.SELF,
+            effects=(DamageReduction(15, duration=1_000_000), self_marker("third_eye", 1)),
+        ),
+        SkillDefinition(
+            id="sand_shield",
+            name="Sand Shield",
+            description="This skill makes Gaara of the Desert invulnerable for 1 turn.",
+            cooldown=4,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.CHAKRA, SkillClass.INSTANT, SkillClass.UNIQUE}),
+            target_rule=TargetRule.SELF,
+            effects=(Invulnerability(1),),
+        ),
+    ),
+)
+
+KANKURO = CharacterDefinition(
+    id="kankuro",
+    name="Kankuro",
+    description="The brother of Gaara and a master puppeteer.",
+    skills=(
+        SkillDefinition(
+            id="black_secret_machine_one_shot",
+            name="Black Secret Machine One Shot",
+            description="Kankuro deals 30 piercing damage, improved by Puppet Preparation.",
+            cooldown=0,
+            chakra_cost=ChakraCost(random=2),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.RANGED, SkillClass.INSTANT}),
+            target_rule=TargetRule.ONE_ENEMY,
+            effect_factory=kankuro_black_secret_effects,
+        ),
+        SkillDefinition(
+            id="poison_bomb",
+            name="Poison Bomb",
+            description="Kankuro deals 10 affliction damage to all enemies.",
+            cooldown=1,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset(
+                {SkillClass.PHYSICAL, SkillClass.RANGED, SkillClass.INSTANT, SkillClass.AFFLICTION}
+            ),
+            target_rule=TargetRule.ALL_ENEMIES,
+            effect_factory=kankuro_poison_bomb_effects,
+        ),
+        SkillDefinition(
+            id="puppet_preparation",
+            name="Puppet Preparation",
+            description="Kankuro gains destructible defense and improves his puppet skills.",
+            cooldown=3,
+            chakra_cost=ChakraCost.none(),
+            classes=frozenset({SkillClass.CHAKRA, SkillClass.INSTANT, SkillClass.UNIQUE}),
+            target_rule=TargetRule.SELF,
+            effects=(DamageReduction(10, duration=4), self_marker("puppet_preparation", 3)),
+        ),
+        SkillDefinition(
+            id="puppet_replacement_technique",
+            name="Puppet Replacement Technique",
+            description="This skill makes Kankuro invulnerable for 1 turn.",
+            cooldown=4,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.CHAKRA, SkillClass.INSTANT, SkillClass.UNIQUE}),
+            target_rule=TargetRule.SELF,
+            effects=(Invulnerability(1),),
+        ),
+    ),
+)
+
+TEMARI = CharacterDefinition(
+    id="temari",
+    name="Temari",
+    description="The elder sister of Gaara and Kankuro, Temari fights with wind and her fan.",
+    skills=(
+        SkillDefinition(
+            id="cutting_whirlwind",
+            name="Cutting Whirlwind",
+            description="Temari deals piercing wind damage and becomes protected for 1 turn.",
+            cooldown=0,
+            chakra_cost=ChakraCost({ChakraType.NINJUTSU: 1}),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.RANGED, SkillClass.INSTANT}),
+            target_rule=TargetRule.ALL_ENEMIES,
+            effects=(
+                DirectDamage(10, piercing=True),
+                Invulnerability(1),
+                self_marker("cutting_whirlwind", 1),
+            ),
+        ),
+        SkillDefinition(
+            id="summoning_quick_beheading_dance",
+            name="Summoning Quick Beheading Dance",
+            description="Temari deals 35 damage to all enemies.",
+            cooldown=2,
+            chakra_cost=ChakraCost({ChakraType.NINJUTSU: 1}, random=2),
+            classes=frozenset(
+                {SkillClass.PHYSICAL, SkillClass.RANGED, SkillClass.INSTANT, SkillClass.UNIQUE}
+            ),
+            target_rule=TargetRule.ALL_ENEMIES,
+            effects=(DirectDamage(35),),
+        ),
+        SkillDefinition(
+            id="dust_wind",
+            name="Dust Wind",
+            description="Temari makes her team invulnerable for 1 turn.",
+            cooldown=4,
+            chakra_cost=ChakraCost({ChakraType.NINJUTSU: 1}, random=1),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.RANGED, SkillClass.INSTANT}),
+            target_rule=TargetRule.ALL_ALLIES,
+            effects=(Invulnerability(1, target_self=False),),
+        ),
+        SkillDefinition(
+            id="fan_defence_technique",
+            name="Fan Defence Technique",
+            description="This skill makes Temari invulnerable for 1 turn.",
+            cooldown=4,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.INSTANT}),
+            target_rule=TargetRule.SELF,
+            effects=(Invulnerability(1),),
+        ),
+    ),
+)
+
+TSUCHI_KIN = CharacterDefinition(
+    id="tsuchi_kin",
+    name="Tsuchi Kin",
+    description="One of the three sound genin, Kin uses needles and bells against enemies.",
+    skills=(
+        SkillDefinition(
+            id="illusion_bell_needles",
+            name="Illusion Bell Needles",
+            description="One enemy receives 15 damage.",
+            cooldown=0,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.MENTAL, SkillClass.RANGED, SkillClass.INSTANT}),
+            target_rule=TargetRule.ONE_ENEMY,
+            effects=(DirectDamage(15), self_marker("illusion_bell_needles", 1)),
+        ),
+        SkillDefinition(
+            id="needle_and_bell_trap",
+            name="Needle and Bell Trap",
+            description="One enemy will be stunned for 1 turn.",
+            cooldown=1,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.RANGED, SkillClass.INSTANT}),
+            target_rule=TargetRule.ONE_ENEMY,
+            effects=(Stun(1), self_marker("needle_and_bell_trap", 1)),
+        ),
+        SkillDefinition(
+            id="unnerving_bells",
+            name="Unnerving Bells",
+            description="One enemy loses 1 random chakra.",
+            cooldown=2,
+            chakra_cost=ChakraCost({ChakraType.GENJUTSU: 1}),
+            classes=frozenset({SkillClass.MENTAL, SkillClass.RANGED, SkillClass.INSTANT}),
+            target_rule=TargetRule.ONE_ENEMY,
+            effects=(ChakraRemoval(1), self_marker("unnerving_bells", 1)),
+        ),
+        SkillDefinition(
+            id="sharp_analysis",
+            name="Sharp Analysis",
+            description="This skill makes Tsuchi Kin invulnerable for 1 turn.",
+            cooldown=4,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.MENTAL, SkillClass.INSTANT}),
+            target_rule=TargetRule.SELF,
+            effects=(Invulnerability(1),),
+        ),
+    ),
+)
+
+ABUMI_ZAKU = CharacterDefinition(
+    id="abumi_zaku",
+    name="Abumi Zaku",
+    description="One of the three sound genin, Zaku creates waves of compressed air.",
+    skills=(
+        SkillDefinition(
+            id="air_cutter",
+            name="Air Cutter",
+            description="Zaku deals 25 damage and enables Extreme Air Cutter.",
+            cooldown=0,
+            chakra_cost=ChakraCost({ChakraType.BLOODLINE: 1}),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.RANGED, SkillClass.INSTANT}),
+            target_rule=TargetRule.ONE_ENEMY,
+            effects=(DirectDamage(25), self_marker("air_cutter", 1)),
+        ),
+        SkillDefinition(
+            id="wall_of_air",
+            name="Wall of Air",
+            description="Zaku protects one ally with an air wall.",
+            cooldown=2,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.INSTANT, SkillClass.UNIQUE}),
+            target_rule=TargetRule.ONE_ALLY,
+            effects=(Invulnerability(1, target_self=False),),
+        ),
+        SkillDefinition(
+            id="extreme_air_cutter",
+            name="Extreme Air Cutter",
+            description="Zaku deals 45 damage to all enemies.",
+            cooldown=0,
+            chakra_cost=ChakraCost({ChakraType.BLOODLINE: 1}, random=2),
+            classes=frozenset(
+                {SkillClass.PHYSICAL, SkillClass.RANGED, SkillClass.INSTANT, SkillClass.UNIQUE}
+            ),
+            target_rule=TargetRule.ALL_ENEMIES,
+            requirements=(has_marker("air_cutter"),),
+            effects=(DirectDamage(45),),
+        ),
+        SkillDefinition(
+            id="airwave_deflection",
+            name="Airwave Deflection",
+            description="This skill makes Abumi Zaku invulnerable for 1 turn.",
+            cooldown=4,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.CHAKRA, SkillClass.INSTANT}),
+            target_rule=TargetRule.SELF,
+            effects=(Invulnerability(1),),
+        ),
+    ),
+)
+
+KINUTA_DOSU = CharacterDefinition(
+    id="kinuta_dosu",
+    name="Kinuta Dosu",
+    description="Kinuta Dosu uses his implanted Melody Arm to amplify sound waves.",
+    skills=(
+        SkillDefinition(
+            id="resonating_echo_drill",
+            name="Resonating Echo Drill",
+            description="Dosu deals damage and weakens physical and chakra skills for 1 turn.",
+            cooldown=0,
+            chakra_cost=ChakraCost({ChakraType.TAIJUTSU: 1}),
+            classes=frozenset({SkillClass.PHYSICAL, SkillClass.MELEE, SkillClass.INSTANT}),
+            target_rule=TargetRule.ONE_ENEMY,
+            effect_factory=dosu_resonating_echo_drill_effects,
+        ),
+        SkillDefinition(
+            id="sound_manipulation",
+            name="Sound Manipulation",
+            description="Dosu deals damage and stuns one enemy for 1 turn.",
+            cooldown=1,
+            chakra_cost=ChakraCost({ChakraType.GENJUTSU: 1}),
+            classes=frozenset(
+                {SkillClass.MENTAL, SkillClass.MELEE, SkillClass.INSTANT, SkillClass.UNIQUE}
+            ),
+            target_rule=TargetRule.ONE_ENEMY,
+            effect_factory=dosu_sound_manipulation_effects,
+        ),
+        SkillDefinition(
+            id="melody_arm_tuning",
+            name="Melody Arm Tuning",
+            description="Dosu improves Resonating Echo Drill and Sound Manipulation for 5 turns.",
+            cooldown=5,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.MENTAL, SkillClass.INSTANT}),
+            target_rule=TargetRule.SELF,
+            effects=(self_marker("melody_arm_tuning", 5),),
+        ),
+        SkillDefinition(
+            id="dosu_hide",
+            name="Dosu Hide",
+            description="This skill makes Kinuta Dosu invulnerable for 1 turn.",
+            cooldown=4,
+            chakra_cost=ChakraCost(random=1),
+            classes=frozenset({SkillClass.MENTAL, SkillClass.INSTANT}),
+            target_rule=TargetRule.SELF,
+            effects=(Invulnerability(1),),
+        ),
+    ),
+)
+
 HAND_AUTHORED_CHARACTERS = {
     character.id: character
     for character in (
@@ -1067,6 +1666,15 @@ HAND_AUTHORED_CHARACTERS = {
         NARA_SHIKAMARU,
         AKIMICHI_CHOUJI,
         YAMANAKA_INO,
+        TENTEN,
+        HYUUGA_NEJI,
+        ROCK_LEE,
+        GAARA_OF_THE_DESERT,
+        KANKURO,
+        TEMARI,
+        TSUCHI_KIN,
+        ABUMI_ZAKU,
+        KINUTA_DOSU,
     )
 }
 

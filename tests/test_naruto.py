@@ -6,7 +6,12 @@ from naruto_arena.data.characters import (
 from naruto_arena.engine.actions import UseSkillAction
 from naruto_arena.engine.chakra import ChakraPool, ChakraType
 from naruto_arena.engine.rules import create_initial_state, start_turn
-from naruto_arena.engine.simulator import apply_action, can_use_skill, resolved_skill
+from naruto_arena.engine.simulator import (
+    apply_action,
+    can_use_skill,
+    resolved_skill,
+    resolve_pending_skill_stack,
+)
 
 
 def make_state():
@@ -53,6 +58,7 @@ def test_shadow_clones_improves_naruto_combo() -> None:
         state,
         UseSkillAction(0, naruto.instance_id, "uzumaki_naruto_combo", (enemy.instance_id,)),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert enemy.hp == 70
 
@@ -74,6 +80,7 @@ def test_kyuubi_awakening_activates_once_when_naruto_reaches_50_or_lower() -> No
             {ChakraType.NINJUTSU: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 1)
     assert naruto.hp == 40
     assert naruto.passives["kyuubi_chakra_awakening"] is True
     naruto.hp = 40
@@ -103,6 +110,7 @@ def test_kyuubi_awakening_increases_naruto_damage_by_5() -> None:
         state,
         UseSkillAction(0, naruto.instance_id, "uzumaki_naruto_combo", (enemy.instance_id,)),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert enemy.hp == 75
 

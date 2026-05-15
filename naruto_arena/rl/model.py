@@ -33,9 +33,11 @@ from naruto_arena.rl.observation import (
 
 MODEL_ARCH_MLP = "mlp"
 MODEL_ARCH_TRANSFORMER = "transformer"
-MODEL_ARCHITECTURES = (MODEL_ARCH_MLP, MODEL_ARCH_TRANSFORMER)
+MODEL_ARCH_RECURRENT_TRANSFORMER = "recurrent_transformer"
+MODEL_ARCHITECTURES = (MODEL_ARCH_MLP, MODEL_ARCH_TRANSFORMER, MODEL_ARCH_RECURRENT_TRANSFORMER)
 POLICY_TYPE_FACTORED = "factored"
 POLICY_TYPE_FACTORED_TRANSFORMER = "factored_transformer"
+POLICY_TYPE_FACTORED_RECURRENT_TRANSFORMER = "factored_recurrent_transformer"
 
 
 @dataclass(frozen=True)
@@ -266,6 +268,65 @@ class TransformerActorCritic(nn.Module):
         return torch.cat([numeric_features, self.character_id_embedding(character_ids)], dim=-1)
 
 
+class RecurrentTransformerActorCritic(TransformerActorCritic):
+    def __init__(
+        self,
+        obs_dim: int,
+        num_actions: int | None = None,
+        hidden_dim: int = 256,
+        recurrent_hidden_dim: int = 256,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(obs_dim, num_actions=num_actions, hidden_dim=hidden_dim, **kwargs)
+        self.recurrent_hidden_dim = recurrent_hidden_dim
+        self.memory_input = nn.Sequential(
+            nn.Linear(hidden_dim, recurrent_hidden_dim),
+            nn.ReLU(),
+        )
+        self.memory = nn.GRUCell(recurrent_hidden_dim, recurrent_hidden_dim)
+        self.kind_policy = nn.Linear(recurrent_hidden_dim, ACTION_KIND_COUNT)
+        self.actor_policy = nn.Linear(recurrent_hidden_dim, MAX_TEAM_SIZE)
+        self.skill_policy = nn.Linear(recurrent_hidden_dim, MAX_SKILLS_PER_CHARACTER)
+        self.target_policy = nn.Linear(recurrent_hidden_dim, TARGET_CODE_COUNT)
+        self.random_chakra_policy = nn.Linear(recurrent_hidden_dim, RANDOM_CHAKRA_CODE_COUNT)
+        self.reorder_destination_policy = nn.Linear(
+            recurrent_hidden_dim,
+            REORDER_DESTINATION_COUNT,
+        )
+        self.value = nn.Linear(recurrent_hidden_dim, 1)
+
+    def forward(
+        self,
+        observations: torch.Tensor,
+        hidden: torch.Tensor | None = None,
+    ) -> tuple[PolicyOutput, torch.Tensor] | tuple[PolicyOutput, torch.Tensor, torch.Tensor]:
+        encoded = self.shared(self._encode_observation(observations))
+        memory_input = self.memory_input(encoded)
+        if hidden is None:
+            hidden = self.initial_hidden(observations.shape[0], observations.device)
+            memory_hidden = self.memory(memory_input, hidden)
+            return self._policy_and_value(memory_hidden)
+        memory_hidden = self.memory(memory_input, hidden)
+        policy, value = self._policy_and_value(memory_hidden)
+        return policy, value, memory_hidden
+
+    def initial_hidden(self, batch_size: int, device: torch.device) -> torch.Tensor:
+        return torch.zeros(batch_size, self.recurrent_hidden_dim, device=device)
+
+    def _policy_and_value(self, hidden: torch.Tensor) -> tuple[PolicyOutput, torch.Tensor]:
+        return (
+            PolicyOutput(
+                kind=self.kind_policy(hidden),
+                actor=self.actor_policy(hidden),
+                skill=self.skill_policy(hidden),
+                target=self.target_policy(hidden),
+                random_chakra=self.random_chakra_policy(hidden),
+                reorder_destination=self.reorder_destination_policy(hidden),
+            ),
+            self.value(hidden).squeeze(-1),
+        )
+
+
 def create_actor_critic(
     obs_dim: int,
     model_arch: str = MODEL_ARCH_MLP,
@@ -278,6 +339,14 @@ def create_actor_critic(
         return ActorCritic(obs_dim, character_feature_size=character_feature_size)
     if model_arch == MODEL_ARCH_TRANSFORMER:
         return TransformerActorCritic(
+            obs_dim,
+            character_feature_size=character_feature_size,
+            character_id_code_count=character_id_code_count_for_observation_version(
+                observation_version,
+            ),
+        )
+    if model_arch == MODEL_ARCH_RECURRENT_TRANSFORMER:
+        return RecurrentTransformerActorCritic(
             obs_dim,
             character_feature_size=character_feature_size,
             character_id_code_count=character_id_code_count_for_observation_version(
@@ -334,6 +403,8 @@ def policy_type_for_model_arch(model_arch: str) -> str:
         return POLICY_TYPE_FACTORED
     if model_arch == MODEL_ARCH_TRANSFORMER:
         return POLICY_TYPE_FACTORED_TRANSFORMER
+    if model_arch == MODEL_ARCH_RECURRENT_TRANSFORMER:
+        return POLICY_TYPE_FACTORED_RECURRENT_TRANSFORMER
     raise ValueError(f"Unknown model architecture: {model_arch}")
 
 
@@ -349,4 +420,10 @@ def model_arch_from_checkpoint(checkpoint: dict[str, Any]) -> str:
         return MODEL_ARCH_MLP
     if policy_type == POLICY_TYPE_FACTORED_TRANSFORMER:
         return MODEL_ARCH_TRANSFORMER
+    if policy_type == POLICY_TYPE_FACTORED_RECURRENT_TRANSFORMER:
+        return MODEL_ARCH_RECURRENT_TRANSFORMER
     raise ValueError("Checkpoint uses an unsupported policy type. Retrain the RL model.")
+
+
+def is_recurrent_model(model: nn.Module) -> bool:
+    return hasattr(model, "initial_hidden")

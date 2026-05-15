@@ -77,7 +77,7 @@ def _action_text(action: dict[str, Any]) -> str:
     if action_type == "use_skill":
         targets = ", ".join(action["target_names"]) if action["target_names"] else "-"
         payment = _payment_text(action.get("random_payment", {}))
-        return f"{action['actor_name']} uses {action['skill_name']} -> {targets}{payment}"
+        return f"QUEUE {action['actor_name']} {action['skill_name']} -> {targets}{payment}"
     return action_type.upper()
 
 

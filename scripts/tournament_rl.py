@@ -12,7 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from naruto_arena.agents.rl_agent import RlAgent
-from naruto_arena.data.characters import ALL_CHARACTERS
+from naruto_arena.data.characters import ALL_CHARACTERS, HAND_AUTHORED_CHARACTERS
 from naruto_arena.engine.characters import CharacterDefinition
 from naruto_arena.engine.rules import create_initial_state
 from naruto_arena.engine.simulator import apply_action
@@ -48,6 +48,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--sample", action="store_true", help="Sample actions instead of argmax.")
     parser.add_argument("--log-interval", type=int, default=50)
     parser.add_argument(
+        "--all-characters",
+        action="store_true",
+        help="Evaluate every loaded character instead of only the 9 hand-authored training chars.",
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         default=Path("reports/rl_tournament.json"),
@@ -58,7 +63,8 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    characters = sorted(ALL_CHARACTERS.values(), key=lambda character: character.id)
+    roster = ALL_CHARACTERS if args.all_characters else HAND_AUTHORED_CHARACTERS
+    characters = sorted(roster.values(), key=lambda character: character.id)
     teams = list(itertools.combinations(characters, 3))
     total_expected_games = len(teams) * len(teams) * args.matches_per_pair
     stats: dict[str, TeamStats] = defaultdict(TeamStats)
@@ -105,6 +111,7 @@ def main() -> None:
         args.max_actions,
         args.model_path,
         deterministic=not args.sample,
+        all_characters=args.all_characters,
     )
     print(
         f"characters={len(characters)} teams={len(teams)} games={total_games} "
@@ -132,6 +139,7 @@ def write_report(
     model_path: Path,
     *,
     deterministic: bool,
+    all_characters: bool,
 ) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     team_ids_by_key = {team_key(team): [character.id for character in team] for team in teams}
@@ -145,6 +153,7 @@ def write_report(
             "max_actions": max_actions,
             "model_path": str(model_path),
             "deterministic": deterministic,
+            "roster": "all_characters" if all_characters else "hand_authored",
         },
         "characters": [{"id": character.id, "name": character.name} for character in characters],
         "teams": [

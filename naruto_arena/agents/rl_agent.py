@@ -20,6 +20,7 @@ from naruto_arena.rl.action_space import (
 from naruto_arena.rl.model import (
     PolicyOutput,
     create_actor_critic,
+    is_recurrent_model,
     load_actor_critic_state_dict,
     model_arch_from_checkpoint,
 )
@@ -62,8 +63,13 @@ class RlAgent:
             )
         self.deterministic = deterministic
         self.generator = torch.Generator().manual_seed(seed)
+        self.hidden_by_player: dict[int, torch.Tensor] = {}
+        self.last_turn_number: int | None = None
 
     def choose_action(self, state: GameState, player_id: int) -> Action:
+        if self.last_turn_number is None or state.turn_number < self.last_turn_number:
+            self.hidden_by_player.clear()
+        self.last_turn_number = state.turn_number
         legal = legal_actions(state, player_id)
         kind_mask = legal_factored_action_masks(state, player_id, legal=legal)["kind"]
         if not any(kind_mask):
@@ -77,7 +83,14 @@ class RlAgent:
         )
         with torch.no_grad():
             obs = torch.tensor(observation, dtype=torch.float32).unsqueeze(0)
-            policy, _ = self.model(obs)
+            if is_recurrent_model(self.model):
+                hidden = self.hidden_by_player.get(player_id)
+                if hidden is None:
+                    hidden = self.model.initial_hidden(1, obs.device)  # type: ignore[attr-defined]
+                policy, _, next_hidden = self.model(obs, hidden)  # type: ignore[misc]
+                self.hidden_by_player[player_id] = next_hidden.detach()
+            else:
+                policy, _ = self.model(obs)
             factored_action = self._choose_factored_action(state, player_id, policy, legal)
 
         action = factored_action_to_engine_action(state, player_id, factored_action)

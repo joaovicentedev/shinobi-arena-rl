@@ -5,7 +5,9 @@ import random
 from naruto_arena.engine.chakra import ChakraType
 from naruto_arena.engine.characters import CharacterDefinition
 from naruto_arena.engine.effects import ActiveDamageOverTime, ActiveDamageReduction
-from naruto_arena.engine.state import CharacterState, GameState, PlayerState
+from naruto_arena.engine.state import CharacterState, GameState, PlayerState, UsedSkillState
+
+PERMANENT_SKILL_STACK_DURATION = 1_000_000
 
 
 class RulesError(ValueError):
@@ -26,12 +28,28 @@ def create_initial_state(
         PlayerState(1, [_make_character(defn, 1, index) for index, defn in enumerate(team_b)]),
     )
     state = GameState(players=players, rng_seed=rng_seed, rng=random.Random(rng_seed))
+    initialize_passive_skill_stack(state)
     start_turn(state)
     return state
 
 
+def initialize_passive_skill_stack(state: GameState) -> None:
+    for player in state.players:
+        for character in player.characters:
+            for skill in character.definition.skills:
+                if skill.is_passive() and skill.replacement_for is None:
+                    player.skill_stack.append(
+                        UsedSkillState(
+                            character.instance_id,
+                            skill.id,
+                            PERMANENT_SKILL_STACK_DURATION,
+                        )
+                    )
+
+
 def start_turn(state: GameState) -> None:
     state.reorders_this_turn = 0
+    state.reordered_skills_this_turn.clear()
     player = state.players[state.active_player]
     for character in player.living_characters():
         character.used_skill_this_turn = False
@@ -206,6 +224,12 @@ def tick_start_of_turn_effects(state: GameState, player_id: int) -> None:
 
 
 def tick_end_of_turn_effects(state: GameState, player_id: int) -> None:
+    kept_skills = []
+    for used_skill in state.players[player_id].skill_stack:
+        used_skill.remaining_turns -= 1
+        if used_skill.remaining_turns > 0:
+            kept_skills.append(used_skill)
+    state.players[player_id].skill_stack = kept_skills
     for character in state.players[player_id].characters:
         if character.status.stunned_turns > 0:
             character.status.stunned_turns -= 1

@@ -26,6 +26,7 @@ from naruto_arena.rl.model import (
     MODEL_ARCHITECTURES,
     PolicyOutput,
     create_actor_critic,
+    is_recurrent_model,
     load_actor_critic_state_dict,
     model_arch_from_checkpoint,
     policy_type_for_model_arch,
@@ -34,6 +35,10 @@ from naruto_arena.rl.observation import OBSERVATION_VERSION, observation_size
 
 MaskTrace = dict[str, list[bool]]
 Trajectory = dict[str, list[Any] | list[float] | int | None]
+UpdateStats = dict[str, float]
+
+ALGORITHM_ACTOR_CRITIC = "actor_critic"
+ALGORITHM_PPO = "ppo"
 
 
 def parse_args() -> argparse.Namespace:
@@ -55,10 +60,32 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Checkpoint path for --opponent rl.",
     )
-    parser.add_argument("--learning-rate", type=float, default=3e-4)
+    parser.add_argument(
+        "--self-play-league-dir",
+        type=Path,
+        default=None,
+        help="Directory of checkpoint snapshots to sample as RL opponents.",
+    )
+    parser.add_argument(
+        "--self-play-snapshot-interval",
+        type=int,
+        default=0,
+        help="Save a league snapshot every N episodes; 0 disables snapshots.",
+    )
+    parser.add_argument("--learning-rate", type=float, default=1e-4)
+    parser.add_argument(
+        "--algorithm",
+        choices=(ALGORITHM_ACTOR_CRITIC, ALGORITHM_PPO),
+        default=ALGORITHM_ACTOR_CRITIC,
+    )
     parser.add_argument("--gamma", type=float, default=0.99)
-    parser.add_argument("--entropy-coef", type=float, default=0.01)
+    parser.add_argument("--gae-lambda", type=float, default=0.95)
+    parser.add_argument("--ppo-clip", type=float, default=0.1)
+    parser.add_argument("--ppo-epochs", type=int, default=2)
+    parser.add_argument("--ppo-minibatch-size", type=int, default=256)
+    parser.add_argument("--entropy-coef", type=float, default=0.005)
     parser.add_argument("--value-coef", type=float, default=0.5)
+    parser.add_argument("--max-grad-norm", type=float, default=0.3)
     parser.add_argument("--log-interval", type=int, default=25)
     parser.add_argument("--save-path", default="models/naruto_actor_critic.pt")
     parser.add_argument(
@@ -126,26 +153,47 @@ def main() -> None:
     recent_wins: list[float] = []
     episode_seed_rng = random.Random(args.seed)
     start = time.monotonic()
-    loss: float | None = None
+    update_stats: UpdateStats | None = None
 
     if args.num_envs == 1:
         for episode in range(1, args.episodes + 1):
+            maybe_refresh_self_play_opponent(env, args, episode, episode_seed_rng)
             trajectory = collect_episode(
                 env,
                 model,
                 args.gamma,
+                args.gae_lambda,
                 seed=episode_seed_rng.randrange(2**32),
             )
             pending.append(trajectory)
             recent_returns.append(float(sum(trajectory["rewards"])))
             recent_wins.append(1.0 if trajectory["winner"] == env.learning_player else 0.0)
             if len(pending) >= args.batch_episodes:
-                loss = update_model(model, optimizer, pending, args.value_coef, args.entropy_coef)
+                update_stats = update_model(
+                    model,
+                    optimizer,
+                    pending,
+                    algorithm=args.algorithm,
+                    value_coef=args.value_coef,
+                    entropy_coef=args.entropy_coef,
+                    ppo_clip=args.ppo_clip,
+                    ppo_epochs=args.ppo_epochs,
+                    ppo_minibatch_size=args.ppo_minibatch_size,
+                    max_grad_norm=args.max_grad_norm,
+                )
                 pending.clear()
             if episode == 1 or episode % args.log_interval == 0 or episode == args.episodes:
-                log_progress(episode, args.episodes, recent_returns, recent_wins, start, loss)
+                log_progress(
+                    episode,
+                    args.episodes,
+                    recent_returns,
+                    recent_wins,
+                    start,
+                    update_stats,
+                )
                 recent_returns.clear()
                 recent_wins.clear()
+            maybe_save_self_play_snapshot(model, args, episode)
     else:
         worker_config = {
             "opponent": args.opponent,
@@ -154,9 +202,13 @@ def main() -> None:
             "opponent_model_path": (
                 None if args.opponent_model_path is None else str(args.opponent_model_path)
             ),
+            "self_play_league_dir": (
+                None if args.self_play_league_dir is None else str(args.self_play_league_dir)
+            ),
             "team_sampling": args.team_sampling,
             "model_arch": args.model_arch,
             "gamma": args.gamma,
+            "gae_lambda": args.gae_lambda,
         }
         completed_episodes = 0
         with ProcessPoolExecutor(max_workers=args.num_envs) as executor:
@@ -181,7 +233,18 @@ def main() -> None:
                     for trajectory in future.result()
                 ]
                 pending.extend(batch)
-                loss = update_model(model, optimizer, pending, args.value_coef, args.entropy_coef)
+                update_stats = update_model(
+                    model,
+                    optimizer,
+                    pending,
+                    algorithm=args.algorithm,
+                    value_coef=args.value_coef,
+                    entropy_coef=args.entropy_coef,
+                    ppo_clip=args.ppo_clip,
+                    ppo_epochs=args.ppo_epochs,
+                    ppo_minibatch_size=args.ppo_minibatch_size,
+                    max_grad_norm=args.max_grad_norm,
+                )
                 pending.clear()
                 for trajectory in batch:
                     completed_episodes += 1
@@ -200,13 +263,24 @@ def main() -> None:
                             recent_returns,
                             recent_wins,
                             start,
-                            loss,
+                            update_stats,
                         )
                         recent_returns.clear()
                         recent_wins.clear()
 
     if pending:
-        update_model(model, optimizer, pending, args.value_coef, args.entropy_coef)
+        update_model(
+            model,
+            optimizer,
+            pending,
+            algorithm=args.algorithm,
+            value_coef=args.value_coef,
+            entropy_coef=args.entropy_coef,
+            ppo_clip=args.ppo_clip,
+            ppo_epochs=args.ppo_epochs,
+            ppo_minibatch_size=args.ppo_minibatch_size,
+            max_grad_norm=args.max_grad_norm,
+        )
     save_path = Path(args.save_path)
     save_path.parent.mkdir(parents=True, exist_ok=True)
     model.to("cpu")
@@ -224,6 +298,18 @@ def main() -> None:
             ),
             "team_sampling": args.team_sampling,
             "init_model_path": None if args.init_model_path is None else str(args.init_model_path),
+            "algorithm": args.algorithm,
+            "training": {
+                "algorithm": args.algorithm,
+                "gamma": args.gamma,
+                "gae_lambda": args.gae_lambda,
+                "ppo_clip": args.ppo_clip,
+                "ppo_epochs": args.ppo_epochs,
+                "ppo_minibatch_size": args.ppo_minibatch_size,
+                "value_coef": args.value_coef,
+                "entropy_coef": args.entropy_coef,
+                "max_grad_norm": args.max_grad_norm,
+            },
         },
         save_path,
     )
@@ -272,10 +358,66 @@ def load_initial_model(
     load_actor_critic_state_dict(model, checkpoint["model_state_dict"])
 
 
+def maybe_refresh_self_play_opponent(
+    env: NarutoArenaLearningEnv,
+    args: argparse.Namespace,
+    episode: int,
+    rng: random.Random,
+) -> None:
+    if args.self_play_league_dir is None:
+        return
+    snapshots = sorted(args.self_play_league_dir.glob("*.pt"))
+    if not snapshots:
+        return
+    # Refresh once per episode so a rollout faces one stable opponent checkpoint.
+    env.opponent_name = "rl"
+    env.opponent_model_path = rng.choice(snapshots)
+    env.opponent = env._make_opponent("rl", args.seed + 20_000 + episode)
+
+
+def maybe_save_self_play_snapshot(
+    model: torch.nn.Module,
+    args: argparse.Namespace,
+    episode: int,
+) -> None:
+    if args.self_play_league_dir is None or args.self_play_snapshot_interval <= 0:
+        return
+    if episode % args.self_play_snapshot_interval != 0:
+        return
+    args.self_play_league_dir.mkdir(parents=True, exist_ok=True)
+    snapshot_path = args.self_play_league_dir / f"snapshot_{episode:08d}.pt"
+    torch.save(
+        {
+            "model_state_dict": _cpu_state_dict(model),
+            "obs_dim": observation_size(perfect_info=args.perfect_info),
+            "observation_version": OBSERVATION_VERSION,
+            "policy_type": policy_type_for_model_arch(args.model_arch),
+            "model_arch": args.model_arch,
+            "perfect_info": args.perfect_info,
+            "opponent": args.opponent,
+            "team_sampling": args.team_sampling,
+            "algorithm": args.algorithm,
+            "training": {
+                "algorithm": args.algorithm,
+                "gamma": args.gamma,
+                "gae_lambda": args.gae_lambda,
+                "ppo_clip": args.ppo_clip,
+                "ppo_epochs": args.ppo_epochs,
+                "ppo_minibatch_size": args.ppo_minibatch_size,
+                "value_coef": args.value_coef,
+                "entropy_coef": args.entropy_coef,
+                "max_grad_norm": args.max_grad_norm,
+            },
+        },
+        snapshot_path,
+    )
+
+
 def collect_episode(
     env: NarutoArenaLearningEnv,
     model: torch.nn.Module,
     gamma: float,
+    gae_lambda: float,
     *,
     seed: int,
 ) -> Trajectory:
@@ -283,28 +425,59 @@ def collect_episode(
     trajectory_observations: list[list[float]] = []
     actions: list[FactoredAction] = []
     action_masks: list[MaskTrace] = []
+    log_probs: list[float] = []
+    values: list[float] = []
+    entropies: list[float] = []
     rewards: list[float] = []
+    dones: list[bool] = []
+    recurrent_hidden_states: list[list[float]] = []
     done = False
     winner = None
+    hidden = None
     while not done:
         device = next(model.parameters()).device
         trajectory_observations.append(observations)
         with torch.no_grad():
             obs = torch.tensor(observations, dtype=torch.float32, device=device).unsqueeze(0)
-            policy, _ = model(obs)
-            action, mask_trace = sample_factored_action(env, policy)
+            if is_recurrent_model(model):
+                if hidden is None:
+                    hidden = model.initial_hidden(1, device)  # type: ignore[attr-defined]
+                recurrent_hidden_states.append(hidden.squeeze(0).detach().cpu().tolist())
+                policy, value, hidden = model(obs, hidden)  # type: ignore[misc]
+                hidden = hidden.detach()
+            else:
+                policy, value = model(obs)
+            action, mask_trace, log_prob, entropy = sample_factored_action(env, policy)
         observations, reward, done, info = env.step(factored_action=action)
         actions.append(action)
         action_masks.append(mask_trace)
+        log_probs.append(float(log_prob.cpu().item()))
+        values.append(float(value.squeeze(0).cpu().item()))
+        entropies.append(float(entropy.cpu().item()))
         rewards.append(reward)
+        dones.append(done)
         winner = info["winner"]
     returns = discounted_returns(rewards, gamma)
+    advantages, gae_returns = generalized_advantage_estimates(
+        rewards,
+        values,
+        dones,
+        gamma,
+        gae_lambda,
+    )
     return {
         "observations": trajectory_observations,
         "actions": actions,
         "action_masks": action_masks,
+        "log_probs": log_probs,
+        "values": values,
+        "entropies": entropies,
         "returns": returns,
+        "gae_returns": gae_returns,
+        "advantages": advantages,
         "rewards": rewards,
+        "dones": dones,
+        "recurrent_hidden_states": recurrent_hidden_states,
         "winner": winner,
     }
 
@@ -312,33 +485,37 @@ def collect_episode(
 def sample_factored_action(
     env: NarutoArenaLearningEnv,
     policy: PolicyOutput,
-) -> tuple[FactoredAction, MaskTrace]:
+) -> tuple[FactoredAction, MaskTrace, torch.Tensor, torch.Tensor]:
     mask_trace: MaskTrace = {}
     kind_mask = env.factored_action_masks()["kind"]
     mask_trace["kind"] = kind_mask
-    kind, _, _ = _sample_masked(
+    kind, log_prob, entropy = _sample_masked(
         policy.kind,
         kind_mask,
     )
     action_kind = ACTION_KIND_ORDER[int(kind.item())]
     if action_kind == ActionKind.END_TURN:
-        return FactoredAction(action_kind), mask_trace
+        return FactoredAction(action_kind), mask_trace, log_prob, entropy
 
     partial = FactoredAction(action_kind)
     actor_mask = env.factored_action_masks(partial)["actor"]
     mask_trace["actor"] = actor_mask
-    actor, _, _ = _sample_masked(
+    actor, actor_log_prob, actor_entropy = _sample_masked(
         policy.actor,
         actor_mask,
     )
+    log_prob = log_prob + actor_log_prob
+    entropy = entropy + actor_entropy
     partial = FactoredAction(action_kind, actor_slot=int(actor.item()))
 
     skill_mask = env.factored_action_masks(partial)["skill"]
     mask_trace["skill"] = skill_mask
-    skill, _, _ = _sample_masked(
+    skill, skill_log_prob, skill_entropy = _sample_masked(
         policy.skill,
         skill_mask,
     )
+    log_prob = log_prob + skill_log_prob
+    entropy = entropy + skill_entropy
     partial = FactoredAction(
         action_kind,
         actor_slot=partial.actor_slot,
@@ -348,10 +525,12 @@ def sample_factored_action(
     if action_kind == ActionKind.REORDER_SKILL:
         reorder_mask = env.factored_action_masks(partial)["reorder_destination"]
         mask_trace["reorder_destination"] = reorder_mask
-        destination, _, _ = _sample_masked(
+        destination, destination_log_prob, destination_entropy = _sample_masked(
             policy.reorder_destination,
             reorder_mask,
         )
+        log_prob = log_prob + destination_log_prob
+        entropy = entropy + destination_entropy
         return (
             FactoredAction(
                 action_kind,
@@ -360,14 +539,18 @@ def sample_factored_action(
                 reorder_to_end=bool(destination.item()),
             ),
             mask_trace,
+            log_prob,
+            entropy,
         )
 
     target_mask = env.factored_action_masks(partial)["target"]
     mask_trace["target"] = target_mask
-    target, _, _ = _sample_masked(
+    target, target_log_prob, target_entropy = _sample_masked(
         policy.target,
         target_mask,
     )
+    log_prob = log_prob + target_log_prob
+    entropy = entropy + target_entropy
     partial = FactoredAction(
         action_kind,
         actor_slot=partial.actor_slot,
@@ -376,10 +559,12 @@ def sample_factored_action(
     )
     chakra_mask = env.factored_action_masks(partial)["random_chakra"]
     mask_trace["random_chakra"] = chakra_mask
-    chakra, _, _ = _sample_masked(
+    chakra, chakra_log_prob, chakra_entropy = _sample_masked(
         policy.random_chakra,
         chakra_mask,
     )
+    log_prob = log_prob + chakra_log_prob
+    entropy = entropy + chakra_entropy
     return (
         FactoredAction(
             action_kind,
@@ -389,6 +574,8 @@ def sample_factored_action(
             random_chakra_code=int(chakra.item()),
         ),
         mask_trace,
+        log_prob,
+        entropy,
     )
 
 
@@ -472,59 +659,218 @@ def update_model(
     model: torch.nn.Module,
     optimizer: torch.optim.Optimizer,
     batch: list[Trajectory],
+    *,
+    algorithm: str,
     value_coef: float,
     entropy_coef: float,
-) -> float:
+    ppo_clip: float,
+    ppo_epochs: int,
+    ppo_minibatch_size: int,
+    max_grad_norm: float,
+) -> UpdateStats:
+    if algorithm == ALGORITHM_ACTOR_CRITIC:
+        return update_actor_critic_model(
+            model,
+            optimizer,
+            batch,
+            value_coef=value_coef,
+            entropy_coef=entropy_coef,
+            max_grad_norm=max_grad_norm,
+        )
+    if algorithm == ALGORITHM_PPO:
+        return update_ppo_model(
+            model,
+            optimizer,
+            batch,
+            value_coef=value_coef,
+            entropy_coef=entropy_coef,
+            ppo_clip=ppo_clip,
+            ppo_epochs=ppo_epochs,
+            ppo_minibatch_size=ppo_minibatch_size,
+            max_grad_norm=max_grad_norm,
+        )
+    raise ValueError(f"Unknown algorithm: {algorithm}")
+
+
+def update_actor_critic_model(
+    model: torch.nn.Module,
+    optimizer: torch.optim.Optimizer,
+    batch: list[Trajectory],
+    *,
+    value_coef: float,
+    entropy_coef: float,
+    max_grad_norm: float,
+) -> UpdateStats:
     model.eval()
     device = next(model.parameters()).device
-    observations = torch.tensor(
-        [
-            observation
-            for item in batch
-            for observation in item["observations"]
-        ],
-        dtype=torch.float32,
-        device=device,
-    )
-    actions = [
-        action
-        for item in batch
-        for action in item["actions"]
-    ]
-    action_masks = [
-        mask_trace
-        for item in batch
-        for mask_trace in item["action_masks"]
-    ]
-    policy, values = model(observations)
+    rollout = flatten_rollout_batch(batch, device)
+    observations = rollout["observations"]
+    actions = rollout["actions"]
+    action_masks = rollout["action_masks"]
+    hidden_states = rollout["recurrent_hidden_states"]
+    if hidden_states is not None:
+        policy, values, _ = model(observations, hidden_states)  # type: ignore[misc]
+    else:
+        policy, values = model(observations)
     log_probs_and_entropies = [
         _factored_action_log_prob_and_entropy(policy, index, action, mask_trace)
         for index, (action, mask_trace) in enumerate(zip(actions, action_masks, strict=True))
     ]
     log_probs = torch.stack([item[0] for item in log_probs_and_entropies])
     entropies = torch.stack([item[1] for item in log_probs_and_entropies])
-    returns = torch.tensor(
-        [
-            value
-            for item in batch
-            for value in item["returns"]
-        ],
-        dtype=torch.float32,
-        device=device,
-    )
+    returns = rollout["returns"]
     advantages = returns - values.detach()
     policy_loss = -(log_probs * advantages).mean()
     value_loss = F.mse_loss(values, returns)
-    entropy_loss = -entropies.mean()
-    loss = policy_loss + value_coef * value_loss + entropy_coef * entropy_loss
+    entropy = entropies.mean()
+    loss = policy_loss + value_coef * value_loss - entropy_coef * entropy
     optimizer.zero_grad()
     loss.backward()
     torch.nn.utils.clip_grad_norm_(
         [parameter for group in optimizer.param_groups for parameter in group["params"]],
-        1.0,
+        max_grad_norm,
     )
     optimizer.step()
-    return float(loss.detach().item())
+    return {
+        "loss": float(loss.detach().item()),
+        "policy_loss": float(policy_loss.detach().item()),
+        "value_loss": float(value_loss.detach().item()),
+        "entropy": float(entropy.detach().item()),
+        "approx_kl": 0.0,
+        "clip_fraction": 0.0,
+        "explained_variance": explained_variance(values.detach(), returns),
+    }
+
+
+def update_ppo_model(
+    model: torch.nn.Module,
+    optimizer: torch.optim.Optimizer,
+    batch: list[Trajectory],
+    *,
+    value_coef: float,
+    entropy_coef: float,
+    ppo_clip: float,
+    ppo_epochs: int,
+    ppo_minibatch_size: int,
+    max_grad_norm: float,
+) -> UpdateStats:
+    if ppo_epochs < 1:
+        raise ValueError("--ppo-epochs must be at least 1.")
+    if ppo_minibatch_size < 1:
+        raise ValueError("--ppo-minibatch-size must be at least 1.")
+    model.eval()
+    device = next(model.parameters()).device
+    rollout = flatten_rollout_batch(batch, device)
+    observations = rollout["observations"]
+    actions = rollout["actions"]
+    action_masks = rollout["action_masks"]
+    old_log_probs = rollout["old_log_probs"]
+    returns = rollout["gae_returns"]
+    advantages = rollout["advantages"]
+    advantages = (advantages - advantages.mean()) / (advantages.std(unbiased=False) + 1e-8)
+    sample_count = observations.shape[0]
+    last_stats: UpdateStats = {}
+    for _ in range(ppo_epochs):
+        permutation = torch.randperm(sample_count, device=device)
+        for start in range(0, sample_count, ppo_minibatch_size):
+            indices = permutation[start : start + ppo_minibatch_size]
+            hidden_states = rollout["recurrent_hidden_states"]
+            if hidden_states is not None:
+                policy, values, _ = model(  # type: ignore[misc]
+                    observations[indices],
+                    hidden_states[indices],
+                )
+            else:
+                policy, values = model(observations[indices])
+            minibatch_actions = [actions[int(index)] for index in indices.cpu()]
+            minibatch_masks = [action_masks[int(index)] for index in indices.cpu()]
+            log_probs_and_entropies = [
+                _factored_action_log_prob_and_entropy(policy, index, action, mask_trace)
+                for index, (action, mask_trace) in enumerate(
+                    zip(minibatch_actions, minibatch_masks, strict=True)
+                )
+            ]
+            log_probs = torch.stack([item[0] for item in log_probs_and_entropies])
+            entropies = torch.stack([item[1] for item in log_probs_and_entropies])
+            minibatch_old_log_probs = old_log_probs[indices]
+            minibatch_returns = returns[indices]
+            minibatch_advantages = advantages[indices]
+            ratios = torch.exp(log_probs - minibatch_old_log_probs)
+            unclipped_policy_loss = ratios * minibatch_advantages
+            clipped_policy_loss = torch.clamp(
+                ratios,
+                1.0 - ppo_clip,
+                1.0 + ppo_clip,
+            ) * minibatch_advantages
+            policy_loss = -torch.min(unclipped_policy_loss, clipped_policy_loss).mean()
+            value_loss = F.mse_loss(values, minibatch_returns)
+            entropy = entropies.mean()
+            loss = policy_loss + value_coef * value_loss - entropy_coef * entropy
+            optimizer.zero_grad()
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(
+                [parameter for group in optimizer.param_groups for parameter in group["params"]],
+                max_grad_norm,
+            )
+            optimizer.step()
+            with torch.no_grad():
+                log_ratio = log_probs - minibatch_old_log_probs
+                approx_kl = ((torch.exp(log_ratio) - 1.0) - log_ratio).mean()
+                clip_fraction = (
+                    (torch.abs(ratios - 1.0) > ppo_clip).to(torch.float32).mean()
+                )
+            last_stats = {
+                "loss": float(loss.detach().item()),
+                "policy_loss": float(policy_loss.detach().item()),
+                "value_loss": float(value_loss.detach().item()),
+                "entropy": float(entropy.detach().item()),
+                "approx_kl": float(approx_kl.detach().item()),
+                "clip_fraction": float(clip_fraction.detach().item()),
+                "explained_variance": explained_variance(values.detach(), minibatch_returns),
+            }
+    return last_stats
+
+
+def flatten_rollout_batch(batch: list[Trajectory], device: torch.device) -> dict[str, Any]:
+    hidden_states = [
+        hidden_state
+        for item in batch
+        for hidden_state in item.get("recurrent_hidden_states", [])
+    ]
+    return {
+        "observations": torch.tensor(
+            [observation for item in batch for observation in item["observations"]],
+            dtype=torch.float32,
+            device=device,
+        ),
+        "actions": [action for item in batch for action in item["actions"]],
+        "action_masks": [mask_trace for item in batch for mask_trace in item["action_masks"]],
+        "old_log_probs": torch.tensor(
+            [value for item in batch for value in item["log_probs"]],
+            dtype=torch.float32,
+            device=device,
+        ),
+        "returns": torch.tensor(
+            [value for item in batch for value in item["returns"]],
+            dtype=torch.float32,
+            device=device,
+        ),
+        "gae_returns": torch.tensor(
+            [value for item in batch for value in item["gae_returns"]],
+            dtype=torch.float32,
+            device=device,
+        ),
+        "advantages": torch.tensor(
+            [value for item in batch for value in item["advantages"]],
+            dtype=torch.float32,
+            device=device,
+        ),
+        "recurrent_hidden_states": (
+            torch.tensor(hidden_states, dtype=torch.float32, device=device)
+            if hidden_states
+            else None
+        ),
+    }
 
 
 def discounted_returns(rewards: list[float], gamma: float) -> list[float]:
@@ -535,6 +881,34 @@ def discounted_returns(rewards: list[float], gamma: float) -> list[float]:
         returns.append(running)
     returns.reverse()
     return returns
+
+
+def generalized_advantage_estimates(
+    rewards: list[float],
+    values: list[float],
+    dones: list[bool],
+    gamma: float,
+    gae_lambda: float,
+) -> tuple[list[float], list[float]]:
+    advantages: list[float] = [0.0 for _ in rewards]
+    last_advantage = 0.0
+    next_value = 0.0
+    for index in reversed(range(len(rewards))):
+        nonterminal = 0.0 if dones[index] else 1.0
+        delta = rewards[index] + gamma * next_value * nonterminal - values[index]
+        last_advantage = delta + gamma * gae_lambda * nonterminal * last_advantage
+        advantages[index] = last_advantage
+        next_value = values[index]
+    returns = [advantage + value for advantage, value in zip(advantages, values, strict=True)]
+    return advantages, returns
+
+
+def explained_variance(values: torch.Tensor, returns: torch.Tensor) -> float:
+    returns_variance = torch.var(returns, unbiased=False)
+    if float(returns_variance.detach().item()) <= 1e-12:
+        return 0.0
+    residual_variance = torch.var(returns - values, unbiased=False)
+    return float((1.0 - residual_variance / returns_variance).detach().item())
 
 
 def collect_episode_worker_batch(
@@ -562,7 +936,8 @@ def collect_episode_worker_batch(
     load_actor_critic_state_dict(model, state_dict)
     model.eval()
     gamma = float(config["gamma"])
-    return [collect_episode(env, model, gamma, seed=seed) for seed in seeds]
+    gae_lambda = float(config["gae_lambda"])
+    return [collect_episode(env, model, gamma, gae_lambda, seed=seed) for seed in seeds]
 
 
 def _cpu_state_dict(model: torch.nn.Module) -> dict[str, torch.Tensor]:
@@ -585,17 +960,31 @@ def log_progress(
     returns: list[float],
     wins: list[float],
     start: float,
-    loss: float | None,
+    stats: UpdateStats | None,
 ) -> None:
     percent = 100 * episode / total_episodes
     elapsed = time.monotonic() - start
     avg_return = sum(returns) / max(1, len(returns))
     win_rate = 100 * sum(wins) / max(1, len(wins))
-    loss_text = "n/a" if loss is None else f"{loss:.4f}"
+    if stats is None:
+        stats_text = (
+            "loss=n/a policy_loss=n/a value_loss=n/a entropy=n/a approx_kl=n/a "
+            "clip_fraction=n/a explained_variance=n/a"
+        )
+    else:
+        stats_text = (
+            f"loss={stats['loss']:.4f} "
+            f"policy_loss={stats['policy_loss']:+.4f} "
+            f"value_loss={stats['value_loss']:.4f} "
+            f"entropy={stats['entropy']:.4f} "
+            f"approx_kl={stats['approx_kl']:.5f} "
+            f"clip_fraction={stats['clip_fraction']:.3f} "
+            f"explained_variance={stats['explained_variance']:+.3f}"
+        )
     print(
         f"progress={percent:6.2f}% episode={episode}/{total_episodes} "
         f"avg_return={avg_return:+.3f} win_rate={win_rate:5.1f}% "
-        f"loss={loss_text} elapsed={elapsed:.1f}s",
+        f"{stats_text} elapsed={elapsed:.1f}s",
         flush=True,
     )
 

@@ -12,7 +12,13 @@ from naruto_arena.data.characters import (
 from naruto_arena.engine.actions import EndTurnAction, ReorderSkillsAction, UseSkillAction
 from naruto_arena.engine.chakra import ChakraPool, ChakraType
 from naruto_arena.engine.rules import RulesError, create_initial_state
-from naruto_arena.engine.simulator import apply_action, can_use_skill, legal_actions
+from naruto_arena.engine.simulator import (
+    apply_action,
+    can_use_skill,
+    legal_actions,
+    resolve_pending_skill_stack,
+)
+from naruto_arena.engine.state import UsedSkillState
 
 
 def test_team_cannot_have_duplicate_characters() -> None:
@@ -65,31 +71,53 @@ def test_random_chakra_gain_is_reproducible_with_same_seed() -> None:
     assert state_a.players[0].chakra.amounts == state_b.players[0].chakra.amounts
 
 
-def test_reorder_skills_action_changes_skill_order() -> None:
+def test_passive_skills_start_in_used_skill_stack_without_triggering() -> None:
+    state = create_initial_state(
+        [UZUMAKI_NARUTO, SASUKE_UCHIHA, AKIMICHI_CHOUJI],
+        [SAKURA_HARUNO, NARA_SHIKAMARU, YAMANAKA_INO],
+    )
+
+    assert [used.skill_id for used in state.players[0].skill_stack] == [
+        "kyuubi_chakra_awakening",
+        "cursed_seal_awakening",
+        "butterfly_mode",
+    ]
+    naruto, sasuke, chouji = state.players[0].characters
+    assert naruto.passives["kyuubi_chakra_awakening"] is False
+    assert sasuke.passives["cursed_seal_awakening"] is False
+    assert chouji.passives["butterfly_mode"] is False
+
+
+def test_reorder_skills_action_changes_used_skill_stack() -> None:
     state = create_initial_state(
         [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
         [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
     )
     naruto = state.players[0].characters[0]
+    original_skill_order = list(naruto.skill_order)
+    state.players[0].skill_stack = [
+        UsedSkillState(naruto.instance_id, "shadow_clones", 2),
+        UsedSkillState(naruto.instance_id, "sexy_technique", 1),
+    ]
 
     apply_action(state, ReorderSkillsAction(0, naruto.instance_id, "sexy_technique", 0))
 
-    assert naruto.skill_order[0] == "sexy_technique"
+    assert [used.skill_id for used in state.players[0].skill_stack] == [
+        "sexy_technique",
+        "shadow_clones",
+    ]
+    assert naruto.skill_order == original_skill_order
 
 
-def test_reorder_skills_action_can_move_passive_skills() -> None:
+def test_reorder_skills_action_rejects_skills_not_in_used_stack() -> None:
     state = create_initial_state(
         [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
         [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
     )
     naruto = state.players[0].characters[0]
 
-    apply_action(
-        state,
-        ReorderSkillsAction(0, naruto.instance_id, "kyuubi_chakra_awakening", 0),
-    )
-
-    assert naruto.skill_order[0] == "kyuubi_chakra_awakening"
+    with pytest.raises(RulesError):
+        apply_action(state, ReorderSkillsAction(0, naruto.instance_id, "shadow_clones", 0))
 
 
 def test_reorder_skills_action_is_limited_to_three_per_turn() -> None:
@@ -98,6 +126,12 @@ def test_reorder_skills_action_is_limited_to_three_per_turn() -> None:
         [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
     )
     naruto = state.players[0].characters[0]
+    state.players[0].skill_stack = [
+        UsedSkillState(naruto.instance_id, "sexy_technique", 1),
+        UsedSkillState(naruto.instance_id, "shadow_clones", 2),
+        UsedSkillState(naruto.instance_id, "rasengan", 1),
+        UsedSkillState(naruto.instance_id, "kyuubi_chakra_awakening", 1),
+    ]
 
     apply_action(state, ReorderSkillsAction(0, naruto.instance_id, "sexy_technique", 0))
     apply_action(state, ReorderSkillsAction(0, naruto.instance_id, "shadow_clones", 0))
@@ -112,12 +146,42 @@ def test_reorder_skills_action_is_limited_to_three_per_turn() -> None:
         )
 
 
+def test_same_skill_can_only_be_reordered_once_per_turn() -> None:
+    state = create_initial_state(
+        [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+        [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+    )
+    naruto = state.players[0].characters[0]
+    state.players[0].skill_stack = [
+        UsedSkillState(naruto.instance_id, "sexy_technique", 1),
+        UsedSkillState(naruto.instance_id, "shadow_clones", 2),
+        UsedSkillState(naruto.instance_id, "rasengan", 1),
+    ]
+
+    apply_action(state, ReorderSkillsAction(0, naruto.instance_id, "sexy_technique", 2))
+
+    assert (naruto.instance_id, "sexy_technique") in state.reordered_skills_this_turn
+    assert not any(
+        isinstance(action, ReorderSkillsAction)
+        and action.character_id == naruto.instance_id
+        and action.skill_id == "sexy_technique"
+        for action in legal_actions(state, 0)
+    )
+    with pytest.raises(RulesError):
+        apply_action(state, ReorderSkillsAction(0, naruto.instance_id, "sexy_technique", 0))
+
+
 def test_reorder_skills_limit_resets_next_turn() -> None:
     state = create_initial_state(
         [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
         [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
     )
     naruto = state.players[0].characters[0]
+    state.players[0].skill_stack = [
+        UsedSkillState(naruto.instance_id, "sexy_technique", 1),
+        UsedSkillState(naruto.instance_id, "shadow_clones", 2),
+        UsedSkillState(naruto.instance_id, "rasengan", 1),
+    ]
 
     apply_action(state, ReorderSkillsAction(0, naruto.instance_id, "sexy_technique", 0))
     apply_action(state, ReorderSkillsAction(0, naruto.instance_id, "shadow_clones", 0))
@@ -125,6 +189,24 @@ def test_reorder_skills_limit_resets_next_turn() -> None:
     apply_action(state, EndTurnAction(0))
 
     assert state.reorders_this_turn == 0
+    assert state.reordered_skills_this_turn == set()
+
+
+def test_used_skill_is_added_to_stack_and_ticks_at_end_of_turn() -> None:
+    state = create_initial_state(
+        [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+        [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+    )
+    sasuke = state.players[0].characters[2]
+    target = state.players[1].characters[0]
+
+    apply_action(state, UseSkillAction(0, sasuke.instance_id, "sharingan", (target.instance_id,)))
+
+    used_sharingan = state.players[0].skill_stack[-1]
+    assert (used_sharingan.actor_id, used_sharingan.skill_id) == (sasuke.instance_id, "sharingan")
+    apply_action(state, EndTurnAction(0))
+
+    assert state.players[0].skill_stack[-1].remaining_turns == 3
 
 
 def test_character_can_use_only_one_new_skill_per_turn() -> None:
@@ -161,6 +243,7 @@ def test_chouji_pills_scale_cost_damage_and_trigger_butterfly_mode() -> None:
         state,
         UseSkillAction(0, chouji.instance_id, "akimichi_pills", (chouji.instance_id,)),
     )
+    resolve_pending_skill_stack(state, 0)
     assert chouji.hp == 85
     assert chouji.status.marker_stacks("akimichi_pills") == 1
 
@@ -176,6 +259,7 @@ def test_chouji_pills_scale_cost_damage_and_trigger_butterfly_mode() -> None:
             {ChakraType.GENJUTSU: 2},
         ),
     )
+    resolve_pending_skill_stack(state, 0)
     assert chouji.hp == 65
     assert chouji.status.marker_stacks("akimichi_pills") == 2
 
@@ -191,6 +275,7 @@ def test_chouji_pills_scale_cost_damage_and_trigger_butterfly_mode() -> None:
             {ChakraType.GENJUTSU: 4},
         ),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert chouji.hp == 40
     assert chouji.status.marker_stacks("akimichi_pills") == 3

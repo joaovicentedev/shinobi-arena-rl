@@ -29,6 +29,7 @@ specific characters.
 - Passive effects and effects from skills used on previous turns continue to
   operate normally.
 - When the active player ends their turn:
+  - queued skills are resolved in the current skill-stack order;
   - temporary effects owned by the active player advance;
   - cooldowns owned by the active player decrease;
   - the turn passes to the other player.
@@ -47,7 +48,7 @@ In the skill queue:
 
 - The player chooses which specific chakra will be spent to pay random chakra
   costs.
-- Skills are executed from left to right.
+- Skills are executed from left to right when the queue is confirmed.
 - The player may reorder queued skills before confirming the turn.
 - Confirming the queue completes the turn.
 - Cancelling the queue returns the player to skill selection.
@@ -228,8 +229,9 @@ filters, and conditional logic.
 
 ### Persistence Type
 
-- Instant: The skill resolves immediately, or is applied on the first turn and
-  has no further connection to the caster for the rest of its duration.
+- Instant: The skill resolves during queue confirmation, or is applied on the
+  first resolution turn and has no further connection to the caster for the rest
+  of its duration.
 - Action: The skill lasts multiple turns and requires the caster's attention
   each turn. If the caster loses contact with the target because of a stun or
   invulnerability, the action has no effect for that turn. Since the skill is
@@ -307,15 +309,15 @@ General order:
 The engine supports a generic reorder action:
 
 - choose a character;
-- choose a skill;
+- choose one of that player's used skills;
 - choose a new position;
-- the character's skill list order is changed.
+- the player's used-skill stack order is changed.
 
 This rule exists to allow timing and combo adjustments during the match.
-Passives can also be reordered because they can alter damage timing, buffs, or
-conditional modifiers. This does not make passives manually usable as actions.
+Character skill lists are fixed and are not changed by reorder actions.
 
-Each player can reorder skills at most 3 times per turn.
+Each player can reorder skills at most 3 times per turn. The same character
+skill can be reordered at most once per turn.
 
 ## Determinism
 

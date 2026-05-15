@@ -8,7 +8,7 @@ from naruto_arena.engine.actions import EndTurnAction, UseSkillAction
 from naruto_arena.engine.chakra import ChakraPool, ChakraType
 from naruto_arena.engine.effects import ActiveDamageReduction
 from naruto_arena.engine.rules import create_initial_state
-from naruto_arena.engine.simulator import apply_action
+from naruto_arena.engine.simulator import apply_action, resolve_pending_skill_stack
 
 
 def make_state():
@@ -46,6 +46,7 @@ def test_hinata_gentle_fist_removes_chakra_during_byakugan() -> None:
         state,
         UseSkillAction(0, hinata.instance_id, "hinata_gentle_fist", (target.instance_id,)),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert target.hp == 80
     assert state.players[1].chakra.amounts[ChakraType.TAIJUTSU] == 0
@@ -63,6 +64,7 @@ def test_hinata_gentle_fist_does_not_remove_chakra_without_byakugan() -> None:
         state,
         UseSkillAction(0, hinata.instance_id, "hinata_gentle_fist", (target.instance_id,)),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert target.hp == 80
     assert state.players[1].chakra.amounts[ChakraType.TAIJUTSU] == 1
@@ -144,6 +146,7 @@ def test_eight_trigrams_protection_grants_invulnerability_after_ally_is_damaged(
             {ChakraType.GENJUTSU: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 1)
 
     assert ally.hp == 70
     assert ally.status.invulnerable_turns == 1
@@ -164,6 +167,7 @@ def test_byakugan_grants_hinata_damage_reduction() -> None:
             {ChakraType.BLOODLINE: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert hinata.status.has_marker("byakugan")
     assert any(reduction.percent == 50 for reduction in hinata.status.damage_reductions)
@@ -184,5 +188,6 @@ def test_hinata_block_makes_hinata_invulnerable() -> None:
             {ChakraType.BLOODLINE: 1},
         ),
     )
+    resolve_pending_skill_stack(state, 0)
 
     assert hinata.status.invulnerable_turns == 1
