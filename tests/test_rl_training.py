@@ -121,6 +121,16 @@ def test_collected_factored_actions_remain_valid_under_masks() -> None:
     assert len(trajectory["actions"]) == len(trajectory["advantages"])
 
 
+def test_invalid_env_step_info_preserves_winner_contract() -> None:
+    env = NarutoArenaLearningEnv(opponent="heuristic", max_actions=20, seed=11)
+    env.reset(seed=12)
+
+    _, _, _, info = env.step(action_id=-1)
+
+    assert "winner" in info
+    assert info["invalid_action"] is True
+
+
 def test_random_training_roster_uses_only_hand_authored_characters() -> None:
     training_ids = {character.id for character in TRAINING_ROSTER}
 

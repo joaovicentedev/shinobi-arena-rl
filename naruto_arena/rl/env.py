@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import random
+from copy import deepcopy
 from pathlib import Path
 
 from naruto_arena.agents.heuristic_agent import SimpleHeuristicAgent
 from naruto_arena.agents.random_agent import RandomAgent
 from naruto_arena.agents.rl_agent import RlAgent
-from naruto_arena.engine.actions import Action, ReorderSkillsAction
+from naruto_arena.engine.actions import Action, EndTurnAction
 from naruto_arena.engine.rules import RulesError, create_initial_state
 from naruto_arena.engine.simulator import apply_action, legal_actions
 from naruto_arena.engine.state import GameState
@@ -17,6 +18,7 @@ from naruto_arena.rl.action_space import (
     legal_action_mask,
     legal_factored_action_masks,
 )
+from naruto_arena.rl.belief import ChakraBeliefTracker
 from naruto_arena.rl.observation import encode_observation
 from naruto_arena.rl.teams import default_team, random_mirror_teams, random_teams
 
@@ -50,6 +52,7 @@ class NarutoArenaLearningEnv:
         self.opponent = self._make_opponent(opponent, seed + 10_000)
         self.state: GameState | None = None
         self.actions_taken = 0
+        self.belief_tracker = ChakraBeliefTracker(self.learning_player)
         self._legal_actions_cache_key: tuple[int, int, int, int, int | None] | None = None
         self._legal_actions_cache: list[Action] | None = None
 
@@ -61,6 +64,7 @@ class NarutoArenaLearningEnv:
         team_a, team_b = self._episode_teams()
         self.state = create_initial_state(team_a, team_b, rng_seed=self.seed)
         self.actions_taken = 0
+        self.belief_tracker.reset(self.state)
         self._clear_legal_actions_cache()
         return self.observation()
 
@@ -70,6 +74,7 @@ class NarutoArenaLearningEnv:
             self.state,
             self.learning_player,
             perfect_info=self.perfect_info,
+            enemy_chakra_belief=self.belief_tracker.features(self.state),
         )
 
     def action_mask(self) -> list[bool]:
@@ -95,7 +100,8 @@ class NarutoArenaLearningEnv:
         factored_action: FactoredAction | None = None,
     ) -> tuple[list[float], float, bool, dict[str, object]]:
         assert self.state is not None
-        before = _score_state(self.state, self.learning_player)
+        before_state = deepcopy(self.state)
+        before = _score_state(before_state, self.learning_player)
         if factored_action is not None:
             action = factored_action_to_engine_action(
                 self.state,
@@ -110,29 +116,33 @@ class NarutoArenaLearningEnv:
             action = None
             is_valid = False
         if action is None or not is_valid:
-            return self.observation(), -0.05, False, {"invalid_action": True}
+            return self.observation(), -0.05, False, self._step_info(invalid_action=True)
         try:
             apply_action(self.state, action)
         except RulesError:
-            return self.observation(), -0.05, False, {"invalid_action": True}
+            return self.observation(), -0.05, False, self._step_info(invalid_action=True)
+        self.belief_tracker.observe_action(before_state, action, self.state)
+        self._notify_opponent_observer(before_state, action)
         self.actions_taken += 1
         self._clear_legal_actions_cache()
         self._play_opponent_turn_if_needed()
         after = _score_state(self.state, self.learning_player)
         terminated = self.state.winner is not None
         truncated = self.actions_taken >= self.max_actions
-        reward = _shaped_reward(before, after, terminated, self.state.winner, self.learning_player)
-        if isinstance(action, ReorderSkillsAction):
-            reward -= 0.01
+        reward = -0.001
+        if isinstance(action, EndTurnAction):
+            reward += _shaped_reward(
+                before,
+                after,
+                terminated,
+                self.state.winner,
+                self.learning_player,
+            )
         return (
             self.observation(),
             reward,
             terminated or truncated,
-            {
-                "winner": self.state.winner,
-                "truncated": truncated,
-                "actions": self.actions_taken,
-            },
+            self._step_info(truncated=truncated),
         )
 
     def _play_opponent_turn_if_needed(self) -> None:
@@ -143,7 +153,10 @@ class NarutoArenaLearningEnv:
             and self.actions_taken < self.max_actions
         ):
             action = self.opponent.choose_action(self.state, self.state.active_player)
+            before_state = deepcopy(self.state)
             apply_action(self.state, action)
+            self.belief_tracker.observe_action(before_state, action, self.state)
+            self._notify_opponent_observer(before_state, action)
             self.actions_taken += 1
             self._clear_legal_actions_cache()
 
@@ -157,6 +170,12 @@ class NarutoArenaLearningEnv:
                 raise ValueError("--opponent-model-path is required when --opponent rl.")
             return RlAgent(self.opponent_model_path, deterministic=True, seed=seed)
         raise ValueError(f"Unknown opponent: {name}")
+
+    def _notify_opponent_observer(self, before: GameState, action: Action) -> None:
+        assert self.state is not None
+        observer = getattr(self.opponent, "observe_action", None)
+        if observer is not None:
+            observer(before, action, self.state)
 
     def _episode_teams(self):
         if self.team_sampling == "fixed":
@@ -186,6 +205,20 @@ class NarutoArenaLearningEnv:
     def _clear_legal_actions_cache(self) -> None:
         self._legal_actions_cache_key = None
         self._legal_actions_cache = None
+
+    def _step_info(
+        self,
+        *,
+        truncated: bool = False,
+        invalid_action: bool = False,
+    ) -> dict[str, object]:
+        assert self.state is not None
+        return {
+            "winner": self.state.winner,
+            "truncated": truncated,
+            "actions": self.actions_taken,
+            "invalid_action": invalid_action,
+        }
 
 
 def _score_state(state: GameState, player_id: int) -> dict[str, int]:

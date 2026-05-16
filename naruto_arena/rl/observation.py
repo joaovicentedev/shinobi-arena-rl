@@ -17,6 +17,10 @@ from naruto_arena.engine.effects import (
 )
 from naruto_arena.engine.skills import SkillClass, TargetRule
 from naruto_arena.engine.state import CharacterState, GameState
+from naruto_arena.rl.belief import (
+    _is_invisible_to_player,
+    fallback_enemy_chakra_belief_features,
+)
 
 ROSTER = tuple(sorted(ALL_CHARACTERS.values(), key=lambda character: character.id))
 UNKNOWN_CHARACTER_INDEX = 0
@@ -28,6 +32,10 @@ MAX_DURATION = 5
 MAX_CHAKRA = 12
 MAX_SKILL_COST = 4
 CHARACTER_SLOTS = 6
+GLOBAL_FEATURE_SIZE = 7
+MAX_STACK_SIZE = 12
+STACK_SKILL_FEATURE_SIZE = 34
+ENEMY_CHAKRA_BELIEF_FEATURE_SIZE = 13
 BASE_CHARACTER_FEATURE_SIZE = 13 + len(ROSTER) + 5 + len(tuple(SkillClass))
 BASE_OBSERVATION_VERSION = "base_v1"
 MAX_SKILLS_PER_CHARACTER = 9
@@ -41,7 +49,7 @@ COMPACT_BASE_CHARACTER_FEATURE_SIZE = 13 + 1 + 5 + len(tuple(SkillClass))
 COMPACT_CHARACTER_FEATURE_SIZE = COMPACT_BASE_CHARACTER_FEATURE_SIZE + (
     MAX_SKILLS_PER_CHARACTER * SKILL_FEATURE_SIZE
 )
-COMPACT_OBSERVATION_VERSION = "skill_features_compact_id_v1"
+COMPACT_OBSERVATION_VERSION = "skill_features_compact_id_stack_v1"
 CHARACTER_FEATURE_SIZE = COMPACT_CHARACTER_FEATURE_SIZE
 OBSERVATION_VERSION = COMPACT_OBSERVATION_VERSION
 OBSERVATION_VERSIONS = (
@@ -80,6 +88,7 @@ def encode_observation(
     *,
     perfect_info: bool = False,
     observation_version: str = OBSERVATION_VERSION,
+    enemy_chakra_belief: list[float] | None = None,
 ) -> list[float]:
     """Encode state from the acting player's perspective.
 
@@ -95,10 +104,19 @@ def encode_observation(
     enemy_id = 1 - player_id
     features: list[float] = [
         min(state.turn_number, MAX_TURN) / MAX_TURN,
-        state.active_player == player_id,
+        float(state.active_player == player_id),
         _living_ratio(state, player_id),
         _living_ratio(state, enemy_id),
     ]
+    include_stack_features = observation_version == COMPACT_OBSERVATION_VERSION
+    if include_stack_features:
+        features.extend(
+            [
+                min(_actions_this_turn(state, player_id), 3) / 3,
+                max(0, 3 - state.reorders_this_turn) / 3,
+                min(_pending_stack_count(state, player_id), MAX_STACK_SIZE) / MAX_STACK_SIZE,
+            ]
+        )
     for character in state.players[player_id].characters:
         features.extend(
             _character_features(
@@ -118,15 +136,31 @@ def encode_observation(
             )
         )
     features.extend(_chakra_features(state, player_id))
-    if perfect_info:
+    if include_stack_features:
+        features.extend(
+            enemy_chakra_belief
+            if enemy_chakra_belief is not None
+            else fallback_enemy_chakra_belief_features(state, player_id)
+        )
+    elif perfect_info:
         features.extend(_chakra_features(state, enemy_id))
     else:
         features.extend([0.0] * 5)
+    if include_stack_features:
+        features.extend(_stack_features(state, player_id))
     return [float(value) for value in features]
 
 
 def _living_ratio(state: GameState, player_id: int) -> float:
     return len(state.players[player_id].living_characters()) / 3
+
+
+def _actions_this_turn(state: GameState, player_id: int) -> int:
+    return sum(character.used_skill_this_turn for character in state.players[player_id].characters)
+
+
+def _pending_stack_count(state: GameState, player_id: int) -> int:
+    return sum(used_skill.pending for used_skill in state.players[player_id].skill_stack)
 
 
 def _character_features(
@@ -341,6 +375,111 @@ def _chakra_features(state: GameState, player_id: int) -> list[float]:
     ]
     values.append(min(chakra.total(), MAX_CHAKRA) / MAX_CHAKRA)
     return values
+
+
+def _stack_features(state: GameState, player_id: int) -> list[float]:
+    features: list[float] = []
+    stack = _visible_stack_items(state, player_id)[:MAX_STACK_SIZE]
+    for index, used_skill in enumerate(stack):
+        actor = state.get_character(used_skill.actor_id)
+        try:
+            skill_slot = actor.skill_order.index(used_skill.skill_id)
+            skill = resolved_skill_for_observation(state, actor, used_skill.skill_id)
+            effects = skill.all_effects(state, actor.instance_id)
+        except (KeyError, ValueError):
+            skill_slot = -1
+            skill = None
+            effects = []
+        target_code = _target_code_for_used_skill(state, player_id, used_skill.target_ids)
+        item = [
+            1.0,
+            float(actor.owner == player_id),
+        ]
+        item.extend(_one_hot(_character_slot(state, actor), 3))
+        item.extend(_one_hot(skill_slot, MAX_SKILLS_PER_CHARACTER))
+        item.extend(_one_hot(target_code, 10))
+        item.extend(
+            [
+                min(used_skill.remaining_turns, MAX_DURATION * 2) / (MAX_DURATION * 2),
+                index / MAX_STACK_SIZE,
+                float(used_skill.pending),
+                float(not used_skill.pending),
+            ]
+        )
+        item.extend(_compact_effect_features(skill, effects))
+        if len(item) != STACK_SKILL_FEATURE_SIZE:
+            raise AssertionError(f"Stack skill feature size changed: {len(item)}")
+        features.extend(item)
+    while len(features) < MAX_STACK_SIZE * STACK_SKILL_FEATURE_SIZE:
+        features.append(0.0)
+    return features
+
+
+def _visible_stack_items(state: GameState, player_id: int):
+    items = []
+    for owner_id in (player_id, 1 - player_id):
+        for used_skill in state.players[owner_id].skill_stack:
+            if _is_invisible_to_player(state, used_skill, player_id):
+                continue
+            items.append(used_skill)
+    return items
+
+
+def resolved_skill_for_observation(state: GameState, character: CharacterState, skill_id: str):
+    from naruto_arena.engine.simulator import resolved_skill
+
+    return resolved_skill(state, character.instance_id, skill_id)
+
+
+def _target_code_for_used_skill(
+    state: GameState,
+    player_id: int,
+    target_ids: tuple[str, ...],
+) -> int:
+    if not target_ids:
+        return 0
+    if len(target_ids) == 1:
+        target = state.get_character(target_ids[0])
+        if target.instance_id in {
+            character.instance_id for character in state.players[player_id].characters
+        }:
+            return 4 + _character_slot(state, target)
+        return 4 + 3 + _character_slot(state, target)
+    owners = {state.get_character(target_id).owner for target_id in target_ids}
+    if owners == {1 - player_id}:
+        return 2
+    if owners == {player_id}:
+        return 3
+    return 0
+
+
+def _character_slot(state: GameState, character: CharacterState) -> int:
+    return state.players[character.owner].characters.index(character)
+
+
+def _compact_effect_features(skill, effects) -> list[float]:
+    if skill is None:
+        return [0.0] * 6
+    direct_damage = sum(effect.amount for effect in effects if isinstance(effect, DirectDamage))
+    piercing_damage = sum(
+        effect.amount for effect in effects if isinstance(effect, DirectDamage) and effect.piercing
+    )
+    healing = sum(effect.amount for effect in effects if isinstance(effect, Healing))
+    stun_duration = max([effect.duration for effect in effects if isinstance(effect, Stun)] or [0])
+    reduction = sum(effect.amount for effect in effects if isinstance(effect, DamageReduction))
+    chakra_control = sum(
+        effect.amount
+        for effect in effects
+        if isinstance(effect, (ChakraRemoval, ChakraGainSteal, ChakraSteal))
+    )
+    return [
+        min(direct_damage, 100) / 100,
+        min(piercing_damage, 100) / 100,
+        min(healing, 100) / 100,
+        min(stun_duration, MAX_DURATION) / MAX_DURATION,
+        min(reduction, 100) / 100,
+        min(chakra_control, MAX_CHAKRA) / MAX_CHAKRA,
+    ]
 
 
 def _one_hot(index: int, size: int) -> list[float]:

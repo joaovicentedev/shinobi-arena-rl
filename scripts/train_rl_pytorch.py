@@ -14,11 +14,28 @@ import torch
 import torch.nn.functional as F
 from torch.distributions import Categorical
 
+from naruto_arena.agents.heuristic_agent import SimpleHeuristicAgent
+from naruto_arena.engine.actions import (
+    EndTurnAction,
+    GetChakraAction,
+    ReorderSkillsAction,
+    UseSkillAction,
+)
+from naruto_arena.engine.simulator import resolved_skill
+from naruto_arena.engine.skills import TargetRule
 from naruto_arena.rl.action_space import (
     ACTION_KIND_ORDER,
     ACTION_KIND_TO_INDEX,
+    RANDOM_CHAKRA_NONE,
+    RANDOM_CHAKRA_OFFSET,
+    TARGET_ALL_ALLIES,
+    TARGET_ALL_ENEMIES,
+    TARGET_CHARACTER_OFFSET,
+    TARGET_NONE,
+    TARGET_SELF,
     ActionKind,
     FactoredAction,
+    factored_action_to_engine_action,
 )
 from naruto_arena.rl.env import NarutoArenaLearningEnv
 from naruto_arena.rl.model import (
@@ -39,6 +56,8 @@ UpdateStats = dict[str, float]
 
 ALGORITHM_ACTOR_CRITIC = "actor_critic"
 ALGORITHM_PPO = "ppo"
+TRAINING_MODE_RL = "rl"
+TRAINING_MODE_HEURISTIC_TEACHER = "heuristic-teacher"
 
 
 def parse_args() -> argparse.Namespace:
@@ -76,7 +95,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--algorithm",
         choices=(ALGORITHM_ACTOR_CRITIC, ALGORITHM_PPO),
-        default=ALGORITHM_ACTOR_CRITIC,
+        default=ALGORITHM_PPO,
+    )
+    parser.add_argument(
+        "--training-mode",
+        choices=(TRAINING_MODE_RL, TRAINING_MODE_HEURISTIC_TEACHER),
+        default=TRAINING_MODE_RL,
+        help=(
+            "rl trains from sampled policy rollouts. heuristic-teacher trains the raw "
+            "policy to imitate SimpleHeuristicAgent before later PPO fine-tuning."
+        ),
     )
     parser.add_argument("--gamma", type=float, default=0.99)
     parser.add_argument("--gae-lambda", type=float, default=0.95)
@@ -155,7 +183,41 @@ def main() -> None:
     start = time.monotonic()
     update_stats: UpdateStats | None = None
 
-    if args.num_envs == 1:
+    if args.training_mode == TRAINING_MODE_HEURISTIC_TEACHER and args.num_envs != 1:
+        raise ValueError("--training-mode heuristic-teacher currently requires --num-envs 1.")
+
+    if args.training_mode == TRAINING_MODE_HEURISTIC_TEACHER:
+        for episode in range(1, args.episodes + 1):
+            teacher = SimpleHeuristicAgent(seed=args.seed + 30_000 + episode, allow_reorder=False)
+            trajectory = collect_teacher_episode(
+                env,
+                model,
+                teacher,
+                seed=episode_seed_rng.randrange(2**32),
+            )
+            pending.append(trajectory)
+            recent_returns.append(float(sum(trajectory["rewards"])))
+            recent_wins.append(1.0 if trajectory["winner"] == env.learning_player else 0.0)
+            if len(pending) >= args.batch_episodes:
+                update_stats = update_behavior_cloning_model(
+                    model,
+                    optimizer,
+                    pending,
+                    max_grad_norm=args.max_grad_norm,
+                )
+                pending.clear()
+            if episode == 1 or episode % args.log_interval == 0 or episode == args.episodes:
+                log_progress(
+                    episode,
+                    args.episodes,
+                    recent_returns,
+                    recent_wins,
+                    start,
+                    update_stats,
+                )
+                recent_returns.clear()
+                recent_wins.clear()
+    elif args.num_envs == 1:
         for episode in range(1, args.episodes + 1):
             maybe_refresh_self_play_opponent(env, args, episode, episode_seed_rng)
             trajectory = collect_episode(
@@ -252,35 +314,38 @@ def main() -> None:
                     recent_wins.append(
                         1.0 if trajectory["winner"] == env.learning_player else 0.0
                     )
-                    if (
-                        completed_episodes == 1
-                        or completed_episodes % args.log_interval == 0
-                        or completed_episodes == args.episodes
-                    ):
-                        log_progress(
-                            completed_episodes,
-                            args.episodes,
-                            recent_returns,
-                            recent_wins,
-                            start,
-                            update_stats,
-                        )
-                        recent_returns.clear()
-                        recent_wins.clear()
+                log_progress(
+                    completed_episodes,
+                    args.episodes,
+                    recent_returns,
+                    recent_wins,
+                    start,
+                    update_stats,
+                )
+                recent_returns.clear()
+                recent_wins.clear()
 
     if pending:
-        update_model(
-            model,
-            optimizer,
-            pending,
-            algorithm=args.algorithm,
-            value_coef=args.value_coef,
-            entropy_coef=args.entropy_coef,
-            ppo_clip=args.ppo_clip,
-            ppo_epochs=args.ppo_epochs,
-            ppo_minibatch_size=args.ppo_minibatch_size,
-            max_grad_norm=args.max_grad_norm,
-        )
+        if args.training_mode == TRAINING_MODE_HEURISTIC_TEACHER:
+            update_behavior_cloning_model(
+                model,
+                optimizer,
+                pending,
+                max_grad_norm=args.max_grad_norm,
+            )
+        else:
+            update_model(
+                model,
+                optimizer,
+                pending,
+                algorithm=args.algorithm,
+                value_coef=args.value_coef,
+                entropy_coef=args.entropy_coef,
+                ppo_clip=args.ppo_clip,
+                ppo_epochs=args.ppo_epochs,
+                ppo_minibatch_size=args.ppo_minibatch_size,
+                max_grad_norm=args.max_grad_norm,
+            )
     save_path = Path(args.save_path)
     save_path.parent.mkdir(parents=True, exist_ok=True)
     model.to("cpu")
@@ -299,7 +364,9 @@ def main() -> None:
             "team_sampling": args.team_sampling,
             "init_model_path": None if args.init_model_path is None else str(args.init_model_path),
             "algorithm": args.algorithm,
+            "training_mode": args.training_mode,
             "training": {
+                "training_mode": args.training_mode,
                 "algorithm": args.algorithm,
                 "gamma": args.gamma,
                 "gae_lambda": args.gae_lambda,
@@ -456,7 +523,7 @@ def collect_episode(
         entropies.append(float(entropy.cpu().item()))
         rewards.append(reward)
         dones.append(done)
-        winner = info["winner"]
+        winner = info.get("winner")
     returns = discounted_returns(rewards, gamma)
     advantages, gae_returns = generalized_advantage_estimates(
         rewards,
@@ -482,6 +549,196 @@ def collect_episode(
     }
 
 
+def collect_teacher_episode(
+    env: NarutoArenaLearningEnv,
+    model: torch.nn.Module,
+    teacher: SimpleHeuristicAgent,
+    *,
+    seed: int,
+) -> Trajectory:
+    observations = env.reset(seed=seed)
+    trajectory_observations: list[list[float]] = []
+    actions: list[FactoredAction] = []
+    action_masks: list[MaskTrace] = []
+    rewards: list[float] = []
+    dones: list[bool] = []
+    recurrent_hidden_states: list[list[float]] = []
+    done = False
+    winner = None
+    zero_hidden: list[float] | None = None
+    if is_recurrent_model(model):
+        recurrent_hidden_dim = int(model.recurrent_hidden_dim)  # type: ignore[attr-defined]
+        zero_hidden = [0.0] * recurrent_hidden_dim
+    while not done:
+        assert env.state is not None
+        trajectory_observations.append(observations)
+        if zero_hidden is not None:
+            recurrent_hidden_states.append(zero_hidden)
+        teacher_action = teacher.choose_action(env.state, env.learning_player)
+        factored_action = engine_action_to_factored(env.state, env.learning_player, teacher_action)
+        converted_action = factored_action_to_engine_action(
+            env.state,
+            env.learning_player,
+            factored_action,
+        )
+        if converted_action is None:
+            raise RuntimeError(
+                f"Teacher action could not be converted to a legal factored action: "
+                f"{teacher_action!r} -> {factored_action!r}"
+            )
+        mask_trace = mask_trace_for_factored_action(env, factored_action)
+        observations, reward, done, info = env.step(factored_action=factored_action)
+        if info.get("invalid_action"):
+            raise RuntimeError(
+                f"Teacher produced invalid factored action: "
+                f"{teacher_action!r} -> {factored_action!r}"
+            )
+        actions.append(factored_action)
+        action_masks.append(mask_trace)
+        rewards.append(reward)
+        dones.append(done)
+        winner = info.get("winner")
+    return {
+        "observations": trajectory_observations,
+        "actions": actions,
+        "action_masks": action_masks,
+        "log_probs": [],
+        "values": [],
+        "entropies": [],
+        "returns": [0.0] * len(rewards),
+        "gae_returns": [0.0] * len(rewards),
+        "advantages": [0.0] * len(rewards),
+        "rewards": rewards,
+        "dones": dones,
+        "recurrent_hidden_states": recurrent_hidden_states,
+        "winner": winner,
+    }
+
+
+def mask_trace_for_factored_action(
+    env: NarutoArenaLearningEnv,
+    action: FactoredAction,
+) -> MaskTrace:
+    mask_trace: MaskTrace = {"kind": env.factored_action_masks()["kind"]}
+    if action.kind == ActionKind.END_TURN:
+        return mask_trace
+    partial = FactoredAction(action.kind)
+    if action.kind == ActionKind.GET_CHAKRA:
+        mask_trace["get_chakra"] = env.factored_action_masks(partial)["get_chakra"]
+        return mask_trace
+    if action.kind == ActionKind.REORDER_STACK:
+        mask_trace["stack_index"] = env.factored_action_masks(partial)["stack_index"]
+        partial = FactoredAction(action.kind, stack_index=action.stack_index)
+        mask_trace["reorder_direction"] = env.factored_action_masks(partial)[
+            "reorder_direction"
+        ]
+        return mask_trace
+    mask_trace["actor"] = env.factored_action_masks(partial)["actor"]
+    partial = FactoredAction(action.kind, actor_slot=action.actor_slot)
+    mask_trace["skill"] = env.factored_action_masks(partial)["skill"]
+    partial = FactoredAction(
+        action.kind,
+        actor_slot=action.actor_slot,
+        skill_slot=action.skill_slot,
+    )
+    mask_trace["target"] = env.factored_action_masks(partial)["target"]
+    partial = FactoredAction(
+        action.kind,
+        actor_slot=action.actor_slot,
+        skill_slot=action.skill_slot,
+        target_code=action.target_code,
+    )
+    mask_trace["random_chakra"] = env.factored_action_masks(partial)["random_chakra"]
+    return mask_trace
+
+
+def engine_action_to_factored(
+    state,
+    player_id: int,
+    action,
+) -> FactoredAction:
+    if isinstance(action, EndTurnAction):
+        return FactoredAction(ActionKind.END_TURN)
+    if isinstance(action, GetChakraAction):
+        chakra_types = tuple(type(action.chakra_type))
+        return FactoredAction(
+            ActionKind.GET_CHAKRA,
+            get_chakra_code=chakra_types.index(action.chakra_type),
+        )
+    if isinstance(action, ReorderSkillsAction):
+        player = state.players[player_id]
+        stack_index = next(
+            index
+            for index, used_skill in enumerate(player.skill_stack)
+            if used_skill.actor_id == action.character_id
+            and used_skill.skill_id == action.skill_id
+        )
+        direction = 0 if action.new_index < stack_index else 1
+        return FactoredAction(
+            ActionKind.REORDER_STACK,
+            stack_index=stack_index,
+            reorder_direction=direction,
+        )
+    if not isinstance(action, UseSkillAction):
+        raise ValueError(f"Unsupported teacher action: {action!r}")
+    player = state.players[player_id]
+    actor_slot = next(
+        index
+        for index, character in enumerate(player.characters)
+        if character.instance_id == action.actor_id
+    )
+    actor = player.characters[actor_slot]
+    skill_slot = next(
+        index
+        for index, skill_id in enumerate(actor.skill_order)
+        if actor.definition.skill(skill_id).id == action.skill_id
+    )
+    skill = resolved_skill(state, action.actor_id, action.skill_id)
+    random_chakra_code = RANDOM_CHAKRA_NONE
+    if action.random_payment:
+        chakra_type = max(action.random_payment, key=lambda key: action.random_payment[key])
+        random_chakra_code = RANDOM_CHAKRA_OFFSET + tuple(type(chakra_type)).index(chakra_type)
+    return FactoredAction(
+        ActionKind.USE_SKILL,
+        actor_slot=actor_slot,
+        skill_slot=skill_slot,
+        target_code=target_code_for_action(state, player_id, action, skill.target_rule),
+        random_chakra_code=random_chakra_code,
+    )
+
+
+def target_code_for_action(
+    state,
+    player_id: int,
+    action: UseSkillAction,
+    target_rule: TargetRule,
+) -> int:
+    if not action.target_ids:
+        return TARGET_NONE
+    if target_rule == TargetRule.SELF and action.target_ids == (action.actor_id,):
+        return TARGET_SELF
+    if target_rule == TargetRule.ALL_ENEMIES:
+        enemy_ids = tuple(
+            character.instance_id for character in state.players[1 - player_id].living_characters()
+        )
+        if action.target_ids == enemy_ids:
+            return TARGET_ALL_ENEMIES
+    if target_rule == TargetRule.ALL_ALLIES:
+        ally_ids = tuple(
+            character.instance_id for character in state.players[player_id].living_characters()
+        )
+        if action.target_ids == ally_ids:
+            return TARGET_ALL_ALLIES
+    target = state.get_character(action.target_ids[0])
+    if target.owner == player_id:
+        side_slot = state.players[player_id].characters.index(target)
+    else:
+        side_slot = len(state.players[player_id].characters) + state.players[
+            1 - player_id
+        ].characters.index(target)
+    return TARGET_CHARACTER_OFFSET + side_slot
+
+
 def sample_factored_action(
     env: NarutoArenaLearningEnv,
     policy: PolicyOutput,
@@ -498,6 +755,44 @@ def sample_factored_action(
         return FactoredAction(action_kind), mask_trace, log_prob, entropy
 
     partial = FactoredAction(action_kind)
+    if action_kind == ActionKind.GET_CHAKRA:
+        chakra_mask = env.factored_action_masks(partial)["get_chakra"]
+        mask_trace["get_chakra"] = chakra_mask
+        chakra, chakra_log_prob, chakra_entropy = _sample_masked(policy.get_chakra, chakra_mask)
+        return (
+            FactoredAction(action_kind, get_chakra_code=int(chakra.item())),
+            mask_trace,
+            log_prob + chakra_log_prob,
+            entropy + chakra_entropy,
+        )
+
+    if action_kind == ActionKind.REORDER_STACK:
+        stack_mask = env.factored_action_masks(partial)["stack_index"]
+        mask_trace["stack_index"] = stack_mask
+        stack_index, stack_log_prob, stack_entropy = _sample_masked(
+            policy.stack_index,
+            stack_mask,
+        )
+        log_prob = log_prob + stack_log_prob
+        entropy = entropy + stack_entropy
+        partial = FactoredAction(action_kind, stack_index=int(stack_index.item()))
+        reorder_mask = env.factored_action_masks(partial)["reorder_direction"]
+        mask_trace["reorder_direction"] = reorder_mask
+        direction, direction_log_prob, direction_entropy = _sample_masked(
+            policy.reorder_direction,
+            reorder_mask,
+        )
+        return (
+            FactoredAction(
+                action_kind,
+                stack_index=partial.stack_index,
+                reorder_direction=int(direction.item()),
+            ),
+            mask_trace,
+            log_prob + direction_log_prob,
+            entropy + direction_entropy,
+        )
+
     actor_mask = env.factored_action_masks(partial)["actor"]
     mask_trace["actor"] = actor_mask
     actor, actor_log_prob, actor_entropy = _sample_masked(
@@ -521,27 +816,6 @@ def sample_factored_action(
         actor_slot=partial.actor_slot,
         skill_slot=int(skill.item()),
     )
-
-    if action_kind == ActionKind.REORDER_SKILL:
-        reorder_mask = env.factored_action_masks(partial)["reorder_destination"]
-        mask_trace["reorder_destination"] = reorder_mask
-        destination, destination_log_prob, destination_entropy = _sample_masked(
-            policy.reorder_destination,
-            reorder_mask,
-        )
-        log_prob = log_prob + destination_log_prob
-        entropy = entropy + destination_entropy
-        return (
-            FactoredAction(
-                action_kind,
-                actor_slot=partial.actor_slot,
-                skill_slot=partial.skill_slot,
-                reorder_to_end=bool(destination.item()),
-            ),
-            mask_trace,
-            log_prob,
-            entropy,
-        )
 
     target_mask = env.factored_action_masks(partial)["target"]
     mask_trace["target"] = target_mask
@@ -609,6 +883,30 @@ def _factored_action_log_prob_and_entropy(
     if action.kind == ActionKind.END_TURN:
         return log_prob, entropy
 
+    if action.kind == ActionKind.GET_CHAKRA:
+        chakra_log_prob, chakra_entropy = _selected_log_prob_and_entropy(
+            policy.get_chakra[index],
+            mask_trace["get_chakra"],
+            action.get_chakra_code,
+        )
+        return log_prob + chakra_log_prob, entropy + chakra_entropy
+
+    if action.kind == ActionKind.REORDER_STACK:
+        stack_log_prob, stack_entropy = _selected_log_prob_and_entropy(
+            policy.stack_index[index],
+            mask_trace["stack_index"],
+            action.stack_index,
+        )
+        direction_log_prob, direction_entropy = _selected_log_prob_and_entropy(
+            policy.reorder_direction[index],
+            mask_trace["reorder_direction"],
+            action.reorder_direction,
+        )
+        return (
+            log_prob + stack_log_prob + direction_log_prob,
+            entropy + stack_entropy + direction_entropy,
+        )
+
     actor_log_prob, actor_entropy = _selected_log_prob_and_entropy(
         policy.actor[index],
         mask_trace["actor"],
@@ -621,14 +919,6 @@ def _factored_action_log_prob_and_entropy(
     )
     log_prob = log_prob + actor_log_prob + skill_log_prob
     entropy = entropy + actor_entropy + skill_entropy
-
-    if action.kind == ActionKind.REORDER_SKILL:
-        destination_log_prob, destination_entropy = _selected_log_prob_and_entropy(
-            policy.reorder_destination[index],
-            mask_trace["reorder_destination"],
-            int(action.reorder_to_end),
-        )
-        return log_prob + destination_log_prob, entropy + destination_entropy
 
     target_log_prob, target_entropy = _selected_log_prob_and_entropy(
         policy.target[index],
@@ -690,6 +980,115 @@ def update_model(
             max_grad_norm=max_grad_norm,
         )
     raise ValueError(f"Unknown algorithm: {algorithm}")
+
+
+def update_behavior_cloning_model(
+    model: torch.nn.Module,
+    optimizer: torch.optim.Optimizer,
+    batch: list[Trajectory],
+    *,
+    max_grad_norm: float,
+) -> UpdateStats:
+    model.eval()
+    device = next(model.parameters()).device
+    if is_recurrent_model(model):
+        return update_recurrent_behavior_cloning_model(
+            model,
+            optimizer,
+            batch,
+            device=device,
+            max_grad_norm=max_grad_norm,
+        )
+    rollout = flatten_rollout_batch(batch, device)
+    observations = rollout["observations"]
+    actions = rollout["actions"]
+    action_masks = rollout["action_masks"]
+    hidden_states = rollout["recurrent_hidden_states"]
+    if hidden_states is not None:
+        policy, _, _ = model(observations, hidden_states)  # type: ignore[misc]
+    else:
+        policy, _ = model(observations)
+    log_probs_and_entropies = [
+        _factored_action_log_prob_and_entropy(policy, index, action, mask_trace)
+        for index, (action, mask_trace) in enumerate(zip(actions, action_masks, strict=True))
+    ]
+    log_probs = torch.stack([item[0] for item in log_probs_and_entropies])
+    entropies = torch.stack([item[1] for item in log_probs_and_entropies])
+    policy_loss = -log_probs.mean()
+    entropy = entropies.mean()
+    loss = policy_loss
+    optimizer.zero_grad()
+    loss.backward()
+    torch.nn.utils.clip_grad_norm_(
+        [parameter for group in optimizer.param_groups for parameter in group["params"]],
+        max_grad_norm,
+    )
+    optimizer.step()
+    return {
+        "loss": float(loss.detach().item()),
+        "policy_loss": float(policy_loss.detach().item()),
+        "value_loss": 0.0,
+        "entropy": float(entropy.detach().item()),
+        "approx_kl": 0.0,
+        "clip_fraction": 0.0,
+        "explained_variance": 0.0,
+    }
+
+
+def update_recurrent_behavior_cloning_model(
+    model: torch.nn.Module,
+    optimizer: torch.optim.Optimizer,
+    batch: list[Trajectory],
+    *,
+    device: torch.device,
+    max_grad_norm: float,
+) -> UpdateStats:
+    log_probs: list[torch.Tensor] = []
+    entropies: list[torch.Tensor] = []
+    for trajectory in batch:
+        hidden = model.initial_hidden(1, device)  # type: ignore[attr-defined]
+        observations = trajectory["observations"]
+        actions = trajectory["actions"]
+        action_masks = trajectory["action_masks"]
+        for observation, action, mask_trace in zip(
+            observations,
+            actions,
+            action_masks,
+            strict=True,
+        ):
+            obs = torch.tensor(observation, dtype=torch.float32, device=device).unsqueeze(0)
+            policy, _, hidden = model(obs, hidden)  # type: ignore[misc]
+            log_prob, entropy = _factored_action_log_prob_and_entropy(
+                policy,
+                0,
+                action,
+                mask_trace,
+            )
+            log_probs.append(log_prob)
+            entropies.append(entropy)
+    if not log_probs:
+        raise ValueError("Behavior cloning batch has no actions.")
+    log_prob_tensor = torch.stack(log_probs)
+    entropy_tensor = torch.stack(entropies)
+    policy_loss = -log_prob_tensor.mean()
+    entropy = entropy_tensor.mean()
+    loss = policy_loss
+    optimizer.zero_grad()
+    loss.backward()
+    torch.nn.utils.clip_grad_norm_(
+        [parameter for group in optimizer.param_groups for parameter in group["params"]],
+        max_grad_norm,
+    )
+    optimizer.step()
+    return {
+        "loss": float(loss.detach().item()),
+        "policy_loss": float(policy_loss.detach().item()),
+        "value_loss": 0.0,
+        "entropy": float(entropy.detach().item()),
+        "approx_kl": 0.0,
+        "clip_fraction": 0.0,
+        "explained_variance": 0.0,
+    }
 
 
 def update_actor_critic_model(

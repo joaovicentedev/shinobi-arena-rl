@@ -87,6 +87,9 @@ Rules:
 - Chakra payment is validated by the engine.
 - The specific chakra used to pay random costs is chosen when the action is
   committed.
+- A player may exchange 5 owned chakra of any types for 1 chakra of a chosen
+  fixed type. The exchanged chakra are removed from the player's pool, then the
+  chosen chakra is added.
 
 ## Hidden Information
 

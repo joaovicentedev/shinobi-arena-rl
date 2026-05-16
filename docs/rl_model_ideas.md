@@ -1,0 +1,5 @@
+- Mask on dead chars, avoid noise?
+- Reorder is a big problem. Add bigger reorder penalty.
+- Credit for spell skils for damage, combo, etc. Not only in the END phase. Add per-action predicted-impact shaping: expected damage, expected KO, wasted damage, defensive value, chakra efficiency.
+- Remove chakra belief.
+- Implement self-attention to skills. Model learning relation between them.

@@ -2,7 +2,14 @@ from __future__ import annotations
 
 from dataclasses import replace
 
-from naruto_arena.engine.actions import Action, EndTurnAction, ReorderSkillsAction, UseSkillAction
+from naruto_arena.engine.actions import (
+    Action,
+    EndTurnAction,
+    GetChakraAction,
+    ReorderSkillsAction,
+    UseSkillAction,
+)
+from naruto_arena.engine.chakra import ChakraType
 from naruto_arena.engine.rules import RulesError, end_turn
 from naruto_arena.engine.skills import SkillClass, TargetRule
 from naruto_arena.engine.state import GameState, UsedSkillState
@@ -13,9 +20,11 @@ MAX_REORDERS_PER_TURN = 3
 def legal_actions(state: GameState, player_id: int) -> list[Action]:
     if state.winner is not None or player_id != state.active_player:
         return []
-    actions: list[Action] = [EndTurnAction(player_id)]
     player = state.players[player_id]
     enemy = state.players[1 - player_id]
+    actions: list[Action] = [EndTurnAction(player_id)]
+    if player.chakra.can_exchange_for():
+        actions.extend(GetChakraAction(player_id, chakra_type) for chakra_type in ChakraType)
     enemy_ids = tuple(character.instance_id for character in enemy.living_characters())
     ally_ids = tuple(character.instance_id for character in player.living_characters())
     for character in player.living_characters():
@@ -89,6 +98,9 @@ def apply_action(state: GameState, action: Action) -> GameState:
     if isinstance(action, EndTurnAction):
         resolve_pending_skill_stack(state, action.player_id)
         end_turn(state)
+        return state
+    if isinstance(action, GetChakraAction):
+        apply_get_chakra(state, action)
         return state
     if isinstance(action, ReorderSkillsAction):
         apply_reorder(state, action)
@@ -214,6 +226,10 @@ def apply_reorder(state: GameState, action: ReorderSkillsAction) -> None:
     player.skill_stack.insert(action.new_index, used_skill)
     state.reorders_this_turn += 1
     state.reordered_skills_this_turn.add(reorder_key)
+
+
+def apply_get_chakra(state: GameState, action: GetChakraAction) -> None:
+    state.players[action.player_id].chakra.exchange_for(action.chakra_type)
 
 
 def used_skill_duration(state: GameState, actor_id: str, skill) -> int:

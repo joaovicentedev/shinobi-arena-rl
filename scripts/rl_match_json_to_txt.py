@@ -70,6 +70,8 @@ def _action_text(action: dict[str, Any]) -> str:
     action_type = action["type"]
     if action_type == "end_turn":
         return "END"
+    if action_type == "get_chakra":
+        return f"GET_CHAKRA {action['chakra_type']}"
     if action_type == "reorder_skills":
         return (
             f"REORDER {action['character_name']} {action['skill_id']} -> slot {action['new_index']}"

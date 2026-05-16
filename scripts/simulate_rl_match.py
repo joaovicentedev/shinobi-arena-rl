@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
@@ -10,7 +11,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from naruto_arena.agents.rl_agent import RlAgent
 from naruto_arena.data.characters import ALL_CHARACTERS
-from naruto_arena.engine.actions import Action, EndTurnAction, ReorderSkillsAction, UseSkillAction
+from naruto_arena.engine.actions import (
+    Action,
+    EndTurnAction,
+    GetChakraAction,
+    ReorderSkillsAction,
+    UseSkillAction,
+)
 from naruto_arena.engine.characters import CharacterDefinition
 from naruto_arena.engine.effects import ActiveDamageOverTime, ActiveDamageReduction
 from naruto_arena.engine.rules import create_initial_state
@@ -66,9 +73,11 @@ def main() -> None:
             break
         player_id = state.active_player
         before = snapshot_state(state)
+        before_state = deepcopy(state)
         action = agent.choose_action(state, player_id)
         action_json = action_to_json(state, action)
         apply_action(state, action)
+        agent.observe_action(before_state, action, state)
         timeline.append(
             {
                 "action_index": index,
@@ -181,6 +190,12 @@ def character_to_json(character: CharacterState) -> dict[str, Any]:
 def action_to_json(state: GameState, action: Action) -> dict[str, Any]:
     if isinstance(action, EndTurnAction):
         return {"type": "end_turn", "player_id": action.player_id}
+    if isinstance(action, GetChakraAction):
+        return {
+            "type": "get_chakra",
+            "player_id": action.player_id,
+            "chakra_type": action.chakra_type.value,
+        }
     if isinstance(action, ReorderSkillsAction):
         character = state.get_character(action.character_id)
         return {

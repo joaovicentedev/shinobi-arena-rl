@@ -11,10 +11,12 @@ except ImportError as exc:  # pragma: no cover - exercised only without the rl e
 
 from naruto_arena.rl.action_space import (
     ACTION_KIND_COUNT,
+    GET_CHAKRA_CODE_COUNT,
     MAX_SKILLS_PER_CHARACTER,
+    MAX_STACK_SIZE,
     MAX_TEAM_SIZE,
     RANDOM_CHAKRA_CODE_COUNT,
-    REORDER_DESTINATION_COUNT,
+    REORDER_DIRECTION_COUNT,
     TARGET_CODE_COUNT,
 )
 from naruto_arena.rl.observation import (
@@ -26,6 +28,7 @@ from naruto_arena.rl.observation import (
     CHARACTER_SLOTS,
     COMPACT_CHARACTER_FEATURE_SIZE,
     COMPACT_OBSERVATION_VERSION,
+    GLOBAL_FEATURE_SIZE,
     OBSERVATION_VERSION,
     SKILL_FEATURES_CHARACTER_FEATURE_SIZE,
     SKILL_FEATURES_OBSERVATION_VERSION,
@@ -47,7 +50,9 @@ class PolicyOutput:
     skill: torch.Tensor
     target: torch.Tensor
     random_chakra: torch.Tensor
-    reorder_destination: torch.Tensor
+    get_chakra: torch.Tensor
+    stack_index: torch.Tensor
+    reorder_direction: torch.Tensor
 
 
 class ActorCritic(nn.Module):
@@ -83,7 +88,9 @@ class ActorCritic(nn.Module):
         self.skill_policy = nn.Linear(hidden_dim, MAX_SKILLS_PER_CHARACTER)
         self.target_policy = nn.Linear(hidden_dim, TARGET_CODE_COUNT)
         self.random_chakra_policy = nn.Linear(hidden_dim, RANDOM_CHAKRA_CODE_COUNT)
-        self.reorder_destination_policy = nn.Linear(hidden_dim, REORDER_DESTINATION_COUNT)
+        self.get_chakra_policy = nn.Linear(hidden_dim, GET_CHAKRA_CODE_COUNT)
+        self.stack_index_policy = nn.Linear(hidden_dim, MAX_STACK_SIZE)
+        self.reorder_direction_policy = nn.Linear(hidden_dim, REORDER_DIRECTION_COUNT)
         self.value = nn.Linear(hidden_dim, 1)
 
     def forward(self, observations: torch.Tensor) -> tuple[PolicyOutput, torch.Tensor]:
@@ -95,14 +102,16 @@ class ActorCritic(nn.Module):
                 skill=self.skill_policy(hidden),
                 target=self.target_policy(hidden),
                 random_chakra=self.random_chakra_policy(hidden),
-                reorder_destination=self.reorder_destination_policy(hidden),
+                get_chakra=self.get_chakra_policy(hidden),
+                stack_index=self.stack_index_policy(hidden),
+                reorder_direction=self.reorder_direction_policy(hidden),
             ),
             self.value(hidden).squeeze(-1),
         )
 
     def _encode_observation(self, observations: torch.Tensor) -> torch.Tensor:
-        global_prefix = observations[:, :4]
-        character_start = 4
+        global_prefix = observations[:, :GLOBAL_FEATURE_SIZE]
+        character_start = GLOBAL_FEATURE_SIZE
         character_end = character_start + CHARACTER_SLOTS * self.character_feature_size
         character_features = observations[:, character_start:character_end].reshape(
             observations.shape[0],
@@ -176,7 +185,9 @@ class TransformerActorCritic(nn.Module):
         self.skill_policy = nn.Linear(hidden_dim, MAX_SKILLS_PER_CHARACTER)
         self.target_policy = nn.Linear(hidden_dim, TARGET_CODE_COUNT)
         self.random_chakra_policy = nn.Linear(hidden_dim, RANDOM_CHAKRA_CODE_COUNT)
-        self.reorder_destination_policy = nn.Linear(hidden_dim, REORDER_DESTINATION_COUNT)
+        self.get_chakra_policy = nn.Linear(hidden_dim, GET_CHAKRA_CODE_COUNT)
+        self.stack_index_policy = nn.Linear(hidden_dim, MAX_STACK_SIZE)
+        self.reorder_direction_policy = nn.Linear(hidden_dim, REORDER_DIRECTION_COUNT)
         self.value = nn.Linear(hidden_dim, 1)
         self.register_buffer(
             "character_sides",
@@ -198,14 +209,16 @@ class TransformerActorCritic(nn.Module):
                 skill=self.skill_policy(hidden),
                 target=self.target_policy(hidden),
                 random_chakra=self.random_chakra_policy(hidden),
-                reorder_destination=self.reorder_destination_policy(hidden),
+                get_chakra=self.get_chakra_policy(hidden),
+                stack_index=self.stack_index_policy(hidden),
+                reorder_direction=self.reorder_direction_policy(hidden),
             ),
             self.value(hidden).squeeze(-1),
         )
 
     def _encode_observation(self, observations: torch.Tensor) -> torch.Tensor:
-        global_prefix = observations[:, :4]
-        character_start = 4
+        global_prefix = observations[:, :GLOBAL_FEATURE_SIZE]
+        character_start = GLOBAL_FEATURE_SIZE
         character_end = character_start + CHARACTER_SLOTS * self.character_feature_size
         character_features = observations[:, character_start:character_end].reshape(
             observations.shape[0],
@@ -289,10 +302,9 @@ class RecurrentTransformerActorCritic(TransformerActorCritic):
         self.skill_policy = nn.Linear(recurrent_hidden_dim, MAX_SKILLS_PER_CHARACTER)
         self.target_policy = nn.Linear(recurrent_hidden_dim, TARGET_CODE_COUNT)
         self.random_chakra_policy = nn.Linear(recurrent_hidden_dim, RANDOM_CHAKRA_CODE_COUNT)
-        self.reorder_destination_policy = nn.Linear(
-            recurrent_hidden_dim,
-            REORDER_DESTINATION_COUNT,
-        )
+        self.get_chakra_policy = nn.Linear(recurrent_hidden_dim, GET_CHAKRA_CODE_COUNT)
+        self.stack_index_policy = nn.Linear(recurrent_hidden_dim, MAX_STACK_SIZE)
+        self.reorder_direction_policy = nn.Linear(recurrent_hidden_dim, REORDER_DIRECTION_COUNT)
         self.value = nn.Linear(recurrent_hidden_dim, 1)
 
     def forward(
@@ -321,7 +333,9 @@ class RecurrentTransformerActorCritic(TransformerActorCritic):
                 skill=self.skill_policy(hidden),
                 target=self.target_policy(hidden),
                 random_chakra=self.random_chakra_policy(hidden),
-                reorder_destination=self.reorder_destination_policy(hidden),
+                get_chakra=self.get_chakra_policy(hidden),
+                stack_index=self.stack_index_policy(hidden),
+                reorder_direction=self.reorder_direction_policy(hidden),
             ),
             self.value(hidden).squeeze(-1),
         )

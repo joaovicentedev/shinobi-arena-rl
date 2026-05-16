@@ -92,6 +92,17 @@ class ChakraPool:
             removed += take
         return removed
 
+    def can_exchange_for(self, amount: int = 5) -> bool:
+        return self.total() >= amount
+
+    def exchange_for(self, chakra_type: ChakraType, amount: int = 5) -> None:
+        if not self.can_exchange_for(amount):
+            raise ValueError("Not enough chakra to exchange.")
+        removed = self.remove_any(amount)
+        if removed != amount:
+            raise ValueError("Not enough chakra to exchange.")
+        self.add(chakra_type, 1)
+
     def remove_from_types(
         self,
         allowed_types: tuple[ChakraType, ...],

@@ -24,6 +24,12 @@ class EndTurnAction(Action):
 
 
 @dataclass(frozen=True)
+class GetChakraAction(Action):
+    player_id: int
+    chakra_type: ChakraType
+
+
+@dataclass(frozen=True)
 class ReorderSkillsAction(Action):
     player_id: int
     character_id: str
