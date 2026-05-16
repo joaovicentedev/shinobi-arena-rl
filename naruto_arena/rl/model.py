@@ -408,7 +408,6 @@ class AttentionActorCritic(nn.Module):
         self.kind_policy = nn.Linear(hidden_dim, ACTION_KIND_COUNT)
         self.get_chakra_policy = nn.Linear(hidden_dim, GET_CHAKRA_CODE_COUNT)
         self.use_skill_pair_mlp = _mlp(hidden_dim * 4, hidden_dim, RANDOM_CHAKRA_CODE_COUNT)
-        self.reorder_mlp = _mlp(hidden_dim * 2, hidden_dim, REORDER_DIRECTION_COUNT)
         self.value = nn.Linear(hidden_dim, 1)
 
     def forward(self, observations: torch.Tensor) -> tuple[PolicyOutput, torch.Tensor]:
@@ -443,22 +442,12 @@ class AttentionActorCritic(nn.Module):
             dim=-1,
         )
         use_skill_joint = self.use_skill_pair_mlp(pair)
-        my_stack_out = encoded[:, 61 : 61 + ATTENTION_MAX_STACK_SIZE]
-        reorder_joint = self.reorder_mlp(
-            torch.cat(
-                [
-                    my_stack_out,
-                    global_out[:, None, :].expand(-1, ATTENTION_MAX_STACK_SIZE, -1),
-                ],
-                dim=-1,
-            )
-        )
         actor = use_skill_joint.amax(dim=(2, 3, 4))
         skill = use_skill_joint.amax(dim=(1, 3, 4))
         target = use_skill_joint.amax(dim=(1, 2, 4))
         random_chakra = use_skill_joint.amax(dim=(1, 2, 3))
-        stack_index = reorder_joint[:, :MAX_STACK_SIZE].amax(dim=2)
-        reorder_direction = reorder_joint.amax(dim=1)
+        stack_index = global_out.new_zeros((observations.shape[0], MAX_STACK_SIZE))
+        reorder_direction = global_out.new_zeros((observations.shape[0], 0))
         return (
             PolicyOutput(
                 kind=self.kind_policy(global_out),
@@ -470,7 +459,7 @@ class AttentionActorCritic(nn.Module):
                 stack_index=stack_index,
                 reorder_direction=reorder_direction,
                 use_skill_joint=use_skill_joint,
-                reorder_joint=reorder_joint,
+                reorder_joint=None,
             ),
             self.value(global_out).squeeze(-1),
         )

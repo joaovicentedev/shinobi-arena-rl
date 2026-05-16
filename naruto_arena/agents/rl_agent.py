@@ -17,7 +17,6 @@ from naruto_arena.rl.action_space import (
     factored_action_to_engine_action,
     legal_factored_action_masks,
 )
-from naruto_arena.rl.belief import ChakraBeliefTracker
 from naruto_arena.rl.model import (
     PolicyOutput,
     create_actor_critic,
@@ -65,23 +64,15 @@ class RlAgent:
         self.deterministic = deterministic
         self.generator = torch.Generator().manual_seed(seed)
         self.hidden_by_player: dict[int, torch.Tensor] = {}
-        self.belief_by_player: dict[int, ChakraBeliefTracker] = {}
         self.last_turn_number: int | None = None
 
     def observe_action(self, before: GameState, action: Action, after: GameState) -> None:
-        for tracker in self.belief_by_player.values():
-            tracker.observe_action(before, action, after)
+        del before, action, after
 
     def choose_action(self, state: GameState, player_id: int) -> Action:
         if self.last_turn_number is None or state.turn_number < self.last_turn_number:
             self.hidden_by_player.clear()
-            self.belief_by_player.clear()
         self.last_turn_number = state.turn_number
-        belief_tracker = self.belief_by_player.get(player_id)
-        if belief_tracker is None:
-            belief_tracker = ChakraBeliefTracker(player_id)
-            belief_tracker.reset(state)
-            self.belief_by_player[player_id] = belief_tracker
         legal = legal_actions(state, player_id)
         kind_mask = legal_factored_action_masks(state, player_id, legal=legal)["kind"]
         if not any(kind_mask):
@@ -92,7 +83,6 @@ class RlAgent:
             player_id,
             perfect_info=self.perfect_info,
             observation_version=self.observation_version,
-            enemy_chakra_belief=belief_tracker.features(state),
         )
         with torch.no_grad():
             obs = torch.tensor(observation, dtype=torch.float32).unsqueeze(0)
@@ -131,40 +121,6 @@ class RlAgent:
                 legal_factored_action_masks(state, player_id, partial, legal=legal)["get_chakra"],
             )
             return FactoredAction(action_kind, get_chakra_code=chakra)
-
-        if action_kind == ActionKind.REORDER_STACK:
-            stack_mask = legal_factored_action_masks(
-                state,
-                player_id,
-                partial,
-                legal=legal,
-            )["stack_index"]
-            stack_logits = (
-                policy.reorder_joint[:, : len(stack_mask)].amax(dim=2)
-                if policy.reorder_joint is not None
-                else policy.stack_index
-            )
-            stack_index = self._select(stack_logits, stack_mask)
-            partial = FactoredAction(action_kind, stack_index=stack_index)
-            direction_logits = (
-                policy.reorder_joint[:, stack_index, :]
-                if policy.reorder_joint is not None
-                else policy.reorder_direction
-            )
-            direction = self._select(
-                direction_logits,
-                legal_factored_action_masks(
-                    state,
-                    player_id,
-                    partial,
-                    legal=legal,
-                )["reorder_direction"],
-            )
-            return FactoredAction(
-                action_kind,
-                stack_index=stack_index,
-                reorder_direction=direction,
-            )
 
         actor_logits = (
             policy.use_skill_joint.amax(dim=(2, 3, 4))

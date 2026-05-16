@@ -31,7 +31,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--allow-reorder",
         action="store_true",
-        help="Allow baseline agents to choose ReorderSkillsAction.",
+        help="Deprecated no-op kept for old command compatibility.",
     )
     return parser.parse_args()
 

@@ -6,16 +6,9 @@ from naruto_arena.agents.random_agent import _simulation_actions
 from naruto_arena.engine.actions import Action, UseSkillAction
 from naruto_arena.engine.chakra import ChakraCost, ChakraType
 from naruto_arena.engine.effects import (
-    ChakraGainSteal,
-    ChakraRemoval,
-    ChakraSteal,
     DamageOverTime,
     DamageReduction,
     DirectDamage,
-    Healing,
-    Invulnerability,
-    StatusMarker,
-    Stun,
 )
 from naruto_arena.engine.simulator import resolved_skill
 from naruto_arena.engine.skills import SkillDefinition, TargetRule
@@ -74,12 +67,9 @@ class SimpleHeuristicAgent:
         cost = _chakra_cost_value(skill.chakra_cost)
         damage = _damage_value(effects)
         is_attack = _is_attack(skill, damage)
-        prep = _prep_value(state, action, skill)
         support = _support_value(state, action, skill)
         enemy_count = sum(
-            1
-            for target_id in action.target_ids
-            if state.owner_of(target_id) != action.player_id
+            1 for target_id in action.target_ids if state.owner_of(target_id) != action.player_id
         )
         focused = focus_target in action.target_ids if focus_target is not None else False
         target_hp = min(
@@ -88,7 +78,6 @@ class SimpleHeuristicAgent:
         )
 
         score = 0
-        score += prep * 130
         score += support * 85
         score += damage * max(1, enemy_count) * 4
         if skill.target_rule == TargetRule.ALL_ENEMIES and enemy_count >= 2:
@@ -100,12 +89,15 @@ class SimpleHeuristicAgent:
         if is_attack and target_hp <= damage:
             score += 180
         score += _disruption_value(effects) * 45
-        score -= cost * (18 if prep or support else 9)
-        if cost <= 1 and (prep or support):
+        score -= cost * (18 if support else 9)
+        if cost <= 1 and support:
             score += 80
+        score -= _defense_waste(state, action, damage) * 3
+        if any(isinstance(effect, DamageOverTime) for effect in effects):
+            score += max(0, damage - target_hp) // 2
         if skill.cooldown > 0 and is_attack and damage < 30:
             score -= 20
-        category = 2 if prep or support else 1 if is_attack else 0
+        category = 2 if support else 1 if is_attack else 0
         return (score, category, -cost, -target_hp)
 
     def _with_preserved_random_payment(
@@ -145,7 +137,7 @@ def _damage_value(effects: list[object]) -> int:
     total = 0
     for effect in effects:
         if isinstance(effect, DirectDamage):
-            total += effect.amount + effect.conditional_bonus
+            total += effect.amount
         elif isinstance(effect, DamageOverTime):
             total += effect.amount * max(1, effect.duration)
     return total
@@ -155,34 +147,12 @@ def _is_attack(skill: SkillDefinition, damage: int) -> bool:
     return skill.target_rule in {TargetRule.ONE_ENEMY, TargetRule.ALL_ENEMIES} and damage > 0
 
 
-def _prep_value(state: GameState, action: UseSkillAction, skill: SkillDefinition) -> int:
-    cost = _chakra_cost_value(skill.chakra_cost)
-    if cost > 1:
-        return 0
-    effects = skill.all_effects(state, action.actor_id)
-    if skill.target_rule in {TargetRule.SELF, TargetRule.NONE} and (
-        skill.status_marker is not None
-        or any(isinstance(effect, (StatusMarker, DamageReduction)) for effect in effects)
-    ):
-        actor = state.get_character(action.actor_id)
-        if skill.status_marker is not None and actor.status.has_marker(skill.status_marker):
-            return 0
-        return 2 if cost == 0 else 1
-    if skill.target_rule == TargetRule.ONE_ENEMY and any(
-        isinstance(effect, StatusMarker) for effect in effects
-    ):
-        return 2 if cost == 0 else 1
-    return 0
-
-
 def _support_value(state: GameState, action: UseSkillAction, skill: SkillDefinition) -> int:
     cost = _chakra_cost_value(skill.chakra_cost)
     if cost > 1:
         return 0
     effects = skill.all_effects(state, action.actor_id)
-    if not any(
-        isinstance(effect, (Healing, Invulnerability, DamageReduction)) for effect in effects
-    ):
+    if not any(isinstance(effect, DamageReduction) for effect in effects):
         return 0
     target_hps = [state.get_character(target_id).hp for target_id in action.target_ids]
     actor_hp = state.get_character(action.actor_id).hp
@@ -194,11 +164,19 @@ def _support_value(state: GameState, action: UseSkillAction, skill: SkillDefinit
     return 0
 
 
+def _defense_waste(state: GameState, action: UseSkillAction, damage: int) -> int:
+    if damage <= 0:
+        return 0
+    return sum(
+        min(
+            damage,
+            sum(defense.amount for defense in state.get_character(target_id).status.defenses),
+        )
+        for target_id in action.target_ids
+        if state.owner_of(target_id) != action.player_id
+    )
+
+
 def _disruption_value(effects: list[object]) -> int:
-    value = 0
-    for effect in effects:
-        if isinstance(effect, Stun):
-            value += 3
-        elif isinstance(effect, (ChakraRemoval, ChakraSteal, ChakraGainSteal)):
-            value += 2
-    return value
+    del effects
+    return 0

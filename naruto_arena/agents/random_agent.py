@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import random
 
-from naruto_arena.engine.actions import Action, ReorderSkillsAction, UseSkillAction
+from naruto_arena.engine.actions import Action, UseSkillAction
 from naruto_arena.engine.chakra import ChakraCost, ChakraType
 from naruto_arena.engine.simulator import legal_actions, resolved_skill
 from naruto_arena.engine.state import GameState
@@ -23,10 +23,8 @@ class RandomAgent:
 
 
 def _simulation_actions(state: GameState, player_id: int, allow_reorder: bool) -> list[Action]:
-    actions = legal_actions(state, player_id)
-    if allow_reorder:
-        return actions
-    return [action for action in actions if not isinstance(action, ReorderSkillsAction)]
+    del allow_reorder
+    return legal_actions(state, player_id)
 
 
 def _with_random_payment(

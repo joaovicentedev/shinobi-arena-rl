@@ -18,7 +18,6 @@ from naruto_arena.agents.heuristic_agent import SimpleHeuristicAgent
 from naruto_arena.engine.actions import (
     EndTurnAction,
     GetChakraAction,
-    ReorderSkillsAction,
     UseSkillAction,
 )
 from naruto_arena.engine.simulator import resolved_skill
@@ -39,7 +38,7 @@ from naruto_arena.rl.action_space import (
 )
 from naruto_arena.rl.env import NarutoArenaLearningEnv
 from naruto_arena.rl.model import (
-    MODEL_ARCH_MLP,
+    MODEL_ARCH_ATTENTION,
     MODEL_ARCHITECTURES,
     PolicyOutput,
     create_actor_critic,
@@ -125,7 +124,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--model-arch",
         choices=MODEL_ARCHITECTURES,
-        default=MODEL_ARCH_MLP,
+        default=MODEL_ARCH_ATTENTION,
         help="Policy/value network architecture.",
     )
     parser.add_argument(
@@ -301,11 +300,7 @@ def main() -> None:
                     for worker_seeds in worker_seed_groups
                     if worker_seeds
                 ]
-                batch = [
-                    trajectory
-                    for future in futures
-                    for trajectory in future.result()
-                ]
+                batch = [trajectory for future in futures for trajectory in future.result()]
                 pending.extend(batch)
                 update_stats = update_model(
                     model,
@@ -323,9 +318,7 @@ def main() -> None:
                 for trajectory in batch:
                     completed_episodes += 1
                     recent_returns.append(float(sum(trajectory["rewards"])))
-                    recent_wins.append(
-                        1.0 if trajectory["winner"] == env.learning_player else 0.0
-                    )
+                    recent_wins.append(1.0 if trajectory["winner"] == env.learning_player else 0.0)
                 log_progress(
                     completed_episodes,
                     args.episodes,
@@ -648,13 +641,6 @@ def mask_trace_for_factored_action(
     if action.kind == ActionKind.GET_CHAKRA:
         mask_trace["get_chakra"] = env.factored_action_masks(partial)["get_chakra"]
         return mask_trace
-    if action.kind == ActionKind.REORDER_STACK:
-        mask_trace["stack_index"] = env.factored_action_masks(partial)["stack_index"]
-        partial = FactoredAction(action.kind, stack_index=action.stack_index)
-        mask_trace["reorder_direction"] = env.factored_action_masks(partial)[
-            "reorder_direction"
-        ]
-        return mask_trace
     mask_trace["actor"] = env.factored_action_masks(partial)["actor"]
     partial = FactoredAction(action.kind, actor_slot=action.actor_slot)
     mask_trace["skill"] = env.factored_action_masks(partial)["skill"]
@@ -686,20 +672,6 @@ def engine_action_to_factored(
         return FactoredAction(
             ActionKind.GET_CHAKRA,
             get_chakra_code=chakra_types.index(action.chakra_type),
-        )
-    if isinstance(action, ReorderSkillsAction):
-        player = state.players[player_id]
-        stack_index = next(
-            index
-            for index, used_skill in enumerate(player.skill_stack)
-            if used_skill.actor_id == action.character_id
-            and used_skill.skill_id == action.skill_id
-        )
-        direction = 0 if action.new_index < stack_index else 1
-        return FactoredAction(
-            ActionKind.REORDER_STACK,
-            stack_index=stack_index,
-            reorder_direction=direction,
         )
     if not isinstance(action, UseSkillAction):
         raise ValueError(f"Unsupported teacher action: {action!r}")
@@ -786,43 +758,6 @@ def sample_factored_action(
             mask_trace,
             log_prob + chakra_log_prob,
             entropy + chakra_entropy,
-        )
-
-    if action_kind == ActionKind.REORDER_STACK:
-        stack_mask = env.factored_action_masks(partial)["stack_index"]
-        mask_trace["stack_index"] = stack_mask
-        stack_logits = (
-            policy.reorder_joint[:, : len(stack_mask)].amax(dim=2)
-            if policy.reorder_joint is not None
-            else policy.stack_index
-        )
-        stack_index, stack_log_prob, stack_entropy = _sample_masked(
-            stack_logits,
-            stack_mask,
-        )
-        log_prob = log_prob + stack_log_prob
-        entropy = entropy + stack_entropy
-        partial = FactoredAction(action_kind, stack_index=int(stack_index.item()))
-        reorder_mask = env.factored_action_masks(partial)["reorder_direction"]
-        mask_trace["reorder_direction"] = reorder_mask
-        direction_logits = (
-            policy.reorder_joint[:, partial.stack_index, :]
-            if policy.reorder_joint is not None
-            else policy.reorder_direction
-        )
-        direction, direction_log_prob, direction_entropy = _sample_masked(
-            direction_logits,
-            reorder_mask,
-        )
-        return (
-            FactoredAction(
-                action_kind,
-                stack_index=partial.stack_index,
-                reorder_direction=int(direction.item()),
-            ),
-            mask_trace,
-            log_prob + direction_log_prob,
-            entropy + direction_entropy,
         )
 
     actor_mask = env.factored_action_masks(partial)["actor"]
@@ -947,32 +882,6 @@ def _factored_action_log_prob_and_entropy(
             action.get_chakra_code,
         )
         return log_prob + chakra_log_prob, entropy + chakra_entropy
-
-    if action.kind == ActionKind.REORDER_STACK:
-        stack_logits = (
-            policy.reorder_joint[index, : len(mask_trace["stack_index"])].amax(dim=1)
-            if policy.reorder_joint is not None
-            else policy.stack_index[index]
-        )
-        stack_log_prob, stack_entropy = _selected_log_prob_and_entropy(
-            stack_logits,
-            mask_trace["stack_index"],
-            action.stack_index,
-        )
-        direction_logits = (
-            policy.reorder_joint[index, action.stack_index]
-            if policy.reorder_joint is not None
-            else policy.reorder_direction[index]
-        )
-        direction_log_prob, direction_entropy = _selected_log_prob_and_entropy(
-            direction_logits,
-            mask_trace["reorder_direction"],
-            action.reorder_direction,
-        )
-        return (
-            log_prob + stack_log_prob + direction_log_prob,
-            entropy + stack_entropy + direction_entropy,
-        )
 
     actor_logits = (
         policy.use_skill_joint[index].amax(dim=(1, 2, 3))
@@ -1288,11 +1197,14 @@ def update_ppo_model(
             minibatch_advantages = advantages[indices]
             ratios = torch.exp(log_probs - minibatch_old_log_probs)
             unclipped_policy_loss = ratios * minibatch_advantages
-            clipped_policy_loss = torch.clamp(
-                ratios,
-                1.0 - ppo_clip,
-                1.0 + ppo_clip,
-            ) * minibatch_advantages
+            clipped_policy_loss = (
+                torch.clamp(
+                    ratios,
+                    1.0 - ppo_clip,
+                    1.0 + ppo_clip,
+                )
+                * minibatch_advantages
+            )
             policy_loss = -torch.min(unclipped_policy_loss, clipped_policy_loss).mean()
             value_loss = F.mse_loss(values, minibatch_returns)
             entropy = entropies.mean()
@@ -1307,9 +1219,7 @@ def update_ppo_model(
             with torch.no_grad():
                 log_ratio = log_probs - minibatch_old_log_probs
                 approx_kl = ((torch.exp(log_ratio) - 1.0) - log_ratio).mean()
-                clip_fraction = (
-                    (torch.abs(ratios - 1.0) > ppo_clip).to(torch.float32).mean()
-                )
+                clip_fraction = (torch.abs(ratios - 1.0) > ppo_clip).to(torch.float32).mean()
             last_stats = {
                 "loss": float(loss.detach().item()),
                 "policy_loss": float(policy_loss.detach().item()),
@@ -1324,9 +1234,7 @@ def update_ppo_model(
 
 def flatten_rollout_batch(batch: list[Trajectory], device: torch.device) -> dict[str, Any]:
     hidden_states = [
-        hidden_state
-        for item in batch
-        for hidden_state in item.get("recurrent_hidden_states", [])
+        hidden_state for item in batch for hidden_state in item.get("recurrent_hidden_states", [])
     ]
     return {
         "observations": torch.tensor(
@@ -1436,10 +1344,7 @@ def collect_episode_worker_batch(
 
 
 def _cpu_state_dict(model: torch.nn.Module) -> dict[str, torch.Tensor]:
-    return {
-        key: value.detach().cpu()
-        for key, value in model.state_dict().items()
-    }
+    return {key: value.detach().cpu() for key, value in model.state_dict().items()}
 
 
 def _split_round_robin(values: list[int], groups: int) -> list[list[int]]:

@@ -6,7 +6,7 @@ from enum import StrEnum
 from typing import TYPE_CHECKING
 
 from naruto_arena.engine.chakra import ChakraCost
-from naruto_arena.engine.effects import ConditionalDamageIncrease, Effect
+from naruto_arena.engine.effects import Effect
 
 if TYPE_CHECKING:
     from naruto_arena.engine.state import GameState
@@ -21,7 +21,6 @@ class SkillClass(StrEnum):
     INSTANT = "Instant"
     ACTION = "Action"
     CONTROL = "Control"
-    STUN = "Stun"
     AFFLICTION = "Affliction"
     PASSIVE = "Passive"
     UNREMOVABLE = "Unremovable"
@@ -57,7 +56,6 @@ class SkillDefinition:
     duration: int = 0
     status_marker: str | None = None
     effect_factory: EffectFactory | None = None
-    conditional_damage: tuple[ConditionalDamageIncrease, ...] = ()
     replacement_for: str | None = None
 
     def is_passive(self) -> bool:

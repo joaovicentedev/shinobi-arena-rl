@@ -15,11 +15,10 @@ from naruto_arena.engine.actions import (
     Action,
     EndTurnAction,
     GetChakraAction,
-    ReorderSkillsAction,
     UseSkillAction,
 )
 from naruto_arena.engine.characters import CharacterDefinition
-from naruto_arena.engine.effects import ActiveDamageOverTime, ActiveDamageReduction
+from naruto_arena.engine.effects import ActiveDefense, ActiveDot
 from naruto_arena.engine.rules import create_initial_state
 from naruto_arena.engine.simulator import apply_action, resolved_skill
 from naruto_arena.engine.state import CharacterState, GameState
@@ -133,6 +132,7 @@ def snapshot_state(state: GameState) -> dict[str, Any]:
         "turn_number": state.turn_number,
         "active_player": state.active_player,
         "winner": state.winner,
+        "metrics": readable_metrics(state.metrics),
         "players": [
             {
                 "player_id": player.player_id,
@@ -169,21 +169,9 @@ def character_to_json(character: CharacterState) -> dict[str, Any]:
         "skill_order": list(character.skill_order),
         "cooldowns": dict(sorted(character.cooldowns.items())),
         "status": {
-            "stunned_turns": character.status.stunned_turns,
-            "class_stuns": dict(sorted(character.status.class_stuns.items())),
-            "invulnerable_turns": character.status.invulnerable_turns,
-            "damage_reductions": [
-                damage_reduction_to_json(reduction)
-                for reduction in character.status.damage_reductions
-            ],
-            "damage_over_time": [
-                damage_over_time_to_json(dot) for dot in character.status.damage_over_time
-            ],
-            "active_markers": dict(sorted(character.status.active_markers.items())),
-            "active_marker_stacks": dict(sorted(character.status.active_marker_stacks.items())),
+            "defenses": [defense_to_json(defense) for defense in character.status.defenses],
+            "dots": [dot_to_json(dot) for dot in character.status.dots],
         },
-        "passives": dict(sorted(character.passives.items())),
-        "passive_triggered": dict(sorted(character.passive_triggered.items())),
     }
 
 
@@ -195,16 +183,6 @@ def action_to_json(state: GameState, action: Action) -> dict[str, Any]:
             "type": "get_chakra",
             "player_id": action.player_id,
             "chakra_type": action.chakra_type.value,
-        }
-    if isinstance(action, ReorderSkillsAction):
-        character = state.get_character(action.character_id)
-        return {
-            "type": "reorder_skills",
-            "player_id": action.player_id,
-            "character_id": action.character_id,
-            "character_name": character.definition.name,
-            "skill_id": action.skill_id,
-            "new_index": action.new_index,
         }
     if isinstance(action, UseSkillAction):
         actor = state.get_character(action.actor_id)
@@ -229,26 +207,35 @@ def action_to_json(state: GameState, action: Action) -> dict[str, Any]:
     return {"type": "unknown", "player_id": action.player_id}
 
 
-def damage_reduction_to_json(reduction: ActiveDamageReduction) -> dict[str, Any]:
+def defense_to_json(defense: ActiveDefense) -> dict[str, Any]:
     return {
-        "amount": reduction.amount,
-        "remaining_turns": reduction.remaining_turns,
-        "unpierceable": reduction.unpierceable,
-        "percent": reduction.percent,
+        "amount": defense.amount,
+        "remaining_turns": defense.remaining_turns,
     }
 
 
-def damage_over_time_to_json(dot: ActiveDamageOverTime) -> dict[str, Any]:
+def dot_to_json(dot: ActiveDot) -> dict[str, Any]:
     return {
         "amount": dot.amount,
         "remaining_turns": dot.remaining_turns,
         "source_id": dot.source_id,
-        "piercing": dot.piercing,
     }
 
 
 def team_to_json(team: list[CharacterDefinition]) -> list[dict[str, str]]:
     return [{"id": character.id, "name": character.name} for character in team]
+
+
+def readable_metrics(metrics: dict[str, float]) -> dict[str, float]:
+    turns = max(1.0, metrics.get("turns_ended", 0.0))
+    chakra_spent = max(1.0, metrics.get("chakra_spent", 0.0))
+    return {
+        **metrics,
+        "avg_actions_per_turn": metrics.get("actions", 0.0) / turns,
+        "avg_skills_used_per_turn": metrics.get("skills_used", 0.0) / turns,
+        "avg_unused_chakra_at_end_turn": metrics.get("unused_chakra_at_end_turn", 0.0) / turns,
+        "damage_per_chakra": metrics.get("damage_dealt", 0.0) / chakra_spent,
+    }
 
 
 if __name__ == "__main__":

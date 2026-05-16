@@ -155,12 +155,8 @@ def evaluate_state(state: GameState, player_id: int) -> float:
     score += (player_chakra - enemy_chakra) * 5
 
     for character in player.characters:
-        score += character.status.invulnerable_turns * 8
-        score += sum(reduction.amount for reduction in character.status.damage_reductions) * 0.5
-        score += sum(reduction.percent for reduction in character.status.damage_reductions) * 0.4
+        score += sum(defense.amount for defense in character.status.defenses) * 0.5
     for character in enemy.characters:
-        score -= character.status.invulnerable_turns * 8
-        score -= sum(reduction.amount for reduction in character.status.damage_reductions) * 0.5
-        score -= sum(reduction.percent for reduction in character.status.damage_reductions) * 0.4
+        score -= sum(defense.amount for defense in character.status.defenses) * 0.5
 
     return score

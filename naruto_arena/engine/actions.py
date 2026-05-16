@@ -28,10 +28,3 @@ class GetChakraAction(Action):
     player_id: int
     chakra_type: ChakraType
 
-
-@dataclass(frozen=True)
-class ReorderSkillsAction(Action):
-    player_id: int
-    character_id: str
-    skill_id: str
-    new_index: int

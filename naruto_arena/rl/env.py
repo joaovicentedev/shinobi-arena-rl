@@ -18,7 +18,6 @@ from naruto_arena.rl.action_space import (
     legal_action_mask,
     legal_factored_action_masks,
 )
-from naruto_arena.rl.belief import ChakraBeliefTracker
 from naruto_arena.rl.observation import OBSERVATION_VERSION, encode_observation
 from naruto_arena.rl.teams import default_team, random_mirror_teams, random_teams
 
@@ -54,7 +53,6 @@ class NarutoArenaLearningEnv:
         self.opponent = self._make_opponent(opponent, seed + 10_000)
         self.state: GameState | None = None
         self.actions_taken = 0
-        self.belief_tracker = ChakraBeliefTracker(self.learning_player)
         self._legal_actions_cache_key: tuple[int, int, int, int, int | None] | None = None
         self._legal_actions_cache: list[Action] | None = None
 
@@ -66,7 +64,6 @@ class NarutoArenaLearningEnv:
         team_a, team_b = self._episode_teams()
         self.state = create_initial_state(team_a, team_b, rng_seed=self.seed)
         self.actions_taken = 0
-        self.belief_tracker.reset(self.state)
         self._clear_legal_actions_cache()
         return self.observation()
 
@@ -77,7 +74,6 @@ class NarutoArenaLearningEnv:
             self.learning_player,
             perfect_info=self.perfect_info,
             observation_version=self.observation_version,
-            enemy_chakra_belief=self.belief_tracker.features(self.state),
         )
 
     def action_mask(self) -> list[bool]:
@@ -124,7 +120,6 @@ class NarutoArenaLearningEnv:
             apply_action(self.state, action)
         except RulesError:
             return self.observation(), -0.05, False, self._step_info(invalid_action=True)
-        self.belief_tracker.observe_action(before_state, action, self.state)
         self._notify_opponent_observer(before_state, action)
         self.actions_taken += 1
         self._clear_legal_actions_cache()
@@ -158,7 +153,6 @@ class NarutoArenaLearningEnv:
             action = self.opponent.choose_action(self.state, self.state.active_player)
             before_state = deepcopy(self.state)
             apply_action(self.state, action)
-            self.belief_tracker.observe_action(before_state, action, self.state)
             self._notify_opponent_observer(before_state, action)
             self.actions_taken += 1
             self._clear_legal_actions_cache()

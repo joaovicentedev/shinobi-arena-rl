@@ -7,7 +7,6 @@ from naruto_arena.engine.actions import (
     Action,
     EndTurnAction,
     GetChakraAction,
-    ReorderSkillsAction,
     UseSkillAction,
 )
 from naruto_arena.engine.chakra import ChakraCost, ChakraType
@@ -31,18 +30,16 @@ class ActionKind(StrEnum):
     END_TURN = "end_turn"
     USE_SKILL = "use_skill"
     GET_CHAKRA = "get_chakra"
-    REORDER_STACK = "reorder_stack"
 
 
 ACTION_KIND_ORDER = (
     ActionKind.END_TURN,
     ActionKind.USE_SKILL,
     ActionKind.GET_CHAKRA,
-    ActionKind.REORDER_STACK,
 )
 ACTION_KIND_TO_INDEX = {kind: index for index, kind in enumerate(ACTION_KIND_ORDER)}
 ACTION_KIND_COUNT = len(ACTION_KIND_ORDER)
-REORDER_DIRECTION_COUNT = 2
+REORDER_DIRECTION_COUNT = 0
 GET_CHAKRA_CODE_COUNT = len(ChakraType)
 
 
@@ -54,8 +51,6 @@ class ActionSpec:
     target_code: int = TARGET_NONE
     random_chakra_code: int = 0
     get_chakra_code: int = 0
-    stack_index: int = 0
-    reorder_direction: int = 0
 
 
 @dataclass(frozen=True)
@@ -66,8 +61,6 @@ class FactoredAction:
     target_code: int = TARGET_NONE
     random_chakra_code: int = 0
     get_chakra_code: int = 0
-    stack_index: int = 0
-    reorder_direction: int = 0
 
 
 RANDOM_CHAKRA_NONE = 0
@@ -94,15 +87,6 @@ def build_action_catalog() -> list[ActionSpec]:
                             random_chakra_code=random_chakra_code,
                         )
                     )
-    for stack_index in range(MAX_STACK_SIZE):
-        for reorder_direction in range(REORDER_DIRECTION_COUNT):
-            catalog.append(
-                ActionSpec(
-                    ActionKind.REORDER_STACK,
-                    stack_index=stack_index,
-                    reorder_direction=reorder_direction,
-                )
-            )
     return catalog
 
 
@@ -118,8 +102,6 @@ def action_id_to_engine_action(state: GameState, player_id: int, action_id: int)
         return EndTurnAction(player_id)
     if spec.kind == ActionKind.GET_CHAKRA:
         return _get_chakra_action(state, player_id, spec.get_chakra_code)
-    if spec.kind == ActionKind.REORDER_STACK:
-        return _reorder_stack_action(state, player_id, spec.stack_index, spec.reorder_direction)
     player = state.players[player_id]
     if spec.actor_slot >= len(player.characters):
         return None
@@ -162,8 +144,6 @@ def factored_action_to_engine_action(
         return EndTurnAction(player_id)
     if action.kind == ActionKind.GET_CHAKRA:
         return _get_chakra_action(state, player_id, action.get_chakra_code)
-    if action.kind == ActionKind.REORDER_STACK:
-        return _reorder_stack_action(state, player_id, action.stack_index, action.reorder_direction)
     player = state.players[player_id]
     if action.actor_slot >= len(player.characters):
         return None
@@ -214,8 +194,8 @@ def legal_factored_action_masks(
         "target": _legal_target_mask(state, player_id, legal, partial),
         "random_chakra": _legal_random_chakra_mask(state, player_id, legal, partial),
         "get_chakra": _legal_get_chakra_mask(state, player_id, legal, partial),
-        "stack_index": _legal_stack_index_mask(state, player_id, legal, partial),
-        "reorder_direction": _legal_reorder_direction_mask(state, player_id, legal, partial),
+        "stack_index": [False] * MAX_STACK_SIZE,
+        "reorder_direction": [],
     }
 
 
@@ -239,7 +219,7 @@ def _empty_factored_masks() -> dict[str, list[bool]]:
         "random_chakra": [False] * RANDOM_CHAKRA_CODE_COUNT,
         "get_chakra": [False] * GET_CHAKRA_CODE_COUNT,
         "stack_index": [False] * MAX_STACK_SIZE,
-        "reorder_direction": [False] * REORDER_DIRECTION_COUNT,
+        "reorder_direction": [],
     }
 
 
@@ -249,7 +229,6 @@ def _legal_kind_mask(state: GameState, player_id: int, legal: list[Action]) -> l
         any(isinstance(action, EndTurnAction) for action in legal),
         any(isinstance(action, UseSkillAction) for action in legal),
         any(isinstance(action, GetChakraAction) for action in legal),
-        any(isinstance(action, ReorderSkillsAction) for action in legal),
     ]
 
 
@@ -385,45 +364,6 @@ def _legal_get_chakra_mask(
     return mask
 
 
-def _legal_stack_index_mask(
-    state: GameState,
-    player_id: int,
-    legal: list[Action],
-    partial: FactoredAction,
-) -> list[bool]:
-    mask = [False] * MAX_STACK_SIZE
-    if partial.kind != ActionKind.REORDER_STACK:
-        return mask
-    for stack_index in range(min(len(state.players[player_id].skill_stack), MAX_STACK_SIZE)):
-        mask[stack_index] = any(
-            _reorder_stack_action(state, player_id, stack_index, direction) is not None
-            and _matches_any_legal_action(
-                _reorder_stack_action(state, player_id, stack_index, direction),
-                legal,
-            )
-            for direction in range(REORDER_DIRECTION_COUNT)
-        )
-    return mask
-
-
-def _legal_reorder_direction_mask(
-    state: GameState,
-    player_id: int,
-    legal: list[Action],
-    partial: FactoredAction,
-) -> list[bool]:
-    mask = [False] * REORDER_DIRECTION_COUNT
-    if partial.kind != ActionKind.REORDER_STACK:
-        return mask
-    for direction in range(REORDER_DIRECTION_COUNT):
-        engine_action = _reorder_stack_action(state, player_id, partial.stack_index, direction)
-        mask[direction] = engine_action is not None and _matches_any_legal_action(
-            engine_action,
-            legal,
-        )
-    return mask
-
-
 def _skill_for_factored_slot(
     state: GameState,
     player_id: int,
@@ -527,23 +467,6 @@ def _get_chakra_action(
     return GetChakraAction(player_id, chakra_types[get_chakra_code])
 
 
-def _reorder_stack_action(
-    state: GameState,
-    player_id: int,
-    stack_index: int,
-    direction: int,
-) -> ReorderSkillsAction | None:
-    player = state.players[player_id]
-    if not 0 <= stack_index < min(len(player.skill_stack), MAX_STACK_SIZE):
-        return None
-    offset = -1 if direction == 0 else 1
-    new_index = stack_index + offset
-    if not 0 <= new_index < len(player.skill_stack):
-        return None
-    used_skill = player.skill_stack[stack_index]
-    return ReorderSkillsAction(player_id, used_skill.actor_id, used_skill.skill_id, new_index)
-
-
 def _target_ids_for_code(
     state: GameState,
     player_id: int,
@@ -601,14 +524,6 @@ def _matches_any_legal_action(action: Action, legal: list[Action]) -> bool:
         return any(
             isinstance(candidate, GetChakraAction)
             and candidate.chakra_type == action.chakra_type
-            for candidate in legal
-        )
-    if isinstance(action, ReorderSkillsAction):
-        return any(
-            isinstance(candidate, ReorderSkillsAction)
-            and candidate.character_id == action.character_id
-            and candidate.skill_id == action.skill_id
-            and candidate.new_index == action.new_index
             for candidate in legal
         )
     return False

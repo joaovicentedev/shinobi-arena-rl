@@ -119,27 +119,13 @@ def _character_state_text(character: dict[str, Any]) -> str:
     status = character["status"]
     if not character["is_alive"]:
         tags.append("KO")
-    if status["stunned_turns"]:
-        tags.append(f"stun{status['stunned_turns']}")
-    if status["class_stuns"]:
-        tags.append("classStun")
-    if status["invulnerable_turns"]:
-        tags.append(f"inv{status['invulnerable_turns']}")
-    if status["damage_over_time"]:
-        dot = sum(item["amount"] for item in status["damage_over_time"])
+    if status["dots"]:
+        dot = sum(item["amount"] for item in status["dots"])
         tags.append(f"dot{dot}")
-    if status["damage_reductions"]:
-        reductions = []
-        for reduction in status["damage_reductions"]:
-            if reduction["amount"]:
-                reductions.append(str(reduction["amount"]))
-            if reduction["percent"]:
-                reductions.append(f"{reduction['percent']}%")
+    if status["defenses"]:
+        reductions = [str(defense["amount"]) for defense in status["defenses"] if defense["amount"]]
         if reductions:
             tags.append("dr" + "+".join(reductions))
-    if status["active_markers"]:
-        marker_count = len(status["active_markers"])
-        tags.append(f"mk{marker_count}")
     suffix = "" if not tags else "{" + ",".join(tags) + "}"
     return f"{name}:{hp}{suffix}"
 

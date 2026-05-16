@@ -3,24 +3,12 @@ from __future__ import annotations
 from naruto_arena.data.characters import ALL_CHARACTERS
 from naruto_arena.engine.chakra import ChakraType
 from naruto_arena.engine.effects import (
-    ChakraGainSteal,
-    ChakraRemoval,
-    ChakraSteal,
     DamageOverTime,
     DamageReduction,
     DirectDamage,
-    Healing,
-    Invulnerability,
-    PassiveEffect,
-    StatusMarker,
-    Stun,
 )
 from naruto_arena.engine.skills import SkillClass, TargetRule
 from naruto_arena.engine.state import CharacterState, GameState
-from naruto_arena.rl.belief import (
-    _is_invisible_to_player,
-    fallback_enemy_chakra_belief_features,
-)
 
 ROSTER = tuple(sorted(ALL_CHARACTERS.values(), key=lambda character: character.id))
 UNKNOWN_CHARACTER_INDEX = 0
@@ -41,7 +29,7 @@ ENEMY_CHAKRA_BELIEF_FEATURE_SIZE = 13
 BASE_CHARACTER_FEATURE_SIZE = 13 + len(ROSTER) + 5 + len(tuple(SkillClass))
 BASE_OBSERVATION_VERSION = "base_v1"
 MAX_SKILLS_PER_CHARACTER = 9
-SKILL_FEATURE_SIZE = 51
+SKILL_FEATURE_SIZE = 50
 SKILL_FEATURES_OBSERVATION_VERSION = "skill_features_v1"
 SKILL_FEATURES_CHARACTER_FEATURE_SIZE = BASE_CHARACTER_FEATURE_SIZE + (
     MAX_SKILLS_PER_CHARACTER * SKILL_FEATURE_SIZE
@@ -52,25 +40,14 @@ COMPACT_CHARACTER_FEATURE_SIZE = COMPACT_BASE_CHARACTER_FEATURE_SIZE + (
     MAX_SKILLS_PER_CHARACTER * SKILL_FEATURE_SIZE
 )
 COMPACT_OBSERVATION_VERSION = "skill_features_compact_id_stack_v1"
-ATTENTION_OBSERVATION_VERSION = "attention_skill_stack_no_belief_v1"
+ATTENTION_OBSERVATION_VERSION = "attention_idea0_tokens_v1"
 CHARACTER_FEATURE_SIZE = COMPACT_CHARACTER_FEATURE_SIZE
-OBSERVATION_VERSION = COMPACT_OBSERVATION_VERSION
-OBSERVATION_VERSIONS = (
-    BASE_OBSERVATION_VERSION,
-    SKILL_FEATURES_OBSERVATION_VERSION,
-    COMPACT_OBSERVATION_VERSION,
-    ATTENTION_OBSERVATION_VERSION,
-)
+OBSERVATION_VERSION = ATTENTION_OBSERVATION_VERSION
+OBSERVATION_VERSIONS = (ATTENTION_OBSERVATION_VERSION,)
 SKILL_ID_TO_INDEX = {
     skill_id: index + 1
     for index, skill_id in enumerate(
-        sorted(
-            {
-                skill.id
-                for character in ALL_CHARACTERS.values()
-                for skill in character.skills
-            }
-        )
+        sorted({skill.id for character in ALL_CHARACTERS.values() for skill in character.skills})
     )
 }
 SKILL_ID_CODE_COUNT = len(SKILL_ID_TO_INDEX) + 1
@@ -119,19 +96,12 @@ def encode_observation(
     *,
     perfect_info: bool = False,
     observation_version: str = OBSERVATION_VERSION,
-    enemy_chakra_belief: list[float] | None = None,
 ) -> list[float]:
-    """Encode state from the acting player's perspective.
-
-    Decision: by default, opponent chakra is hidden because docs/rules.md says a
-    competitive player does not directly observe it. `perfect_info=True` is kept as
-    a debug option for experiments and regression checks.
-    """
+    """Encode the Idea 0 token observation from the acting player's perspective."""
 
     if observation_version not in OBSERVATION_VERSIONS:
         raise ValueError(f"Unknown observation version: {observation_version}")
-    if observation_version == ATTENTION_OBSERVATION_VERSION:
-        return encode_attention_observation(state, player_id)
+    return encode_attention_observation(state, player_id)
     include_skill_features = observation_version != BASE_OBSERVATION_VERSION
     compact_character_id = observation_version == COMPACT_OBSERVATION_VERSION
     enemy_id = 1 - player_id
@@ -146,7 +116,7 @@ def encode_observation(
         features.extend(
             [
                 min(_actions_this_turn(state, player_id), 3) / 3,
-                max(0, 3 - state.reorders_this_turn) / 3,
+                0.0,
                 min(_pending_stack_count(state, player_id), MAX_STACK_SIZE) / MAX_STACK_SIZE,
             ]
         )
@@ -170,11 +140,7 @@ def encode_observation(
         )
     features.extend(_chakra_features(state, player_id))
     if include_stack_features:
-        features.extend(
-            enemy_chakra_belief
-            if enemy_chakra_belief is not None
-            else fallback_enemy_chakra_belief_features(state, player_id)
-        )
+        features.extend([0.0] * ENEMY_CHAKRA_BELIEF_FEATURE_SIZE)
     elif perfect_info:
         features.extend(_chakra_features(state, enemy_id))
     else:
@@ -194,7 +160,7 @@ def encode_attention_observation(state: GameState, player_id: int) -> list[float
         _living_ratio(state, player_id),
         _living_ratio(state, enemy_id),
         min(_actions_this_turn(state, player_id), 3) / 3,
-        max(0, 3 - state.reorders_this_turn) / 3,
+        0.0,
         min(_pending_stack_count(state, player_id), ATTENTION_MAX_STACK_SIZE)
         / ATTENTION_MAX_STACK_SIZE,
     ]
@@ -202,8 +168,8 @@ def encode_attention_observation(state: GameState, player_id: int) -> list[float
     if len(features) != ATTENTION_GLOBAL_FEATURE_SIZE:
         raise AssertionError(f"Attention global feature size changed: {len(features)}")
 
-    ordered_characters = (
-        list(state.players[player_id].characters) + list(state.players[enemy_id].characters)
+    ordered_characters = list(state.players[player_id].characters) + list(
+        state.players[enemy_id].characters
     )
     for character in ordered_characters:
         features.extend(_attention_character_token(state, character))
@@ -262,24 +228,17 @@ def _attention_skill_token(
         skill_index = SKILL_ID_TO_INDEX.get(resolved_skill.id, 0)
         if not character.is_alive:
             numeric[2] = 0.0
-    return (
-        numeric
-        + [
-            float(_character_slot(state, character)),
-            float(ROSTER_INDEX.get(character.definition.id, UNKNOWN_CHARACTER_INDEX)),
-            float(skill_slot),
-            float(skill_index),
-        ]
-    )
+    return numeric + [
+        float(_character_slot(state, character)),
+        float(ROSTER_INDEX.get(character.definition.id, UNKNOWN_CHARACTER_INDEX)),
+        float(skill_slot),
+        float(skill_index),
+    ]
 
 
 def _attention_stack_tokens(state: GameState, player_id: int, owner_id: int) -> list[float]:
     features: list[float] = []
-    visible = [
-        used_skill
-        for used_skill in state.players[owner_id].skill_stack
-        if not _is_invisible_to_player(state, used_skill, player_id)
-    ][:ATTENTION_MAX_STACK_SIZE]
+    visible = list(state.players[owner_id].skill_stack)[:ATTENTION_MAX_STACK_SIZE]
     for index, used_skill in enumerate(visible):
         actor = state.get_character(used_skill.actor_id)
         try:
@@ -321,30 +280,25 @@ def _attention_effect_features(skill, effects) -> list[float]:
     if skill is None:
         return [0.0] * 9
     direct_damage = sum(effect.amount for effect in effects if isinstance(effect, DirectDamage))
-    piercing_damage = sum(
-        effect.amount for effect in effects if isinstance(effect, DirectDamage) and effect.piercing
-    )
-    healing = sum(effect.amount for effect in effects if isinstance(effect, Healing))
-    stun_duration = max([effect.duration for effect in effects if isinstance(effect, Stun)] or [0])
     reduction = sum(effect.amount for effect in effects if isinstance(effect, DamageReduction))
-    invulnerability = max(
-        [effect.duration for effect in effects if isinstance(effect, Invulnerability)] or [0]
-    )
     dot = sum(effect.amount for effect in effects if isinstance(effect, DamageOverTime))
-    chakra_remove = sum(effect.amount for effect in effects if isinstance(effect, ChakraRemoval))
-    chakra_steal = sum(
-        effect.amount for effect in effects if isinstance(effect, (ChakraGainSteal, ChakraSteal))
+    dot_duration = max(
+        [effect.duration for effect in effects if isinstance(effect, DamageOverTime)] or [0]
+    )
+    defense_duration = max(
+        [effect.duration for effect in effects if isinstance(effect, DamageReduction)] or [0]
     )
     return [
         min(direct_damage, 100) / 100,
-        min(piercing_damage, 100) / 100,
-        min(healing, 100) / 100,
-        min(stun_duration, MAX_DURATION) / MAX_DURATION,
         min(reduction, 100) / 100,
-        min(invulnerability, MAX_DURATION) / MAX_DURATION,
+        min(defense_duration, MAX_DURATION) / MAX_DURATION,
         min(dot, 100) / 100,
-        min(chakra_remove, MAX_CHAKRA) / MAX_CHAKRA,
-        min(chakra_steal, MAX_CHAKRA) / MAX_CHAKRA,
+        min(dot_duration, MAX_DURATION) / MAX_DURATION,
+        float(skill.target_rule == TargetRule.ONE_ENEMY),
+        float(skill.target_rule == TargetRule.ALL_ENEMIES),
+        float(skill.target_rule in {TargetRule.SELF, TargetRule.ONE_ALLY, TargetRule.ALL_ALLIES}),
+        min(skill.chakra_cost.random + sum(skill.chakra_cost.fixed.values()), MAX_SKILL_COST)
+        / MAX_SKILL_COST,
     ]
 
 
@@ -367,31 +321,25 @@ def _character_features(
     include_skill_features: bool,
     compact_character_id: bool = False,
 ) -> list[float]:
-    reduction_amount = sum(reduction.amount for reduction in character.status.damage_reductions)
-    unpierceable_amount = sum(
-        reduction.amount
-        for reduction in character.status.damage_reductions
-        if reduction.unpierceable
+    reduction_amount = sum(reduction.amount for reduction in character.status.defenses)
+    max_reduction_turns = max(
+        [reduction.remaining_turns for reduction in character.status.defenses] or [0]
     )
-    max_reduction_percent = max(
-        [reduction.percent for reduction in character.status.damage_reductions] or [0]
-    )
-    dot_amount = sum(dot.amount for dot in character.status.damage_over_time)
-    marker_duration = sum(character.status.active_markers.values())
-    marker_stacks = sum(character.status.active_marker_stacks.values())
+    dot_amount = sum(dot.amount for dot in character.status.dots)
+    max_dot_turns = max([dot.remaining_turns for dot in character.status.dots] or [0])
     features = [
         character.hp / character.max_hp,
         float(character.is_alive),
-        min(character.status.stunned_turns, MAX_DURATION) / MAX_DURATION,
-        min(character.status.invulnerable_turns, MAX_DURATION) / MAX_DURATION,
+        0.0,
+        0.0,
         min(reduction_amount, 100) / 100,
-        min(unpierceable_amount, 100) / 100,
-        min(max_reduction_percent, 100) / 100,
+        min(max_reduction_turns, MAX_DURATION) / MAX_DURATION,
+        0.0,
         min(dot_amount, 100) / 100,
-        min(marker_duration, MAX_DURATION * 4) / (MAX_DURATION * 4),
-        min(marker_stacks, 5) / 5,
-        min(sum(character.passives.values()), 5) / 5,
-        min(sum(character.passive_triggered.values()), 5) / 5,
+        min(max_dot_turns, MAX_DURATION) / MAX_DURATION,
+        0.0,
+        0.0,
+        0.0,
         float(character.used_skill_this_turn),
     ]
     character_index = ROSTER_INDEX.get(character.definition.id, UNKNOWN_CHARACTER_INDEX)
@@ -407,10 +355,8 @@ def _character_features(
     )
     while len(features) < 13 + identity_size + 5:
         features.append(0.0)
-    for skill_class in SkillClass:
-        features.append(
-            min(character.status.class_stuns.get(skill_class.value, 0), MAX_DURATION) / MAX_DURATION
-        )
+    for _skill_class in SkillClass:
+        features.append(0.0)
     if len(features) != expected_base_size:
         raise AssertionError(f"Character base feature size changed: {len(features)}")
     if include_skill_features:
@@ -493,33 +439,12 @@ def _static_skill_cache_key(skill) -> tuple[object, ...]:
 
 def _build_static_skill_features(skill, effects) -> tuple[list[float], list[float]]:
     direct_damage = sum(effect.amount for effect in effects if isinstance(effect, DirectDamage))
-    piercing_direct_damage = sum(
-        effect.amount for effect in effects if isinstance(effect, DirectDamage) and effect.piercing
-    )
-    conditional_damage_bonus = sum(
-        effect.conditional_bonus for effect in effects if isinstance(effect, DirectDamage)
-    )
-    healing = sum(effect.amount for effect in effects if isinstance(effect, Healing))
-    stuns = [effect for effect in effects if isinstance(effect, Stun)]
-    stun_duration = max([effect.duration for effect in stuns] or [0])
-    class_stun_count = sum(1 for effect in stuns if effect.classes is not None)
-    damage_reductions = [effect for effect in effects if isinstance(effect, DamageReduction)]
-    reduction_amount = sum(effect.amount for effect in damage_reductions)
-    reduction_percent = max([effect.percent for effect in damage_reductions] or [0])
-    unpierceable_reduction = any(effect.unpierceable for effect in damage_reductions)
-    invulnerability_duration = max(
-        [effect.duration for effect in effects if isinstance(effect, Invulnerability)] or [0]
-    )
+    defense_effects = [effect for effect in effects if isinstance(effect, DamageReduction)]
+    reduction_amount = sum(effect.amount for effect in defense_effects)
+    reduction_duration = max([effect.duration for effect in defense_effects] or [0])
     dots = [effect for effect in effects if isinstance(effect, DamageOverTime)]
     dot_amount = sum(effect.amount for effect in dots)
     dot_duration = max([effect.duration for effect in dots] or [0])
-    dot_piercing = any(effect.piercing for effect in dots)
-    chakra_removal = sum(effect.amount for effect in effects if isinstance(effect, ChakraRemoval))
-    chakra_steal = sum(
-        effect.amount for effect in effects if isinstance(effect, (ChakraGainSteal, ChakraSteal))
-    )
-    status_marker_count = sum(1 for effect in effects if isinstance(effect, StatusMarker))
-    passive_effect = any(isinstance(effect, PassiveEffect) for effect in effects)
 
     prefix = [
         float(skill.is_passive()),
@@ -542,22 +467,22 @@ def _build_static_skill_features(skill, effects) -> tuple[list[float], list[floa
     suffix.extend(
         [
             min(direct_damage, 100) / 100,
-            min(piercing_direct_damage, 100) / 100,
-            min(conditional_damage_bonus, 100) / 100,
-            min(healing, 100) / 100,
-            min(stun_duration, MAX_DURATION) / MAX_DURATION,
-            min(class_stun_count, len(SkillClass)) / len(SkillClass),
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
             min(reduction_amount, 100) / 100,
-            min(reduction_percent, 100) / 100,
-            float(unpierceable_reduction),
-            min(invulnerability_duration, MAX_DURATION) / MAX_DURATION,
+            min(reduction_duration, MAX_DURATION) / MAX_DURATION,
+            0.0,
+            0.0,
             min(dot_amount, 100) / 100,
             min(dot_duration, MAX_DURATION) / MAX_DURATION,
-            float(dot_piercing),
-            min(chakra_removal, MAX_CHAKRA) / MAX_CHAKRA,
-            min(chakra_steal, MAX_CHAKRA) / MAX_CHAKRA,
-            min(status_marker_count, 3) / 3,
-            float(passive_effect),
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
             float(bool(skill.requirements)),
             float(bool(skill.target_requirements)),
         ]
@@ -616,8 +541,6 @@ def _visible_stack_items(state: GameState, player_id: int):
     items = []
     for owner_id in (player_id, 1 - player_id):
         for used_skill in state.players[owner_id].skill_stack:
-            if _is_invisible_to_player(state, used_skill, player_id):
-                continue
             items.append(used_skill)
     return items
 
@@ -658,24 +581,18 @@ def _compact_effect_features(skill, effects) -> list[float]:
     if skill is None:
         return [0.0] * 6
     direct_damage = sum(effect.amount for effect in effects if isinstance(effect, DirectDamage))
-    piercing_damage = sum(
-        effect.amount for effect in effects if isinstance(effect, DirectDamage) and effect.piercing
-    )
-    healing = sum(effect.amount for effect in effects if isinstance(effect, Healing))
-    stun_duration = max([effect.duration for effect in effects if isinstance(effect, Stun)] or [0])
     reduction = sum(effect.amount for effect in effects if isinstance(effect, DamageReduction))
-    chakra_control = sum(
-        effect.amount
-        for effect in effects
-        if isinstance(effect, (ChakraRemoval, ChakraGainSteal, ChakraSteal))
+    dot_amount = sum(effect.amount for effect in effects if isinstance(effect, DamageOverTime))
+    dot_duration = max(
+        [effect.duration for effect in effects if isinstance(effect, DamageOverTime)] or [0]
     )
     return [
         min(direct_damage, 100) / 100,
-        min(piercing_damage, 100) / 100,
-        min(healing, 100) / 100,
-        min(stun_duration, MAX_DURATION) / MAX_DURATION,
         min(reduction, 100) / 100,
-        min(chakra_control, MAX_CHAKRA) / MAX_CHAKRA,
+        min(dot_amount, 100) / 100,
+        min(dot_duration, MAX_DURATION) / MAX_DURATION,
+        float(skill.target_rule in {TargetRule.SELF, TargetRule.ONE_ALLY, TargetRule.ALL_ALLIES}),
+        0.0,
     ]
 
 
