@@ -37,10 +37,14 @@ from naruto_arena.rl.belief import ChakraBeliefTracker
 from naruto_arena.rl.env import NarutoArenaLearningEnv
 from naruto_arena.rl.model import (
     ActorCritic,
+    AttentionActorCritic,
     RecurrentTransformerActorCritic,
     TransformerActorCritic,
 )
 from naruto_arena.rl.observation import (
+    ATTENTION_MAX_STACK_SIZE,
+    ATTENTION_OBSERVATION_VERSION,
+    ATTENTION_STACK_TOKEN_SIZE,
     BASE_CHARACTER_FEATURE_SIZE,
     BASE_OBSERVATION_VERSION,
     CHARACTER_FEATURE_SIZE,
@@ -310,6 +314,59 @@ def test_recurrent_transformer_actor_critic_outputs_factored_policy_shapes() -> 
     assert policy.reorder_direction.shape == (1, REORDER_DIRECTION_COUNT)
     assert value.shape == (1,)
     assert next_hidden.shape == hidden.shape
+
+
+def test_attention_observation_uses_two_visible_stack_blocks() -> None:
+    state = create_initial_state(
+        [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+        [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+    )
+
+    observation = encode_observation(
+        state,
+        0,
+        observation_version=ATTENTION_OBSERVATION_VERSION,
+    )
+
+    assert len(observation) == observation_size(
+        observation_version=ATTENTION_OBSERVATION_VERSION,
+    )
+    stack_size = ATTENTION_MAX_STACK_SIZE * ATTENTION_STACK_TOKEN_SIZE
+    assert len(observation[-(stack_size * 2) : -stack_size]) == stack_size
+    assert len(observation[-stack_size:]) == stack_size
+
+
+def test_attention_actor_critic_outputs_joint_policy_shapes() -> None:
+    model = AttentionActorCritic(
+        observation_size(observation_version=ATTENTION_OBSERVATION_VERSION),
+    )
+    observation = torch.tensor(
+        encode_observation(
+            create_initial_state(
+                [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+                [UZUMAKI_NARUTO, SAKURA_HARUNO, SASUKE_UCHIHA],
+            ),
+            0,
+            observation_version=ATTENTION_OBSERVATION_VERSION,
+        ),
+        dtype=torch.float32,
+    ).unsqueeze(0)
+
+    policy, value = model(observation)
+
+    assert policy.kind.shape == (1, ACTION_KIND_COUNT)
+    assert policy.actor.shape == (1, MAX_TEAM_SIZE)
+    assert policy.skill.shape == (1, MAX_SKILLS_PER_CHARACTER)
+    assert policy.target.shape == (1, 10)
+    assert policy.random_chakra.shape == (1, 5)
+    assert policy.get_chakra.shape == (1, GET_CHAKRA_CODE_COUNT)
+    assert policy.stack_index.shape == (1, MAX_STACK_SIZE)
+    assert policy.reorder_direction.shape == (1, REORDER_DIRECTION_COUNT)
+    assert policy.use_skill_joint is not None
+    assert policy.use_skill_joint.shape == (1, 3, 9, 10, 5)
+    assert policy.reorder_joint is not None
+    assert policy.reorder_joint.shape == (1, ATTENTION_MAX_STACK_SIZE, 2)
+    assert value.shape == (1,)
 
 
 def test_rl_factored_action_selects_random_chakra_payment() -> None:

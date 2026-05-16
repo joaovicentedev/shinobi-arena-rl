@@ -19,7 +19,7 @@ from naruto_arena.rl.action_space import (
     legal_factored_action_masks,
 )
 from naruto_arena.rl.belief import ChakraBeliefTracker
-from naruto_arena.rl.observation import encode_observation
+from naruto_arena.rl.observation import OBSERVATION_VERSION, encode_observation
 from naruto_arena.rl.teams import default_team, random_mirror_teams, random_teams
 
 
@@ -40,6 +40,7 @@ class NarutoArenaLearningEnv:
         perfect_info: bool = False,
         opponent_model_path: Path | None = None,
         team_sampling: str = "fixed",
+        observation_version: str | None = None,
     ) -> None:
         self.seed = seed
         self.max_actions = max_actions
@@ -49,6 +50,7 @@ class NarutoArenaLearningEnv:
         self.opponent_name = opponent
         self.opponent_model_path = opponent_model_path
         self.team_sampling = team_sampling
+        self.observation_version = observation_version or OBSERVATION_VERSION
         self.opponent = self._make_opponent(opponent, seed + 10_000)
         self.state: GameState | None = None
         self.actions_taken = 0
@@ -74,6 +76,7 @@ class NarutoArenaLearningEnv:
             self.state,
             self.learning_player,
             perfect_info=self.perfect_info,
+            observation_version=self.observation_version,
             enemy_chakra_belief=self.belief_tracker.features(self.state),
         )
 

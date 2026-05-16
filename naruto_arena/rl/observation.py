@@ -34,6 +34,8 @@ MAX_SKILL_COST = 4
 CHARACTER_SLOTS = 6
 GLOBAL_FEATURE_SIZE = 7
 MAX_STACK_SIZE = 12
+ATTENTION_MAX_STACK_SIZE = 16
+ATTENTION_STACK_SIDES = 2
 STACK_SKILL_FEATURE_SIZE = 34
 ENEMY_CHAKRA_BELIEF_FEATURE_SIZE = 13
 BASE_CHARACTER_FEATURE_SIZE = 13 + len(ROSTER) + 5 + len(tuple(SkillClass))
@@ -50,12 +52,41 @@ COMPACT_CHARACTER_FEATURE_SIZE = COMPACT_BASE_CHARACTER_FEATURE_SIZE + (
     MAX_SKILLS_PER_CHARACTER * SKILL_FEATURE_SIZE
 )
 COMPACT_OBSERVATION_VERSION = "skill_features_compact_id_stack_v1"
+ATTENTION_OBSERVATION_VERSION = "attention_skill_stack_no_belief_v1"
 CHARACTER_FEATURE_SIZE = COMPACT_CHARACTER_FEATURE_SIZE
 OBSERVATION_VERSION = COMPACT_OBSERVATION_VERSION
 OBSERVATION_VERSIONS = (
     BASE_OBSERVATION_VERSION,
     SKILL_FEATURES_OBSERVATION_VERSION,
     COMPACT_OBSERVATION_VERSION,
+    ATTENTION_OBSERVATION_VERSION,
+)
+SKILL_ID_TO_INDEX = {
+    skill_id: index + 1
+    for index, skill_id in enumerate(
+        sorted(
+            {
+                skill.id
+                for character in ALL_CHARACTERS.values()
+                for skill in character.skills
+            }
+        )
+    )
+}
+SKILL_ID_CODE_COUNT = len(SKILL_ID_TO_INDEX) + 1
+ATTENTION_GLOBAL_FEATURE_SIZE = 12
+ATTENTION_CHAR_NUMERIC_SIZE = 12
+ATTENTION_CHAR_TOKEN_SIZE = ATTENTION_CHAR_NUMERIC_SIZE + 1
+ATTENTION_SKILL_NUMERIC_SIZE = SKILL_FEATURE_SIZE
+ATTENTION_SKILL_TOKEN_SIZE = ATTENTION_SKILL_NUMERIC_SIZE + 4
+ATTENTION_STACK_NUMERIC_SIZE = 14
+ATTENTION_STACK_TOKEN_SIZE = ATTENTION_STACK_NUMERIC_SIZE + 6
+ATTENTION_STACK_TOKEN_COUNT = ATTENTION_STACK_SIDES * ATTENTION_MAX_STACK_SIZE
+ATTENTION_OBSERVATION_SIZE = (
+    ATTENTION_GLOBAL_FEATURE_SIZE
+    + CHARACTER_SLOTS * ATTENTION_CHAR_TOKEN_SIZE
+    + (CHARACTER_SLOTS * MAX_SKILLS_PER_CHARACTER) * ATTENTION_SKILL_TOKEN_SIZE
+    + ATTENTION_STACK_TOKEN_COUNT * ATTENTION_STACK_TOKEN_SIZE
 )
 _STATIC_SKILL_FEATURE_CACHE: dict[tuple[object, ...], list[float]] = {}
 
@@ -99,6 +130,8 @@ def encode_observation(
 
     if observation_version not in OBSERVATION_VERSIONS:
         raise ValueError(f"Unknown observation version: {observation_version}")
+    if observation_version == ATTENTION_OBSERVATION_VERSION:
+        return encode_attention_observation(state, player_id)
     include_skill_features = observation_version != BASE_OBSERVATION_VERSION
     compact_character_id = observation_version == COMPACT_OBSERVATION_VERSION
     enemy_id = 1 - player_id
@@ -149,6 +182,170 @@ def encode_observation(
     if include_stack_features:
         features.extend(_stack_features(state, player_id))
     return [float(value) for value in features]
+
+
+def encode_attention_observation(state: GameState, player_id: int) -> list[float]:
+    """Token-parsable no-belief observation with separate own/enemy visible stacks."""
+
+    enemy_id = 1 - player_id
+    features: list[float] = [
+        min(state.turn_number, MAX_TURN) / MAX_TURN,
+        float(state.active_player == player_id),
+        _living_ratio(state, player_id),
+        _living_ratio(state, enemy_id),
+        min(_actions_this_turn(state, player_id), 3) / 3,
+        max(0, 3 - state.reorders_this_turn) / 3,
+        min(_pending_stack_count(state, player_id), ATTENTION_MAX_STACK_SIZE)
+        / ATTENTION_MAX_STACK_SIZE,
+    ]
+    features.extend(_chakra_features(state, player_id))
+    if len(features) != ATTENTION_GLOBAL_FEATURE_SIZE:
+        raise AssertionError(f"Attention global feature size changed: {len(features)}")
+
+    ordered_characters = (
+        list(state.players[player_id].characters) + list(state.players[enemy_id].characters)
+    )
+    for character in ordered_characters:
+        features.extend(_attention_character_token(state, character))
+    for character in ordered_characters:
+        for skill_slot in range(MAX_SKILLS_PER_CHARACTER):
+            skill_id = (
+                character.skill_order[skill_slot]
+                if skill_slot < len(character.skill_order)
+                else None
+            )
+            features.extend(_attention_skill_token(state, character, skill_slot, skill_id))
+    for owner_id in (player_id, enemy_id):
+        features.extend(_attention_stack_tokens(state, player_id, owner_id))
+    if len(features) != ATTENTION_OBSERVATION_SIZE:
+        raise AssertionError(f"Attention observation size changed: {len(features)}")
+    return [float(value) for value in features]
+
+
+def _attention_character_token(state: GameState, character: CharacterState) -> list[float]:
+    base = _character_features(
+        state,
+        character,
+        include_skill_features=False,
+        compact_character_id=True,
+    )
+    token = [
+        float(character.is_alive),
+        character.hp / character.max_hp if character.is_alive else 0.0,
+        base[2],
+        max(base[18:]) if len(base) > 18 else 0.0,
+        base[3],
+        base[4],
+        base[6],
+        base[7],
+        base[8] + base[9],
+        base[10] + base[11],
+        base[12],
+        sum(base[14:19]) / 5,
+        base[CHARACTER_ID_FEATURE_INDEX],
+    ]
+    return token
+
+
+def _attention_skill_token(
+    state: GameState,
+    character: CharacterState,
+    skill_slot: int,
+    skill_id: str | None,
+) -> list[float]:
+    if skill_id is None:
+        numeric = [0.0] * ATTENTION_SKILL_NUMERIC_SIZE
+        skill_index = 0
+    else:
+        numeric = _skill_features(state, character, skill_id)
+        resolved_skill = resolved_skill_for_observation(state, character, skill_id)
+        skill_index = SKILL_ID_TO_INDEX.get(resolved_skill.id, 0)
+        if not character.is_alive:
+            numeric[2] = 0.0
+    return (
+        numeric
+        + [
+            float(_character_slot(state, character)),
+            float(ROSTER_INDEX.get(character.definition.id, UNKNOWN_CHARACTER_INDEX)),
+            float(skill_slot),
+            float(skill_index),
+        ]
+    )
+
+
+def _attention_stack_tokens(state: GameState, player_id: int, owner_id: int) -> list[float]:
+    features: list[float] = []
+    visible = [
+        used_skill
+        for used_skill in state.players[owner_id].skill_stack
+        if not _is_invisible_to_player(state, used_skill, player_id)
+    ][:ATTENTION_MAX_STACK_SIZE]
+    for index, used_skill in enumerate(visible):
+        actor = state.get_character(used_skill.actor_id)
+        try:
+            skill_slot = actor.skill_order.index(used_skill.skill_id)
+            skill = resolved_skill_for_observation(state, actor, used_skill.skill_id)
+            effects = skill.all_effects(state, actor.instance_id)
+            skill_index = SKILL_ID_TO_INDEX.get(skill.id, 0)
+        except (KeyError, ValueError):
+            skill_slot = 0
+            skill = None
+            effects = []
+            skill_index = 0
+        effect_features = _attention_effect_features(skill, effects)
+        numeric = [
+            1.0,
+            min(used_skill.remaining_turns, MAX_DURATION * 2) / (MAX_DURATION * 2),
+            index / ATTENTION_MAX_STACK_SIZE,
+            float(used_skill.pending),
+            float(not used_skill.pending),
+        ] + effect_features
+        features.extend(
+            numeric
+            + [
+                float(actor.owner == player_id),
+                float(_character_slot(state, actor)),
+                float(ROSTER_INDEX.get(actor.definition.id, UNKNOWN_CHARACTER_INDEX)),
+                float(skill_slot),
+                float(skill_index),
+                float(_target_code_for_used_skill(state, player_id, used_skill.target_ids)),
+            ]
+        )
+    empty = [0.0] * ATTENTION_STACK_TOKEN_SIZE
+    while len(features) < ATTENTION_MAX_STACK_SIZE * ATTENTION_STACK_TOKEN_SIZE:
+        features.extend(empty)
+    return features
+
+
+def _attention_effect_features(skill, effects) -> list[float]:
+    if skill is None:
+        return [0.0] * 9
+    direct_damage = sum(effect.amount for effect in effects if isinstance(effect, DirectDamage))
+    piercing_damage = sum(
+        effect.amount for effect in effects if isinstance(effect, DirectDamage) and effect.piercing
+    )
+    healing = sum(effect.amount for effect in effects if isinstance(effect, Healing))
+    stun_duration = max([effect.duration for effect in effects if isinstance(effect, Stun)] or [0])
+    reduction = sum(effect.amount for effect in effects if isinstance(effect, DamageReduction))
+    invulnerability = max(
+        [effect.duration for effect in effects if isinstance(effect, Invulnerability)] or [0]
+    )
+    dot = sum(effect.amount for effect in effects if isinstance(effect, DamageOverTime))
+    chakra_remove = sum(effect.amount for effect in effects if isinstance(effect, ChakraRemoval))
+    chakra_steal = sum(
+        effect.amount for effect in effects if isinstance(effect, (ChakraGainSteal, ChakraSteal))
+    )
+    return [
+        min(direct_damage, 100) / 100,
+        min(piercing_damage, 100) / 100,
+        min(healing, 100) / 100,
+        min(stun_duration, MAX_DURATION) / MAX_DURATION,
+        min(reduction, 100) / 100,
+        min(invulnerability, MAX_DURATION) / MAX_DURATION,
+        min(dot, 100) / 100,
+        min(chakra_remove, MAX_CHAKRA) / MAX_CHAKRA,
+        min(chakra_steal, MAX_CHAKRA) / MAX_CHAKRA,
+    ]
 
 
 def _living_ratio(state: GameState, player_id: int) -> float:

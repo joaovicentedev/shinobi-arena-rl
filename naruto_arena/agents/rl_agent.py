@@ -133,13 +133,26 @@ class RlAgent:
             return FactoredAction(action_kind, get_chakra_code=chakra)
 
         if action_kind == ActionKind.REORDER_STACK:
-            stack_index = self._select(
-                policy.stack_index,
-                legal_factored_action_masks(state, player_id, partial, legal=legal)["stack_index"],
+            stack_mask = legal_factored_action_masks(
+                state,
+                player_id,
+                partial,
+                legal=legal,
+            )["stack_index"]
+            stack_logits = (
+                policy.reorder_joint[:, : len(stack_mask)].amax(dim=2)
+                if policy.reorder_joint is not None
+                else policy.stack_index
             )
+            stack_index = self._select(stack_logits, stack_mask)
             partial = FactoredAction(action_kind, stack_index=stack_index)
+            direction_logits = (
+                policy.reorder_joint[:, stack_index, :]
+                if policy.reorder_joint is not None
+                else policy.reorder_direction
+            )
             direction = self._select(
-                policy.reorder_direction,
+                direction_logits,
                 legal_factored_action_masks(
                     state,
                     player_id,
@@ -153,18 +166,33 @@ class RlAgent:
                 reorder_direction=direction,
             )
 
+        actor_logits = (
+            policy.use_skill_joint.amax(dim=(2, 3, 4))
+            if policy.use_skill_joint is not None
+            else policy.actor
+        )
         actor = self._select(
-            policy.actor,
+            actor_logits,
             legal_factored_action_masks(state, player_id, partial, legal=legal)["actor"],
         )
         partial = FactoredAction(action_kind, actor_slot=actor)
+        skill_logits = (
+            policy.use_skill_joint[:, actor].amax(dim=(2, 3))
+            if policy.use_skill_joint is not None
+            else policy.skill
+        )
         skill = self._select(
-            policy.skill,
+            skill_logits,
             legal_factored_action_masks(state, player_id, partial, legal=legal)["skill"],
         )
         partial = FactoredAction(action_kind, actor_slot=actor, skill_slot=skill)
+        target_logits = (
+            policy.use_skill_joint[:, actor, skill].amax(dim=2)
+            if policy.use_skill_joint is not None
+            else policy.target
+        )
         target = self._select(
-            policy.target,
+            target_logits,
             legal_factored_action_masks(state, player_id, partial, legal=legal)["target"],
         )
         partial = FactoredAction(
@@ -173,8 +201,13 @@ class RlAgent:
             skill_slot=skill,
             target_code=target,
         )
+        chakra_logits = (
+            policy.use_skill_joint[:, actor, skill, target]
+            if policy.use_skill_joint is not None
+            else policy.random_chakra
+        )
         random_chakra = self._select(
-            policy.random_chakra,
+            chakra_logits,
             legal_factored_action_masks(state, player_id, partial, legal=legal)["random_chakra"],
         )
         return FactoredAction(

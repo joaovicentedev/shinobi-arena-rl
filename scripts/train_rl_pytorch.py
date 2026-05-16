@@ -48,7 +48,7 @@ from naruto_arena.rl.model import (
     model_arch_from_checkpoint,
     policy_type_for_model_arch,
 )
-from naruto_arena.rl.observation import OBSERVATION_VERSION, observation_size
+from naruto_arena.rl.observation import OBSERVATION_VERSION, OBSERVATION_VERSIONS, observation_size
 
 MaskTrace = dict[str, list[bool]]
 Trajectory = dict[str, list[Any] | list[float] | int | None]
@@ -129,6 +129,12 @@ def parse_args() -> argparse.Namespace:
         help="Policy/value network architecture.",
     )
     parser.add_argument(
+        "--observation-version",
+        choices=OBSERVATION_VERSIONS,
+        default=OBSERVATION_VERSION,
+        help="Observation encoder version.",
+    )
+    parser.add_argument(
         "--init-model-path",
         type=Path,
         default=None,
@@ -160,11 +166,15 @@ def main() -> None:
         perfect_info=args.perfect_info,
         opponent_model_path=args.opponent_model_path,
         team_sampling=args.team_sampling,
+        observation_version=args.observation_version,
     )
     model = create_actor_critic(
-        observation_size(perfect_info=args.perfect_info),
+        observation_size(
+            perfect_info=args.perfect_info,
+            observation_version=args.observation_version,
+        ),
         args.model_arch,
-        OBSERVATION_VERSION,
+        args.observation_version,
     )
     model.to(device)
     if args.init_model_path is not None:
@@ -173,6 +183,7 @@ def main() -> None:
             args.init_model_path,
             perfect_info=args.perfect_info,
             model_arch=args.model_arch,
+            observation_version=args.observation_version,
         )
     model.eval()
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
@@ -269,6 +280,7 @@ def main() -> None:
             ),
             "team_sampling": args.team_sampling,
             "model_arch": args.model_arch,
+            "observation_version": args.observation_version,
             "gamma": args.gamma,
             "gae_lambda": args.gae_lambda,
         }
@@ -352,8 +364,11 @@ def main() -> None:
     torch.save(
         {
             "model_state_dict": model.state_dict(),
-            "obs_dim": observation_size(perfect_info=args.perfect_info),
-            "observation_version": OBSERVATION_VERSION,
+            "obs_dim": observation_size(
+                perfect_info=args.perfect_info,
+                observation_version=args.observation_version,
+            ),
+            "observation_version": args.observation_version,
             "policy_type": policy_type_for_model_arch(args.model_arch),
             "model_arch": args.model_arch,
             "perfect_info": args.perfect_info,
@@ -398,6 +413,7 @@ def load_initial_model(
     *,
     perfect_info: bool,
     model_arch: str,
+    observation_version: str,
 ) -> None:
     checkpoint = torch.load(model_path, map_location="cpu")
     checkpoint_model_arch = model_arch_from_checkpoint(checkpoint)
@@ -407,12 +423,15 @@ def load_initial_model(
             f"but current training uses {model_arch}."
         )
     checkpoint_observation_version = checkpoint.get("observation_version", OBSERVATION_VERSION)
-    if checkpoint_observation_version != OBSERVATION_VERSION:
+    if checkpoint_observation_version != observation_version:
         raise ValueError(
             f"Initial checkpoint uses observation version {checkpoint_observation_version}, "
-            f"but current training uses {OBSERVATION_VERSION}."
+            f"but current training uses {observation_version}."
         )
-    expected_obs_dim = observation_size(perfect_info=perfect_info)
+    expected_obs_dim = observation_size(
+        perfect_info=perfect_info,
+        observation_version=observation_version,
+    )
     checkpoint_obs_dim = int(checkpoint["obs_dim"])
     if checkpoint_obs_dim != expected_obs_dim:
         raise ValueError(
@@ -456,8 +475,11 @@ def maybe_save_self_play_snapshot(
     torch.save(
         {
             "model_state_dict": _cpu_state_dict(model),
-            "obs_dim": observation_size(perfect_info=args.perfect_info),
-            "observation_version": OBSERVATION_VERSION,
+            "obs_dim": observation_size(
+                perfect_info=args.perfect_info,
+                observation_version=args.observation_version,
+            ),
+            "observation_version": args.observation_version,
             "policy_type": policy_type_for_model_arch(args.model_arch),
             "model_arch": args.model_arch,
             "perfect_info": args.perfect_info,
@@ -769,8 +791,13 @@ def sample_factored_action(
     if action_kind == ActionKind.REORDER_STACK:
         stack_mask = env.factored_action_masks(partial)["stack_index"]
         mask_trace["stack_index"] = stack_mask
+        stack_logits = (
+            policy.reorder_joint[:, : len(stack_mask)].amax(dim=2)
+            if policy.reorder_joint is not None
+            else policy.stack_index
+        )
         stack_index, stack_log_prob, stack_entropy = _sample_masked(
-            policy.stack_index,
+            stack_logits,
             stack_mask,
         )
         log_prob = log_prob + stack_log_prob
@@ -778,8 +805,13 @@ def sample_factored_action(
         partial = FactoredAction(action_kind, stack_index=int(stack_index.item()))
         reorder_mask = env.factored_action_masks(partial)["reorder_direction"]
         mask_trace["reorder_direction"] = reorder_mask
+        direction_logits = (
+            policy.reorder_joint[:, partial.stack_index, :]
+            if policy.reorder_joint is not None
+            else policy.reorder_direction
+        )
         direction, direction_log_prob, direction_entropy = _sample_masked(
-            policy.reorder_direction,
+            direction_logits,
             reorder_mask,
         )
         return (
@@ -795,8 +827,13 @@ def sample_factored_action(
 
     actor_mask = env.factored_action_masks(partial)["actor"]
     mask_trace["actor"] = actor_mask
+    actor_logits = (
+        policy.use_skill_joint.amax(dim=(2, 3, 4))
+        if policy.use_skill_joint is not None
+        else policy.actor
+    )
     actor, actor_log_prob, actor_entropy = _sample_masked(
-        policy.actor,
+        actor_logits,
         actor_mask,
     )
     log_prob = log_prob + actor_log_prob
@@ -805,8 +842,13 @@ def sample_factored_action(
 
     skill_mask = env.factored_action_masks(partial)["skill"]
     mask_trace["skill"] = skill_mask
+    skill_logits = (
+        policy.use_skill_joint[:, partial.actor_slot].amax(dim=(2, 3))
+        if policy.use_skill_joint is not None
+        else policy.skill
+    )
     skill, skill_log_prob, skill_entropy = _sample_masked(
-        policy.skill,
+        skill_logits,
         skill_mask,
     )
     log_prob = log_prob + skill_log_prob
@@ -819,8 +861,13 @@ def sample_factored_action(
 
     target_mask = env.factored_action_masks(partial)["target"]
     mask_trace["target"] = target_mask
+    target_logits = (
+        policy.use_skill_joint[:, partial.actor_slot, partial.skill_slot].amax(dim=2)
+        if policy.use_skill_joint is not None
+        else policy.target
+    )
     target, target_log_prob, target_entropy = _sample_masked(
-        policy.target,
+        target_logits,
         target_mask,
     )
     log_prob = log_prob + target_log_prob
@@ -833,8 +880,18 @@ def sample_factored_action(
     )
     chakra_mask = env.factored_action_masks(partial)["random_chakra"]
     mask_trace["random_chakra"] = chakra_mask
+    chakra_logits = (
+        policy.use_skill_joint[
+            :,
+            partial.actor_slot,
+            partial.skill_slot,
+            partial.target_code,
+        ]
+        if policy.use_skill_joint is not None
+        else policy.random_chakra
+    )
     chakra, chakra_log_prob, chakra_entropy = _sample_masked(
-        policy.random_chakra,
+        chakra_logits,
         chakra_mask,
     )
     log_prob = log_prob + chakra_log_prob
@@ -892,13 +949,23 @@ def _factored_action_log_prob_and_entropy(
         return log_prob + chakra_log_prob, entropy + chakra_entropy
 
     if action.kind == ActionKind.REORDER_STACK:
+        stack_logits = (
+            policy.reorder_joint[index, : len(mask_trace["stack_index"])].amax(dim=1)
+            if policy.reorder_joint is not None
+            else policy.stack_index[index]
+        )
         stack_log_prob, stack_entropy = _selected_log_prob_and_entropy(
-            policy.stack_index[index],
+            stack_logits,
             mask_trace["stack_index"],
             action.stack_index,
         )
+        direction_logits = (
+            policy.reorder_joint[index, action.stack_index]
+            if policy.reorder_joint is not None
+            else policy.reorder_direction[index]
+        )
         direction_log_prob, direction_entropy = _selected_log_prob_and_entropy(
-            policy.reorder_direction[index],
+            direction_logits,
             mask_trace["reorder_direction"],
             action.reorder_direction,
         )
@@ -907,26 +974,51 @@ def _factored_action_log_prob_and_entropy(
             entropy + stack_entropy + direction_entropy,
         )
 
+    actor_logits = (
+        policy.use_skill_joint[index].amax(dim=(1, 2, 3))
+        if policy.use_skill_joint is not None
+        else policy.actor[index]
+    )
     actor_log_prob, actor_entropy = _selected_log_prob_and_entropy(
-        policy.actor[index],
+        actor_logits,
         mask_trace["actor"],
         action.actor_slot,
     )
+    skill_logits = (
+        policy.use_skill_joint[index, action.actor_slot].amax(dim=(1, 2))
+        if policy.use_skill_joint is not None
+        else policy.skill[index]
+    )
     skill_log_prob, skill_entropy = _selected_log_prob_and_entropy(
-        policy.skill[index],
+        skill_logits,
         mask_trace["skill"],
         action.skill_slot,
     )
     log_prob = log_prob + actor_log_prob + skill_log_prob
     entropy = entropy + actor_entropy + skill_entropy
 
+    target_logits = (
+        policy.use_skill_joint[index, action.actor_slot, action.skill_slot].amax(dim=1)
+        if policy.use_skill_joint is not None
+        else policy.target[index]
+    )
     target_log_prob, target_entropy = _selected_log_prob_and_entropy(
-        policy.target[index],
+        target_logits,
         mask_trace["target"],
         action.target_code,
     )
+    chakra_logits = (
+        policy.use_skill_joint[
+            index,
+            action.actor_slot,
+            action.skill_slot,
+            action.target_code,
+        ]
+        if policy.use_skill_joint is not None
+        else policy.random_chakra[index]
+    )
     chakra_log_prob, chakra_entropy = _selected_log_prob_and_entropy(
-        policy.random_chakra[index],
+        chakra_logits,
         mask_trace["random_chakra"],
         action.random_chakra_code,
     )
@@ -1326,11 +1418,15 @@ def collect_episode_worker_batch(
             else Path(str(config["opponent_model_path"]))
         ),
         team_sampling=str(config["team_sampling"]),
+        observation_version=str(config["observation_version"]),
     )
     model = create_actor_critic(
-        observation_size(perfect_info=bool(config["perfect_info"])),
+        observation_size(
+            perfect_info=bool(config["perfect_info"]),
+            observation_version=str(config["observation_version"]),
+        ),
         str(config["model_arch"]),
-        OBSERVATION_VERSION,
+        str(config["observation_version"]),
     )
     load_actor_critic_state_dict(model, state_dict)
     model.eval()

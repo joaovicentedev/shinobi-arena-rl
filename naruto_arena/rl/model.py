@@ -20,6 +20,15 @@ from naruto_arena.rl.action_space import (
     TARGET_CODE_COUNT,
 )
 from naruto_arena.rl.observation import (
+    ATTENTION_CHAR_NUMERIC_SIZE,
+    ATTENTION_CHAR_TOKEN_SIZE,
+    ATTENTION_GLOBAL_FEATURE_SIZE,
+    ATTENTION_MAX_STACK_SIZE,
+    ATTENTION_OBSERVATION_VERSION,
+    ATTENTION_SKILL_NUMERIC_SIZE,
+    ATTENTION_SKILL_TOKEN_SIZE,
+    ATTENTION_STACK_NUMERIC_SIZE,
+    ATTENTION_STACK_TOKEN_SIZE,
     BASE_CHARACTER_FEATURE_SIZE,
     BASE_OBSERVATION_VERSION,
     CHARACTER_FEATURE_SIZE,
@@ -32,13 +41,21 @@ from naruto_arena.rl.observation import (
     OBSERVATION_VERSION,
     SKILL_FEATURES_CHARACTER_FEATURE_SIZE,
     SKILL_FEATURES_OBSERVATION_VERSION,
+    SKILL_ID_CODE_COUNT,
 )
 
 MODEL_ARCH_MLP = "mlp"
+MODEL_ARCH_ATTENTION = "attention"
 MODEL_ARCH_TRANSFORMER = "transformer"
 MODEL_ARCH_RECURRENT_TRANSFORMER = "recurrent_transformer"
-MODEL_ARCHITECTURES = (MODEL_ARCH_MLP, MODEL_ARCH_TRANSFORMER, MODEL_ARCH_RECURRENT_TRANSFORMER)
+MODEL_ARCHITECTURES = (
+    MODEL_ARCH_MLP,
+    MODEL_ARCH_ATTENTION,
+    MODEL_ARCH_TRANSFORMER,
+    MODEL_ARCH_RECURRENT_TRANSFORMER,
+)
 POLICY_TYPE_FACTORED = "factored"
+POLICY_TYPE_ATTENTION = "attention_factored"
 POLICY_TYPE_FACTORED_TRANSFORMER = "factored_transformer"
 POLICY_TYPE_FACTORED_RECURRENT_TRANSFORMER = "factored_recurrent_transformer"
 
@@ -53,6 +70,16 @@ class PolicyOutput:
     get_chakra: torch.Tensor
     stack_index: torch.Tensor
     reorder_direction: torch.Tensor
+    use_skill_joint: torch.Tensor | None = None
+    reorder_joint: torch.Tensor | None = None
+
+
+def _mlp(input_dim: int, hidden_dim: int, output_dim: int) -> nn.Sequential:
+    return nn.Sequential(
+        nn.Linear(input_dim, hidden_dim),
+        nn.GELU(),
+        nn.Linear(hidden_dim, output_dim),
+    )
 
 
 class ActorCritic(nn.Module):
@@ -341,11 +368,208 @@ class RecurrentTransformerActorCritic(TransformerActorCritic):
         )
 
 
+class AttentionActorCritic(nn.Module):
+    def __init__(
+        self,
+        obs_dim: int,
+        num_actions: int | None = None,
+        hidden_dim: int = 128,
+        num_layers: int = 2,
+        num_heads: int = 4,
+        dim_feedforward: int = 512,
+        dropout: float = 0.1,
+    ) -> None:
+        super().__init__()
+        del num_actions
+        if obs_dim <= 0:
+            raise ValueError("Observation size must be positive.")
+        self.global_mlp = _mlp(ATTENTION_GLOBAL_FEATURE_SIZE, hidden_dim, hidden_dim)
+        self.char_mlp = _mlp(ATTENTION_CHAR_NUMERIC_SIZE, hidden_dim, hidden_dim)
+        self.skill_mlp = _mlp(ATTENTION_SKILL_NUMERIC_SIZE, hidden_dim, hidden_dim)
+        self.stack_mlp = _mlp(ATTENTION_STACK_NUMERIC_SIZE, hidden_dim, hidden_dim)
+        self.token_type_embedding = nn.Embedding(4, hidden_dim)
+        self.side_embedding = nn.Embedding(2, hidden_dim)
+        self.char_slot_embedding = nn.Embedding(MAX_TEAM_SIZE, hidden_dim)
+        self.char_id_embedding = nn.Embedding(CHARACTER_ID_CODE_COUNT, hidden_dim)
+        self.skill_slot_embedding = nn.Embedding(MAX_SKILLS_PER_CHARACTER, hidden_dim)
+        self.skill_id_embedding = nn.Embedding(SKILL_ID_CODE_COUNT, hidden_dim)
+        self.stack_position_embedding = nn.Embedding(ATTENTION_MAX_STACK_SIZE, hidden_dim)
+        self.target_code_embedding = nn.Embedding(TARGET_CODE_COUNT, hidden_dim)
+        encoder_layer = nn.TransformerEncoderLayer(
+            d_model=hidden_dim,
+            nhead=num_heads,
+            dim_feedforward=dim_feedforward,
+            dropout=dropout,
+            activation="gelu",
+            batch_first=True,
+            norm_first=True,
+        )
+        self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=num_layers)
+        self.kind_policy = nn.Linear(hidden_dim, ACTION_KIND_COUNT)
+        self.get_chakra_policy = nn.Linear(hidden_dim, GET_CHAKRA_CODE_COUNT)
+        self.use_skill_pair_mlp = _mlp(hidden_dim * 4, hidden_dim, RANDOM_CHAKRA_CODE_COUNT)
+        self.reorder_mlp = _mlp(hidden_dim * 2, hidden_dim, REORDER_DIRECTION_COUNT)
+        self.value = nn.Linear(hidden_dim, 1)
+
+    def forward(self, observations: torch.Tensor) -> tuple[PolicyOutput, torch.Tensor]:
+        encoded = self._encode_tokens(observations)
+        global_out = encoded[:, 0]
+        my_skill_out = encoded[:, 7:34].reshape(
+            observations.shape[0],
+            MAX_TEAM_SIZE,
+            MAX_SKILLS_PER_CHARACTER,
+            -1,
+        )
+        target_out = self._target_representations(encoded, observations.device)
+        pair = torch.cat(
+            [
+                my_skill_out[:, :, :, None, :].expand(-1, -1, -1, TARGET_CODE_COUNT, -1),
+                target_out[:, None, None, :, :].expand(
+                    -1,
+                    MAX_TEAM_SIZE,
+                    MAX_SKILLS_PER_CHARACTER,
+                    -1,
+                    -1,
+                ),
+                global_out[:, None, None, None, :].expand(
+                    -1,
+                    MAX_TEAM_SIZE,
+                    MAX_SKILLS_PER_CHARACTER,
+                    TARGET_CODE_COUNT,
+                    -1,
+                ),
+                my_skill_out[:, :, :, None, :] * target_out[:, None, None, :, :],
+            ],
+            dim=-1,
+        )
+        use_skill_joint = self.use_skill_pair_mlp(pair)
+        my_stack_out = encoded[:, 61 : 61 + ATTENTION_MAX_STACK_SIZE]
+        reorder_joint = self.reorder_mlp(
+            torch.cat(
+                [
+                    my_stack_out,
+                    global_out[:, None, :].expand(-1, ATTENTION_MAX_STACK_SIZE, -1),
+                ],
+                dim=-1,
+            )
+        )
+        actor = use_skill_joint.amax(dim=(2, 3, 4))
+        skill = use_skill_joint.amax(dim=(1, 3, 4))
+        target = use_skill_joint.amax(dim=(1, 2, 4))
+        random_chakra = use_skill_joint.amax(dim=(1, 2, 3))
+        stack_index = reorder_joint[:, :MAX_STACK_SIZE].amax(dim=2)
+        reorder_direction = reorder_joint.amax(dim=1)
+        return (
+            PolicyOutput(
+                kind=self.kind_policy(global_out),
+                actor=actor,
+                skill=skill,
+                target=target,
+                random_chakra=random_chakra,
+                get_chakra=self.get_chakra_policy(global_out),
+                stack_index=stack_index,
+                reorder_direction=reorder_direction,
+                use_skill_joint=use_skill_joint,
+                reorder_joint=reorder_joint,
+            ),
+            self.value(global_out).squeeze(-1),
+        )
+
+    def _encode_tokens(self, observations: torch.Tensor) -> torch.Tensor:
+        batch = observations.shape[0]
+        offset = 0
+        global_features = observations[:, offset : offset + ATTENTION_GLOBAL_FEATURE_SIZE]
+        offset += ATTENTION_GLOBAL_FEATURE_SIZE
+        tokens = [
+            (self.global_mlp(global_features) + self.token_type_embedding.weight[0]).unsqueeze(1)
+        ]
+
+        char_flat = observations[:, offset : offset + CHARACTER_SLOTS * ATTENTION_CHAR_TOKEN_SIZE]
+        offset += CHARACTER_SLOTS * ATTENTION_CHAR_TOKEN_SIZE
+        char_data = char_flat.reshape(batch, CHARACTER_SLOTS, ATTENTION_CHAR_TOKEN_SIZE)
+        char_tokens = self.char_mlp(char_data[:, :, :ATTENTION_CHAR_NUMERIC_SIZE])
+        char_ids = char_data[:, :, ATTENTION_CHAR_NUMERIC_SIZE].round().long()
+        char_ids = char_ids.clamp(0, CHARACTER_ID_CODE_COUNT - 1)
+        char_slots = torch.tensor([0, 1, 2, 0, 1, 2], device=observations.device)
+        char_sides = torch.tensor([0, 0, 0, 1, 1, 1], device=observations.device)
+        char_tokens = (
+            char_tokens
+            + self.token_type_embedding.weight[1]
+            + self.side_embedding(char_sides)
+            + self.char_slot_embedding(char_slots)
+            + self.char_id_embedding(char_ids)
+        )
+        tokens.append(char_tokens)
+
+        skill_count = CHARACTER_SLOTS * MAX_SKILLS_PER_CHARACTER
+        skill_flat = observations[:, offset : offset + skill_count * ATTENTION_SKILL_TOKEN_SIZE]
+        offset += skill_count * ATTENTION_SKILL_TOKEN_SIZE
+        skill_data = skill_flat.reshape(batch, skill_count, ATTENTION_SKILL_TOKEN_SIZE)
+        skill_tokens = self.skill_mlp(skill_data[:, :, :ATTENTION_SKILL_NUMERIC_SIZE])
+        skill_cat = skill_data[:, :, ATTENTION_SKILL_NUMERIC_SIZE:].round().long()
+        skill_slots = skill_cat[:, :, 2].clamp(0, MAX_SKILLS_PER_CHARACTER - 1)
+        skill_ids = skill_cat[:, :, 3].clamp(0, SKILL_ID_CODE_COUNT - 1)
+        owner_slots = skill_cat[:, :, 0].clamp(0, MAX_TEAM_SIZE - 1)
+        owner_char_ids = skill_cat[:, :, 1].clamp(0, CHARACTER_ID_CODE_COUNT - 1)
+        skill_sides = torch.tensor([0] * 27 + [1] * 27, device=observations.device)
+        skill_tokens = (
+            skill_tokens
+            + self.token_type_embedding.weight[2]
+            + self.side_embedding(skill_sides)
+            + self.char_slot_embedding(owner_slots)
+            + self.char_id_embedding(owner_char_ids)
+            + self.skill_slot_embedding(skill_slots)
+            + self.skill_id_embedding(skill_ids)
+        )
+        tokens.append(skill_tokens)
+
+        stack_flat = observations[:, offset : offset + 32 * ATTENTION_STACK_TOKEN_SIZE]
+        stack_data = stack_flat.reshape(batch, 32, ATTENTION_STACK_TOKEN_SIZE)
+        stack_tokens = self.stack_mlp(stack_data[:, :, :ATTENTION_STACK_NUMERIC_SIZE])
+        stack_cat = stack_data[:, :, ATTENTION_STACK_NUMERIC_SIZE:].round().long()
+        stack_sides = stack_cat[:, :, 0].clamp(0, 1)
+        stack_slots = stack_cat[:, :, 1].clamp(0, MAX_TEAM_SIZE - 1)
+        stack_char_ids = stack_cat[:, :, 2].clamp(0, CHARACTER_ID_CODE_COUNT - 1)
+        stack_skill_slots = stack_cat[:, :, 3].clamp(0, MAX_SKILLS_PER_CHARACTER - 1)
+        stack_skill_ids = stack_cat[:, :, 4].clamp(0, SKILL_ID_CODE_COUNT - 1)
+        stack_positions = torch.arange(ATTENTION_MAX_STACK_SIZE, device=observations.device)
+        stack_positions = stack_positions.repeat(2).unsqueeze(0)
+        stack_tokens = (
+            stack_tokens
+            + self.token_type_embedding.weight[3]
+            + self.side_embedding(stack_sides)
+            + self.char_slot_embedding(stack_slots)
+            + self.char_id_embedding(stack_char_ids)
+            + self.skill_slot_embedding(stack_skill_slots)
+            + self.skill_id_embedding(stack_skill_ids)
+            + self.stack_position_embedding(stack_positions)
+        )
+        tokens.append(stack_tokens)
+        return self.transformer(torch.cat(tokens, dim=1))
+
+    def _target_representations(
+        self,
+        encoded: torch.Tensor,
+        device: torch.device,
+    ) -> torch.Tensor:
+        learned = self.target_code_embedding(torch.arange(TARGET_CODE_COUNT, device=device))
+        learned = learned.unsqueeze(0).expand(encoded.shape[0], -1, -1).clone()
+        learned[:, 4:10] = encoded[:, 1:7]
+        return learned
+
+
 def create_actor_critic(
     obs_dim: int,
     model_arch: str = MODEL_ARCH_MLP,
     observation_version: str = OBSERVATION_VERSION,
 ) -> nn.Module:
+    if model_arch == MODEL_ARCH_ATTENTION:
+        if observation_version != ATTENTION_OBSERVATION_VERSION:
+            raise ValueError(
+                "The attention architecture requires "
+                f"{ATTENTION_OBSERVATION_VERSION} observations."
+            )
+        return AttentionActorCritic(obs_dim)
     character_feature_size = character_feature_size_for_observation_version(
         observation_version,
     )
@@ -395,6 +619,8 @@ def load_actor_critic_state_dict(
 
 
 def character_feature_size_for_observation_version(observation_version: str) -> int:
+    if observation_version == ATTENTION_OBSERVATION_VERSION:
+        return 0
     if observation_version == BASE_OBSERVATION_VERSION:
         return BASE_CHARACTER_FEATURE_SIZE
     if observation_version == SKILL_FEATURES_OBSERVATION_VERSION:
@@ -405,6 +631,8 @@ def character_feature_size_for_observation_version(observation_version: str) -> 
 
 
 def character_id_code_count_for_observation_version(observation_version: str) -> int | None:
+    if observation_version == ATTENTION_OBSERVATION_VERSION:
+        return CHARACTER_ID_CODE_COUNT
     if observation_version == COMPACT_OBSERVATION_VERSION:
         return CHARACTER_ID_CODE_COUNT
     if observation_version in {BASE_OBSERVATION_VERSION, SKILL_FEATURES_OBSERVATION_VERSION}:
@@ -415,6 +643,8 @@ def character_id_code_count_for_observation_version(observation_version: str) ->
 def policy_type_for_model_arch(model_arch: str) -> str:
     if model_arch == MODEL_ARCH_MLP:
         return POLICY_TYPE_FACTORED
+    if model_arch == MODEL_ARCH_ATTENTION:
+        return POLICY_TYPE_ATTENTION
     if model_arch == MODEL_ARCH_TRANSFORMER:
         return POLICY_TYPE_FACTORED_TRANSFORMER
     if model_arch == MODEL_ARCH_RECURRENT_TRANSFORMER:
@@ -432,6 +662,8 @@ def model_arch_from_checkpoint(checkpoint: dict[str, Any]) -> str:
     policy_type = checkpoint.get("policy_type")
     if policy_type == POLICY_TYPE_FACTORED:
         return MODEL_ARCH_MLP
+    if policy_type == POLICY_TYPE_ATTENTION:
+        return MODEL_ARCH_ATTENTION
     if policy_type == POLICY_TYPE_FACTORED_TRANSFORMER:
         return MODEL_ARCH_TRANSFORMER
     if policy_type == POLICY_TYPE_FACTORED_RECURRENT_TRANSFORMER:
